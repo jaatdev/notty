@@ -83,7 +83,44 @@ function walkNodes(nodes: Node[], parentPath: string[] = [], out: AggregatedRef[
 }
 
 export function aggregateSubjectRefs(subject: Subject): AggregatedRef[] {
-  const all = walkNodes(subject.nodes)
+  const all: AggregatedRef[] = []
+  let refCounter = 0
+  
+  function walkTopics(topics: any[], path: string[] = []) {
+    for (const topic of topics) {
+      const newPath = [...path, topic.title]
+      
+      // Walk content nodes
+      if (topic.content) {
+        for (const node of topic.content) {
+          if (node?.meta?.refs) {
+            node.meta.refs.forEach((r: any) => {
+              all.push({
+                id: `ref-${++refCounter}`,
+                type: r.type || 'unknown',
+                label: r.label || r.title || 'No label',
+                url: r.url,
+                nodeId: node.id,
+                nodeTitle: node.title || topic.title,
+                pathTitles: newPath,
+                tags: node.meta?.tags,
+                difficulty: node.meta?.difficulty,
+                updatedAt: node.meta?.updatedAt,
+              })
+            })
+          }
+        }
+      }
+      
+      // Recursively walk subtopics
+      if (topic.subTopics?.length) {
+        walkTopics(topic.subTopics, newPath)
+      }
+    }
+  }
+  
+  walkTopics(subject.topics || [])
+  
   // Dedup by nodeId + label + url + type
   const seen = new Set<string>()
   const unique: AggregatedRef[] = []

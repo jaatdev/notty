@@ -9,7 +9,7 @@ import { buildSearchIndex, type SearchItem } from '@/lib/searchIndex'
 import { useStoredState } from '@/lib/localStorage'
 import { timeAgo } from '@/lib/time'
 
-type Result = SearchItem & { _kind: 'action'|'subject'|'node' }
+type Result = SearchItem & { _kind: 'action'|'subject'|'topic' }
 
 const ACTIONS_GLOBAL: { id: string; label: string; hint?: string }[] = [
   { id: 'goto-home', label: 'Go to Home', hint: 'Navigate to homepage' },
@@ -30,7 +30,7 @@ const ACTIONS_SUBJECT: { id: string; label: string; hint?: string }[] = [
 
 type RecentItem =
   | { t: 'subject'; slug: string; title: string; at: number }
-  | { t: 'node'; slug: string; id: string; title: string; path: string; at: number }
+  | { t: 'topic'; slug: string; id: string; title: string; path: string; at: number }
 
 const RECENTS_KEY = 'notty_recent_v2'
 
@@ -80,7 +80,7 @@ export default function CommandPalette() {
     [
       ...actions,
       ...index.filter(i => i.type === 'subject').map(s => ({ _kind:'subject', ...s } as Result)),
-      ...index.filter(i => i.type === 'node').map(n => ({ _kind:'node', ...n } as Result)),
+      ...index.filter(i => i.type === 'topic').map(n => ({ _kind:'topic', ...n } as Result)),
     ],
     {
       includeScore: true,
@@ -103,7 +103,7 @@ export default function CommandPalette() {
         if (r.t === 'subject') {
           return { _kind:'subject', type:'subject', slug:r.slug, title:r.title, description:`Recent • ${timeAgo(r.at)}`, tags:[] } as any
         }
-        return { _kind:'node', type:'node', subjectSlug:r.slug, nodeId:r.id, title:r.title, path:`${r.path} • ${timeAgo(r.at)}`, tags:[] } as any
+        return { _kind:'topic', type:'topic', subjectSlug:r.slug, topicId:r.id, title:r.title, path:`${r.path} • ${timeAgo(r.at)}`, tags:[] } as any
       })
       return [...actions.slice(0, 5), ...recentResults]
     }
@@ -145,22 +145,11 @@ export default function CommandPalette() {
       close()
       return
     }
-    if (item._kind === 'node') {
+    if (item._kind === 'topic') {
       const slug = (item as any).subjectSlug
-      const nodeId = (item as any).nodeId
-      pushRecent({ t:'node', slug, id: nodeId, title: (item as any).title, path: (item as any).path, at: Date.now() })
-      if (pathname === `/subjects/${slug}`) {
-        // same page: scroll
-        const el = document.getElementById(nodeId)
-        if (el) {
-          const y = el.getBoundingClientRect().top + window.pageYOffset - 80
-          window.scrollTo({ top: y, behavior: 'smooth' })
-        } else {
-          router.push(`/subjects/${slug}#${nodeId}`)
-        }
-      } else {
-        router.push(`/subjects/${slug}#${nodeId}`)
-      }
+      const topicId = (item as any).topicId
+      pushRecent({ t:'topic', slug, id: topicId, title: (item as any).title, path: (item as any).path, at: Date.now() })
+      router.push(`/subjects/${slug}/${topicId}`)
       close()
     }
   }
@@ -221,19 +210,19 @@ export default function CommandPalette() {
   const groups = [
     { key: 'action', label: 'Actions' },
     { key: 'subject', label: 'Subjects' },
-    { key: 'node', label: 'Nodes' },
+    { key: 'topic', label: 'Topics' },
   ] as const
 
-  const nodeResults = results.filter(r => r._kind === 'node')
-  const nodesBySubject = useMemo(() => {
+  const topicResults = results.filter(r => r._kind === 'topic')
+  const topicsBySubject = useMemo(() => {
     if (!groupNodesBySubject) return null
     const g: Record<string, Result[]> = {}
-    nodeResults.forEach(n => {
+    topicResults.forEach(n => {
       const slug = (n as any).subjectSlug as string
       ;(g[slug] ||= []).push(n)
     })
     return g
-  }, [nodeResults, groupNodesBySubject])
+  }, [topicResults, groupNodesBySubject])
 
   // Early return AFTER all hooks
   if (!open) return null
@@ -254,7 +243,7 @@ export default function CommandPalette() {
         </div>
         <div className="max-h-[60vh] overflow-y-auto p-2">
           {groups.map(g => {
-            if (g.key !== 'node' || !groupNodesBySubject) {
+            if (g.key !== 'topic' || !groupNodesBySubject) {
               const items = results.filter(r => r._kind === g.key)
               if (!items.length) return null
               return (
@@ -273,7 +262,7 @@ export default function CommandPalette() {
                           >
                             <div className="flex items-center gap-2">
                               <span className="w-6 text-center">
-                                {r._kind === 'action' ? '🧭' : r._kind === 'subject' ? '📚' : '🔎'}
+                                {r._kind === 'action' ? '🧭' : r._kind === 'subject' ? '📚' : '�'}
                               </span>
                               <div className="flex-1 min-w-0">
                                 <div className="font-semibold truncate">
@@ -295,11 +284,11 @@ export default function CommandPalette() {
               )
             } else {
               // Grouped by subject
-              if (!nodesBySubject || Object.keys(nodesBySubject).length === 0) return null
+              if (!topicsBySubject || Object.keys(topicsBySubject).length === 0) return null
               return (
-                <div key="node-grouped" className="mb-2">
-                  <div className="px-2 py-1 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Nodes (by subject)</div>
-                  {Object.entries(nodesBySubject).map(([slug, items]) => {
+                <div key="topic-grouped" className="mb-2">
+                  <div className="px-2 py-1 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Topics (by subject)</div>
+                  {Object.entries(topicsBySubject).map(([slug, items]) => {
                     const subj = subjects.find(s => s.slug === slug)
                     return (
                       <div key={slug} className="mb-1">
@@ -342,7 +331,7 @@ export default function CommandPalette() {
             <span>Esc to close • Enter to run • ↑/↓ to navigate</span>
             <label className="inline-flex items-center gap-1 ml-3">
               <input type="checkbox" checked={groupNodesBySubject} onChange={(e)=>setGroupNodesBySubject(e.target.checked)} />
-              Group nodes by subject
+              Group topics by subject
             </label>
           </div>
           <div>Cmd/Ctrl+K to toggle</div>

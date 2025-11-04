@@ -1,83 +1,274 @@
 {
   "subjects": [
     {
-      "slug": "polity-preamble",
-      "title": "भारतीय संविधान की प्रस्तावना (Preamble)",
-      "description": "Har Concept aur Tricks — ek jagah.",
+      "slug": "polity",
+      "title": "Indian Polity",
+      "description": "Master Indian Constitution, Governance, and Political System",
+      "emoji": "🏛️",
       "brandColor": "indigo",
-      "nodes": [
+      "topics": [
         {
-          "id": "foundation",
-          "kind": "section",
-          "title": "Preamble Ki Buniyad",
-          "meta": { "tags": ["origin","basics"], "difficulty": "easy", "updatedAt": "2025-01-01" },
-          "children": [
-            { "id": "idea-source", "kind": "markdown", "title": "Idea Source (स्रोत)", "mnemonic": "UP-USA", "body": "Preamble ka idea **USA** se. USA was the first to adopt a Preamble. See [[case: Kesavananda Bharati (1973)|https://indiankanoon.org/doc/257876/]] for more." },
-            { "id": "objective-resolution", "kind": "markdown", "title": "Objective Resolution", "body": "Based on Objective Resolution by **J. L. Nehru** (13 Dec, 1946). [[article: Art. 368]] governs amendments." },
-            { "id": "nature", "kind": "markdown", "title": "Nature", "body": "**Non-Justiciable** — cannot be directly enforced in Court.", "meta": { "refs": [{"label": "Art. 1 — Union of States", "url": "https://legislative.gov.in/constitution-of-india"}, {"label": "Kesavananda Bharati (1973)", "url": "https://indiankanoon.org/doc/257876/"}] } }
+          "id": "preamble",
+          "title": "The Preamble",
+          "description": "Understanding the soul of the Indian Constitution",
+          "content": [
+            {
+              "id": "preamble-intro",
+              "kind": "markdown",
+              "title": "What is the Preamble?",
+              "body": "The **Preamble** is the introductory statement of the Indian Constitution. It was adopted on **26th November 1949** and came into effect on **26th January 1950**.\n\n## Key Points:\n- Based on the **'Objectives Resolution'** by Jawaharlal Nehru (13 Dec 1946)\n- Declares India as **Sovereign, Socialist, Secular, Democratic, Republic**\n- Outlines the objectives: Justice, Liberty, Equality, Fraternity\n\n### Source of Authority\nThe Constitution derives its authority from **'We, the People of India'**.",
+              "mnemonic": "PRAJYA - Preamble Reveals All Justice, Liberty, Equality, Fraternity Yearnings",
+              "meta": {
+                "tags": [
+                  "basics",
+                  "nehru",
+                  "constitution"
+                ],
+                "difficulty": "easy",
+                "updatedAt": "2024-11-04"
+              }
+            }
+          ],
+          "quiz": [
+            {
+              "id": "q-preamble-1",
+              "prompt": "The Preamble of the Indian Constitution is based on which resolution?",
+              "options": [
+                "Government of India Act 1935",
+                "Objectives Resolution",
+                "Nehru Report",
+                "US Constitution"
+              ],
+              "answerIndex": 1,
+              "reason": "The Preamble is based on the 'Objectives Resolution' drafted and moved by Jawaharlal Nehru on December 13, 1946.",
+              "meta": {
+                "difficulty": "easy",
+                "tags": [
+                  "preamble",
+                  "history"
+                ]
+              }
+            },
+            {
+              "id": "q-preamble-2",
+              "prompt": "When was the Preamble adopted?",
+              "options": [
+                "26th January 1950",
+                "26th November 1949",
+                "15th August 1947",
+                "13th December 1946"
+              ],
+              "answerIndex": 1,
+              "reason": "The Preamble was adopted on 26th November 1949, but came into effect on 26th January 1950.",
+              "meta": {
+                "difficulty": "medium",
+                "tags": [
+                  "preamble",
+                  "dates"
+                ]
+              }
+            }
+          ],
+          "subTopics": [
+            {
+              "id": "pillars-preamble",
+              "title": "Pillars of the Preamble",
+              "description": "The 5 key components that define India",
+              "content": [
+                {
+                  "id": "sovereign",
+                  "kind": "markdown",
+                  "title": "Sovereign",
+                  "body": "**Sovereign** means India is internally and externally independent.\n\n- Not dependent on any external power\n- Free to conduct its own affairs\n- Added in the original Preamble (1949)",
+                  "meta": {
+                    "difficulty": "easy",
+                    "tags": [
+                      "sovereign"
+                    ]
+                  }
+                },
+                {
+                  "id": "socialist",
+                  "kind": "markdown",
+                  "title": "Socialist",
+                  "body": "**Socialist** was added by the **42nd Amendment (1976)**.\n\n- Promotes social and economic equality\n- Mixed economy (public + private sector)\n- Not strict socialism like USSR",
+                  "meta": {
+                    "difficulty": "medium",
+                    "tags": [
+                      "socialist",
+                      "42nd amendment"
+                    ]
+                  }
+                },
+                {
+                  "id": "secular",
+                  "kind": "markdown",
+                  "title": "Secular",
+                  "body": "**Secular** was added by the **42nd Amendment (1976)**.\n\n- State has no official religion\n- Equal respect for all religions\n- Freedom of religion (Article 25-28)",
+                  "meta": {
+                    "difficulty": "medium",
+                    "tags": [
+                      "secular",
+                      "42nd amendment"
+                    ]
+                  }
+                }
+              ],
+              "quiz": [
+                {
+                  "id": "q-pillars-1",
+                  "prompt": "Which word declares that the Head of State is elected?",
+                  "options": [
+                    "Sovereign",
+                    "Democratic",
+                    "Republic",
+                    "Secular"
+                  ],
+                  "answerIndex": 2,
+                  "reason": "'Republic' means the head of state (the President) is elected, not a hereditary monarch.",
+                  "meta": {
+                    "difficulty": "easy",
+                    "tags": [
+                      "pillars"
+                    ]
+                  }
+                }
+              ],
+              "subTopics": []
+            }
           ]
         },
         {
-          "id": "nature-flash",
-          "kind": "flashcards",
-          "title": "SSSDR — Nature of State",
-          "mnemonic": "SSSDR",
-          "meta": { "tags": ["flashcards","recall"], "difficulty": "easy" },
-          "cards": [
-            { "front": "Sovereign",  "back": "Internal + External independence (No foreign diktat)" },
-            { "front": "Socialist",  "back": "Reduce inequality (42nd AA, 1976)" },
-            { "front": "Secular",    "back": "Equal respect to all religions; positive secularism (42nd AA, 1976)" },
-            { "front": "Democratic", "back": "Govt via elections; UAF" },
-            { "front": "Republic",   "back": "Non-hereditary Head of State" }
-          ]
-        },
-        {
-          "id": "preamble-quiz",
-          "kind": "quiz",
-          "title": "Quick Revision Quiz",
-          "meta": { "tags": ["quiz"], "difficulty": "easy" },
-          "questions": [
-            { "id": "q1", "prompt": "Preamble is based on?", "options": ["Fundamental Rights", "Directive Principles", "Objective Resolution", "Cabinet Mission Plan"], "answerIndex": 2, "reason": "Presented by J. L. Nehru (13 Dec, 1946)." },
-            { "id": "q2", "prompt": "Added in 42nd AA (1976)?", "options": ["Justice, Liberty, Equality", "Sovereign, Democratic, Republic", "Socialist, Secular, Integrity", "Union, State, Territory"], "answerIndex": 2, "reason": "Three words added: Socialist, Secular, Integrity." }
-          ]
+          "id": "schedules",
+          "title": "Schedules of Constitution",
+          "description": "The 12 schedules that organize constitutional provisions",
+          "content": [
+            {
+              "id": "schedules-intro",
+              "kind": "markdown",
+              "title": "What are Schedules?",
+              "body": "**Schedules** are lists in the Constitution that categorize bureaucratic activity and government policy.\n\n## Originally 8 Schedules, Now 12:\n1. **1st Schedule** - States and Union Territories\n2. **2nd Schedule** - Salaries of officials\n3. **3rd Schedule** - Oaths and Affirmations\n4. **4th Schedule** - Rajya Sabha seat allocation\n5. **5th Schedule** - Scheduled Areas and Tribes\n6. **6th Schedule** - Tribal Areas (NE)\n7. **7th Schedule** - Division of Powers (3 Lists)\n8. **8th Schedule** - Recognized Languages\n9. **9th Schedule** - Land reforms (added 1951)\n10. **10th Schedule** - Anti-Defection Law (added 1985)\n11. **11th Schedule** - Panchayats (added 1992)\n12. **12th Schedule** - Municipalities (added 1992)",
+              "mnemonic": "SSOA RSTT LLAM - Schedules Starting from One",
+              "meta": {
+                "difficulty": "medium",
+                "tags": [
+                  "schedules"
+                ]
+              }
+            }
+          ],
+          "quiz": [
+            {
+              "id": "q-schedules-1",
+              "prompt": "Which schedule deals with the division of powers between Union and States?",
+              "options": [
+                "Schedule 5",
+                "Schedule 7",
+                "Schedule 8",
+                "Schedule 10"
+              ],
+              "answerIndex": 1,
+              "reason": "The 7th Schedule contains three lists: Union List, State List, and Concurrent List.",
+              "meta": {
+                "difficulty": "medium",
+                "tags": [
+                  "schedules",
+                  "federalism"
+                ]
+              }
+            }
+          ],
+          "subTopics": []
         }
       ]
     },
-
-    {"slug": "polity-schedules",
-      "title": "भारतीय संविधान की अनुसूचियाँ (Schedules)",
-      "description": "12 Schedules — crisp, recall-ready.",
+    {
+      "slug": "history",
+      "title": "History",
+      "description": "Ancient, Medieval, and Modern History of India and World",
+      "emoji": "📜",
+      "brandColor": "amber",
+      "topics": []
+    },
+    {
+      "slug": "geography",
+      "title": "Geography",
+      "description": "World Geography, Indian Geography, and Physical Features",
+      "emoji": "🌍",
       "brandColor": "emerald",
-      "nodes": [
-        {
-          "id": "s1-4",
-          "kind": "section",
-          "title": "Schedules 1–4: Basics",
-          "meta": { "tags": ["territory","emoluments"], "difficulty": "medium", "refs": [{"label":"Art. 1-4"},{"label":"Schedule I"}] },
-          "children": [
-            { "id": "sch-1", "kind": "markdown", "title": "Schedule I — Territory", "body": "List of **States/UTs** and extent. 28 states, 8 UTs." },
-            { "id": "sch-2", "kind": "markdown", "title": "Schedule II — Emoluments", "body": "Salaries of **President, Governors, Speakers, Judges, CAG** etc." }
-          ]
-        },
-        {
-          "id": "s7-8-flash",
-          "kind": "flashcards",
-          "title": "7th & 8th Schedule — Snapshot",
-          "meta": { "tags": ["flashcards"], "difficulty": "easy" },
-          "cards": [
-            { "front": "7th Schedule", "back": "3 Lists — Union (100), State (61), Concurrent (52)" },
-            { "front": "8th Schedule", "back": "22 languages (14 originally); not incl. English" }
-          ]
-        },
-        {
-          "id": "schedules-quiz",
-          "kind": "quiz",
-          "title": "Schedules Quick Quiz",
-          "questions": [
-            { "id": "q1", "prompt": "Original Constitution had how many Schedules?", "options": ["8","10","12","14"], "answerIndex": 0, "reason": "Originally 8; four added later." }
-          ]
-        }
-      ]
+      "topics": []
+    },
+    {
+      "slug": "maths",
+      "title": "Mathematics",
+      "description": "Quantitative Aptitude, Arithmetic, and Advanced Maths",
+      "emoji": "📊",
+      "brandColor": "blue",
+      "topics": []
+    },
+    {
+      "slug": "reasoning",
+      "title": "Reasoning",
+      "description": "Logical Reasoning, Analytical Ability, and Puzzles",
+      "emoji": "🧠",
+      "brandColor": "purple",
+      "topics": []
+    },
+    {
+      "slug": "biology",
+      "title": "Biology",
+      "description": "General Science - Biology, Botany, and Zoology",
+      "emoji": "🧬",
+      "brandColor": "green",
+      "topics": []
+    },
+    {
+      "slug": "physics",
+      "title": "Physics",
+      "description": "General Science - Mechanics, Optics, and Modern Physics",
+      "emoji": "⚛️",
+      "brandColor": "cyan",
+      "topics": []
+    },
+    {
+      "slug": "chemistry",
+      "title": "Chemistry",
+      "description": "General Science - Inorganic, Organic, and Physical Chemistry",
+      "emoji": "🧪",
+      "brandColor": "pink",
+      "topics": []
+    },
+    {
+      "slug": "hindi",
+      "title": "Hindi",
+      "description": "व्याकरण, साहित्य, और समझ",
+      "emoji": "✍️",
+      "brandColor": "orange",
+      "topics": []
+    },
+    {
+      "slug": "english",
+      "title": "English",
+      "description": "Grammar, Vocabulary, and Comprehension",
+      "emoji": "🇬🇧",
+      "brandColor": "slate",
+      "topics": []
+    },
+    {
+      "slug": "moolvidhi",
+      "title": "Moolvidhi",
+      "description": "IPC, CrPC, Evidence Act, and Constitutional Law",
+      "emoji": "⚖️",
+      "brandColor": "red",
+      "topics": []
+    },
+    {
+      "slug": "gk-current",
+      "title": "GK & Current Affairs",
+      "description": "Economy, Banking, Current Affairs, and General Knowledge",
+      "emoji": "📰",
+      "brandColor": "yellow",
+      "topics": []
     }
   ]
 }

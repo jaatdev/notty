@@ -1,0 +1,23 @@
+﻿function collectTopicTags(topic: any): string[] {
+  const tags: string[] = []
+  
+  if (topic.content) {
+    topic.content.forEach((node: any) => {
+      if (node.meta?.tags) tags.push(...node.meta.tags)
+    })
+  }
+  
+  if (topic.quiz) {
+    topic.quiz.forEach((q: any) => {
+      if (q.meta?.tags) tags.push(...q.meta.tags)
+    })
+  }
+  
+  if (topic.subTopics && topic.subTopics.length > 0) {
+    topic.subTopics.forEach((subTopic: any) => {
+      tags.push(...collectTopicTags(subTopic))
+    })
+  }
+  
+  return tags
+}

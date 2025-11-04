@@ -5,18 +5,25 @@ import type { Subject } from '@/lib/types'
 
 export default function UpdatesTicker({ subjects, limit = 12 }: { subjects: Subject[]; limit?: number }) {
   const items = useMemo(() => {
-    function collect(nodes: any[], slug: string, subjectTitle: string, out: any[] = [], path: string[] = []) {
-      for (const n of nodes) {
-        const title = n.title || n.kind
+    function collect(topics: any[], slug: string, subjectTitle: string, out: any[] = [], path: string[] = []) {
+      for (const topic of topics) {
+        const title = topic.title
         const newPath = [...path, title]
-        if (n?.meta?.updatedAt) {
-          out.push({ slug, nodeId: n.id, subjectTitle, nodeTitle: title, path: newPath.join(' > '), at: Date.parse(n.meta.updatedAt) })
+        // Check if any content node has updatedAt metadata
+        if (topic.content) {
+          for (const node of topic.content) {
+            if (node?.meta?.updatedAt) {
+              out.push({ slug, topicId: topic.id, subjectTitle, topicTitle: title, path: newPath.join(' > '), at: Date.parse(node.meta.updatedAt) })
+              break // Only add once per topic
+            }
+          }
         }
-        if (n.children?.length) collect(n.children, slug, subjectTitle, out, newPath)
+        // Recursively check subtopics
+        if (topic.subTopics?.length) collect(topic.subTopics, slug, subjectTitle, out, newPath)
       }
       return out
     }
-    const arr = subjects.flatMap(s => collect(s.nodes as any[], s.slug, s.title))
+    const arr = subjects.flatMap(s => collect(s.topics || [], s.slug, s.title))
       .filter(x => !!x.at)
       .sort((a,b) => b.at - a.at)
       .slice(0, limit)
@@ -33,8 +40,8 @@ export default function UpdatesTicker({ subjects, limit = 12 }: { subjects: Subj
         </div>
         <div className="marquee whitespace-nowrap">
           {items.map((it, i) => (
-            <Link key={i} href={`/subjects/${it.slug}#${it.nodeId}`} className="inline-block mr-6 text-sm hover:underline">
-              <span className="font-semibold">{it.subjectTitle}</span>: {it.nodeTitle}
+            <Link key={i} href={`/subjects/${it.slug}/${it.topicId}`} className="inline-block mr-6 text-sm hover:underline">
+              <span className="font-semibold">{it.subjectTitle}</span>: {it.topicTitle}
             </Link>
           ))}
         </div>

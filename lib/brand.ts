@@ -2,6 +2,7 @@ export const brandMap = {
   emerald: {
     hero: 'from-emerald-600 to-emerald-400',
     text: 'text-emerald-700',
+    bg: 'bg-emerald-100 dark:bg-emerald-900',
     border: 'border-emerald-500',
     chip: 'text-emerald-700',
     progress: 'bg-emerald-500',
@@ -9,6 +10,7 @@ export const brandMap = {
   indigo: {
     hero: 'from-indigo-600 to-indigo-400',
     text: 'text-indigo-700',
+    bg: 'bg-indigo-100 dark:bg-indigo-900',
     border: 'border-indigo-500',
     chip: 'text-indigo-700',
     progress: 'bg-indigo-500',
@@ -16,6 +18,7 @@ export const brandMap = {
   blue: {
     hero: 'from-blue-600 to-blue-400',
     text: 'text-blue-700',
+    bg: 'bg-blue-100 dark:bg-blue-900',
     border: 'border-blue-500',
     chip: 'text-blue-700',
     progress: 'bg-blue-500',
@@ -23,6 +26,7 @@ export const brandMap = {
   red: {
     hero: 'from-red-600 to-red-400',
     text: 'text-red-700',
+    bg: 'bg-red-100 dark:bg-red-900',
     border: 'border-red-500',
     chip: 'text-red-700',
     progress: 'bg-red-500',
@@ -30,9 +34,66 @@ export const brandMap = {
   yellow: {
     hero: 'from-yellow-600 to-yellow-400',
     text: 'text-yellow-700',
+    bg: 'bg-yellow-100 dark:bg-yellow-900',
     border: 'border-yellow-500',
     chip: 'text-yellow-700',
     progress: 'bg-yellow-500',
+  },
+  amber: {
+    hero: 'from-amber-600 to-amber-400',
+    text: 'text-amber-700',
+    bg: 'bg-amber-100 dark:bg-amber-900',
+    border: 'border-amber-500',
+    chip: 'text-amber-700',
+    progress: 'bg-amber-500',
+  },
+  purple: {
+    hero: 'from-purple-600 to-purple-400',
+    text: 'text-purple-700',
+    bg: 'bg-purple-100 dark:bg-purple-900',
+    border: 'border-purple-500',
+    chip: 'text-purple-700',
+    progress: 'bg-purple-500',
+  },
+  green: {
+    hero: 'from-green-600 to-green-400',
+    text: 'text-green-700',
+    bg: 'bg-green-100 dark:bg-green-900',
+    border: 'border-green-500',
+    chip: 'text-green-700',
+    progress: 'bg-green-500',
+  },
+  cyan: {
+    hero: 'from-cyan-600 to-cyan-400',
+    text: 'text-cyan-700',
+    bg: 'bg-cyan-100 dark:bg-cyan-900',
+    border: 'border-cyan-500',
+    chip: 'text-cyan-700',
+    progress: 'bg-cyan-500',
+  },
+  pink: {
+    hero: 'from-pink-600 to-pink-400',
+    text: 'text-pink-700',
+    bg: 'bg-pink-100 dark:bg-pink-900',
+    border: 'border-pink-500',
+    chip: 'text-pink-700',
+    progress: 'bg-pink-500',
+  },
+  orange: {
+    hero: 'from-orange-600 to-orange-400',
+    text: 'text-orange-700',
+    bg: 'bg-orange-100 dark:bg-orange-900',
+    border: 'border-orange-500',
+    chip: 'text-orange-700',
+    progress: 'bg-orange-500',
+  },
+  slate: {
+    hero: 'from-slate-600 to-slate-400',
+    text: 'text-slate-700',
+    bg: 'bg-slate-100 dark:bg-slate-900',
+    border: 'border-slate-500',
+    chip: 'text-slate-700',
+    progress: 'bg-slate-500',
   },
 } as const
 
