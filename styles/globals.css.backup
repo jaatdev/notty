@@ -1,0 +1,477 @@
+@import "tailwindcss/preflight";
+@import "tailwindcss/utilities";
+
+:root {
+  --bg-dark: #121212;
+  --surface-dark: #1f2937;
+  --text-dark: #f3f4f6;
+  --emerald-500: #10b981;
+  --emerald-600: #059669;
+  --emerald-700: #047857;
+  color-scheme: light dark;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  line-height: 1.6;
+}
+
+/* Hero dots */
+.hero-dots { 
+  position: absolute; 
+  inset: 0; 
+  background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px); 
+  background-size: 18px 18px; 
+  mask-image: radial-gradient(circle at 40% 20%, black 40%, transparent 70%); 
+}
+
+/* Cards */
+.card { 
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background-color .25s ease; 
+  border-radius: 1rem; 
+  box-shadow: 0 15px 30px -15px rgba(0,0,0,.25); 
+}
+.card:hover { 
+  transform: translateY(-6px); 
+  box-shadow: 0 35px 50px -20px rgba(0,0,0,.35); 
+}
+
+/* Mnemonic */
+.mnemonic-text { 
+  font-weight: 900; 
+  color: #ef4444; 
+  background: #fde68a; 
+  padding: 2px 8px; 
+  border-radius: 6px; 
+  display: inline-block; 
+  transform: rotate(-1deg); 
+  box-shadow: 2px 2px 0 #92400e; 
+}
+
+/* TOC */
+.toc a { 
+  display: flex; 
+  align-items: center; 
+  gap: .5rem; 
+  padding: .6rem .75rem; 
+  border-radius: .75rem; 
+  border: 1px solid transparent; 
+  transition: background .2s, color .2s, transform .2s; 
+}
+.toc a:hover { transform: translateX(2px); }
+.toc a.active { font-weight: 600; }
+
+/* Search highlight */
+mark.search-hit { 
+  background: #fde68a; 
+  color: #b91c1c; 
+  padding: 0 2px; 
+  border-radius: 3px; 
+}
+
+/* Toast */
+.toast { 
+  position: fixed; 
+  left: 50%; 
+  bottom: 24px; 
+  transform: translateX(-50%); 
+  background: #111827; 
+  color: #fff; 
+  padding: 10px 14px; 
+  border-radius: 10px; 
+  box-shadow: 0 10px 25px rgba(0,0,0,.25); 
+  z-index: 60; 
+  font-weight: 600; 
+  font-size: 14px; 
+}
+
+/* Utilities */
+.section-hidden { display: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Stacked Toasts */
+.toasts {
+  position: fixed; 
+  right: 16px; 
+  bottom: 16px; 
+  z-index: 1000;
+  display: flex; 
+  flex-direction: column; 
+  gap: 10px;
+}
+.toast-card {
+  min-width: 260px; 
+  max-width: 380px;
+  background: #111827; 
+  color: #fff;
+  border-radius: 12px; 
+  padding: 10px 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  border-left: 4px solid #22c55e;
+}
+.toast-info { border-left-color: #60a5fa; }
+.toast-success { border-left-color: #22c55e; }
+.toast-warning { border-left-color: #f59e0b; }
+.toast-error { border-left-color: #ef4444; }
+.toast-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.toast-msg { font-weight: 600; font-size: 13px; }
+.toast-actions { display: flex; align-items: center; gap: 8px; }
+.toast-btn { font-size: 12px; font-weight: 700; color: #22c55e; }
+.toast-close { font-size: 12px; opacity: .8; }
+.toast-close:hover { opacity: 1; }
+
+/* ===================== Notes Theme (Schedules-style, scoped) ===================== */
+
+/* Mesh dots for notes */
+.notes-theme .hero-dots {
+  position: absolute; 
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mask-image: radial-gradient(circle at 40% 20%, black 40%, transparent 70%);
+}
+
+/* ----------------- Light Mode: High Contrast ----------------- */
+html:not(.dark) .notes-theme {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+html:not(.dark) .notes-theme .hero-bg {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+}
+
+html:not(.dark) .notes-theme .hero-bg h1,
+html:not(.dark) .notes-theme .hero-bg p {
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+}
+
+html:not(.dark) .notes-theme .hero-bg .hero-buttons > button,
+html:not(.dark) .notes-theme .hero-bg button {
+  background: rgba(255,255,255,0.95) !important;
+  color: #111827 !important;
+  border-color: rgba(255,255,255,0.95) !important;
+  font-weight: 600;
+}
+
+html:not(.dark) .notes-theme .hero-bg button:hover {
+  background: #ffffff !important;
+}
+
+html:not(.dark) .notes-theme .card { 
+  background: #fff; 
+  border-color: #e2e8f0; 
+}
+html:not(.dark) .notes-theme .card:hover { 
+  transform: translateY(-4px); 
+  box-shadow: 0 20px 40px -10px rgba(0,0,0,.2);
+}
+
+html:not(.dark) .notes-theme .toc { 
+  background: #fff; 
+  border-color: #e2e8f0; 
+}
+html:not(.dark) .notes-theme .toc a { 
+  color: #0f172a; 
+}
+html:not(.dark) .notes-theme .toc a:hover { 
+  background: #f1f5f9; 
+}
+html:not(.dark) .notes-theme .toc a.active { 
+  background: #ecfdf5; 
+  color: #047857; 
+  border-color: #a7f3d0; 
+}
+
+html:not(.dark) .notes-theme .tab-chip {
+  border: 1px solid #10b981; 
+  color: #047857; 
+  background: rgba(16,185,129,0.08);
+}
+html:not(.dark) .notes-theme .tab-chip.active { 
+  background: #10b981; 
+  color: #fff; 
+}
+
+/* Readable grays in light mode */
+html:not(.dark) .notes-theme .text-gray-800,
+html:not(.dark) .notes-theme .text-gray-700 { 
+  color: #0f172a !important; 
+}
+html:not(.dark) .notes-theme .text-gray-600 { 
+  color: #1f2937 !important; 
+}
+html:not(.dark) .notes-theme .text-gray-500 { 
+  color: #334155 !important; 
+}
+html:not(.dark) .notes-theme .text-gray-400 { 
+  color: #475569 !important; 
+}
+
+/* Section accent borders */
+html:not(.dark) .notes-theme #contentWrap > section:nth-of-type(1) { 
+  border-top-color: #10b981; 
+}
+html:not(.dark) .notes-theme #contentWrap > section:nth-of-type(2) { 
+  border-top-color: #f59e0b; 
+}
+html:not(.dark) .notes-theme #contentWrap > section:nth-of-type(3) { 
+  border-top-color: #3b82f6; 
+}
+html:not(.dark) .notes-theme #contentWrap > section:nth-of-type(4) { 
+  border-top-color: #ef4444; 
+}
+
+/* ----------------- Dark Mode: Polished & High-Contrast ----------------- */
+html.dark .notes-theme { 
+  background: var(--bg-dark); 
+  color: #e5e7eb; 
+}
+
+html.dark .notes-theme .hero-bg {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+}
+
+html.dark .notes-theme .hero-bg .hero-buttons > button,
+html.dark .notes-theme .hero-bg button {
+  background: rgba(255,255,255,0.12) !important;
+  color: #e5e7eb !important;
+  border-color: rgba(255,255,255,0.18) !important;
+  font-weight: 600;
+}
+
+html.dark .notes-theme .hero-bg button:hover {
+  background: rgba(255,255,255,0.18) !important;
+}
+
+html.dark .notes-theme .card,
+html.dark .notes-theme .bg-white { 
+  background: #111827 !important; 
+  border-color: #374151; 
+  box-shadow: 0 20px 40px -20px rgba(0,0,0,.6);
+  color: #f3f4f6 !important;
+}
+
+html.dark .notes-theme .toc { 
+  background: #111827; 
+  border-color: #374151; 
+}
+html.dark .notes-theme .toc a { 
+  color: #d1d5db; 
+}
+html.dark .notes-theme .toc a:hover { 
+  background: rgba(16,185,129,.08);
+}
+html.dark .notes-theme .toc a.active { 
+  color: #d1fae5; 
+  background: rgba(16,185,129,.16); 
+  border-color: rgba(16,185,129,.35);
+}
+
+html.dark .notes-theme .tab-chip { 
+  color: #a7f3d0; 
+  border-color: rgba(16,185,129,0.45); 
+  background: rgba(16,185,129,0.12); 
+}
+html.dark .notes-theme .tab-chip.active { 
+  background: #10b981; 
+  color: #0b1220; 
+}
+
+/* Readable grays in dark mode */
+html.dark .notes-theme .text-gray-800,
+html.dark .notes-theme .text-gray-700 { 
+  color: #e5e7eb !important; 
+}
+html.dark .notes-theme .text-gray-600 { 
+  color: #cbd5e1 !important; 
+}
+html.dark .notes-theme .text-gray-500 { 
+  color: #94a3b8 !important; 
+}
+
+/* Accent headings in dark mode */
+html.dark .notes-theme .text-emerald-700 { 
+  color: #6ee7b7 !important; 
+}
+html.dark .notes-theme .text-yellow-700 { 
+  color: #fcd34d !important; 
+}
+html.dark .notes-theme .text-blue-700 { 
+  color: #93c5fd !important; 
+}
+html.dark .notes-theme .text-red-700 { 
+  color: #f87171 !important; 
+}
+
+/* Inputs */
+html.dark .notes-theme input, 
+html.dark .notes-theme select, 
+html.dark .notes-theme textarea {
+  background: #111827; 
+  border-color: #374151; 
+  color: #e5e7eb;
+}
+html.dark .notes-theme input::placeholder, 
+html.dark .notes-theme textarea::placeholder {
+  color: #94a3b8; 
+  opacity: 1;
+}
+
+/* Borders */
+html.dark .notes-theme .border-gray-200,
+html.dark .notes-theme .border-gray-300 { 
+  border-color: #374151 !important; 
+}
+
+/* Info tints */
+html.dark .notes-theme .bg-emerald-50 { 
+  background: rgba(16,185,129,0.08) !important; 
+}
+html.dark .notes-theme .bg-blue-50 { 
+  background: rgba(59,130,246,0.10) !important; 
+}
+html.dark .notes-theme .bg-yellow-50 { 
+  background: rgba(245,158,11,0.12) !important; 
+}
+html.dark .notes-theme .bg-red-50 { 
+  background: rgba(239,68,68,0.10) !important; 
+}
+
+html.dark .notes-theme .bg-emerald-100 { 
+  background: rgba(16,185,129,0.15) !important; 
+}
+html.dark .notes-theme .border-emerald-300 { 
+  border-color: rgba(16,185,129,0.45) !important; 
+}
+
+/* Quiz result readability */
+html.dark .notes-theme .text-green-800 { 
+  color: #86efac !important; 
+}
+html.dark .notes-theme .bg-green-200 { 
+  background: rgba(16,185,129,0.15) !important; 
+}
+html.dark .notes-theme .text-red-800 { 
+  color: #fca5a5 !important; 
+}
+html.dark .notes-theme .bg-red-200 { 
+  background: rgba(239,68,68,0.18) !important; 
+}
+
+/* Toast in dark mode */
+html.dark .toast,
+html.dark .toast-card { 
+  background: #374151;
+  color: #e5e7eb;
+}
+
+/* Print */
+@media print {
+  .no-print, nav, aside, footer, .hero, .hero-bg, #toast, #bookmarkModal { 
+    display: none !important; 
+  }
+  #contentWrap > section { 
+    page-break-inside: avoid; 
+    margin-bottom: 1rem !important; 
+    padding: 1rem !important; 
+    box-shadow: none !important; 
+    border: 1px solid #eee !important; 
+    background: #fff !important; 
+    color: #000 !important; 
+  }
+}
+
+/* Optional: Navbar subtle glow when scrolled */
+header.backdrop-blur.shadow-sm { 
+  box-shadow: 0 6px 24px -12px rgba(16,185,129,.35); 
+}
+
+/* === Notes Theme (Schedules-style) === */
+.notes-theme .hero-dots {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mask-image: radial-gradient(circle at 40% 20%, black 40%, transparent 70%);
+}
+
+/* Light mode — high contrast, emerald brand */
+html:not(.dark) .notes-theme {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+html:not(.dark) .notes-theme .hero-bg {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+}
+html:not(.dark) .notes-theme .hero-bg h1,
+html:not(.dark) .notes-theme .hero-bg p {
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+}
+html:not(.dark) .notes-theme .hero-bg .hero-buttons > button {
+  background: rgba(255,255,255,0.95) !important;
+  color: #111827 !important;
+  border-color: rgba(255,255,255,0.95) !important;
+  font-weight: 600;
+}
+html:not(.dark) .notes-theme .card { background:#fff; border-color:#e2e8f0; }
+html:not(.dark) .notes-theme .card:hover { transform:translateY(-4px); box-shadow:0 20px 40px -10px rgba(0,0,0,.2) }
+html:not(.dark) .notes-theme .toc { background:#fff; border-color:#e2e8f0; }
+html:not(.dark) .notes-theme .toc a { color:#0f172a; }
+html:not(.dark) .notes-theme .toc a:hover { background:#f1f5f9; }
+html:not(.dark) .notes-theme .toc a.active { background:#ecfdf5; color:#047857; border-color:#a7f3d0; }
+html:not(.dark) .notes-theme .tab-chip { border:1px solid #10b981; color:#047857; background: rgba(16,185,129,0.08); }
+html:not(.dark) .notes-theme .tab-chip.active { background:#10b981; color:#fff; }
+/* readable grays */
+html:not(.dark) .notes-theme .text-gray-800, 
+html:not(.dark) .notes-theme .text-gray-700 { color:#0f172a !important; }
+html:not(.dark) .notes-theme .text-gray-600 { color:#1f2937 !important; }
+html:not(.dark) .notes-theme .text-gray-500 { color:#334155 !important; }
+html:not(.dark) .notes-theme .text-gray-400 { color:#475569 !important; }
+/* section accent borders */
+html:not(.dark) .notes-theme #contentWrap > section:nth-of-type(1) { border-top-color:#10b981; }
+html:not(.dark) .notes-theme #contentWrap > section:nth-of-type(2) { border-top-color:#f59e0b; }
+html:not(.dark) .notes-theme #contentWrap > section:nth-of-type(3) { border-top-color:#3b82f6; }
+html:not(.dark) .notes-theme #contentWrap > section:nth-of-type(4) { border-top-color:#ef4444; }
+
+/* Dark mode — polished & high contrast */
+html.dark .notes-theme { background:#121212; color:#e5e7eb; }
+html.dark .notes-theme .hero-bg {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+}
+html.dark .notes-theme .hero-bg .hero-buttons > button {
+  background: rgba(255,255,255,0.12) !important;
+  color: #e5e7eb !important;
+  border-color: rgba(255,255,255,0.18) !important;
+  font-weight: 600;
+}
+html.dark .notes-theme .card { background:#111827; border-color:#374151; box-shadow:0 20px 40px -20px rgba(0,0,0,.6) }
+html.dark .notes-theme .toc { background:#111827; border-color:#374151; }
+html.dark .notes-theme .toc a { color:#d1d5db; }
+html.dark .notes-theme .toc a:hover { background:rgba(16,185,129,.08) }
+html.dark .notes-theme .toc a.active { color:#d1fae5; background:rgba(16,185,129,.16); border-color:rgba(16,185,129,.35) }
+html.dark .notes-theme .tab-chip { color:#a7f3d0; border-color:rgba(16,185,129,0.45); background:rgba(16,185,129,0.12); }
+html.dark .notes-theme .tab-chip.active { background:#10b981; color:#0b1220; }
+/* readable grays */
+html.dark .notes-theme .text-gray-800, html.dark .notes-theme .text-gray-700 { color:#e5e7eb !important; }
+html.dark .notes-theme .text-gray-600 { color:#cbd5e1 !important; }
+html.dark .notes-theme .text-gray-500 { color:#94a3b8 !important; }
+/* inputs */
+html.dark .notes-theme input, html.dark .notes-theme select, html.dark .notes-theme textarea {
+  background:#111827; border-color:#374151; color:#e5e7eb;
+}
+html.dark .notes-theme input::placeholder, html.dark .notes-theme textarea::placeholder {
+  color:#94a3b8; opacity:1;
+}
+/* info tints */
+html.dark .notes-theme .bg-emerald-50 { background: rgba(16,185,129,0.08) !important; }
+html.dark .notes-theme .bg-blue-50 { background: rgba(59,130,246,0.10) !important; }
+html.dark .notes-theme .bg-yellow-50 { background: rgba(245,158,11,0.12) !important; }
+html.dark .notes-theme .bg-red-50 { background: rgba(239,68,68,0.10) !important; }

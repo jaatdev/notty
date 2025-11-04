@@ -1,0 +1,83 @@
+{
+  "subjects": [
+    {
+      "slug": "polity-preamble",
+      "title": "भारतीय संविधान की प्रस्तावना (Preamble)",
+      "description": "Har Concept aur Tricks — ek jagah.",
+      "brandColor": "indigo",
+      "nodes": [
+        {
+          "id": "foundation",
+          "kind": "section",
+          "title": "Preamble Ki Buniyad",
+          "meta": { "tags": ["origin","basics"], "difficulty": "easy", "updatedAt": "2025-01-01" },
+          "children": [
+            { "id": "idea-source", "kind": "markdown", "title": "Idea Source (स्रोत)", "mnemonic": "UP-USA", "body": "Preamble ka idea **USA** se. USA was the first to adopt a Preamble. See [[case: Kesavananda Bharati (1973)|https://indiankanoon.org/doc/257876/]] for more." },
+            { "id": "objective-resolution", "kind": "markdown", "title": "Objective Resolution", "body": "Based on Objective Resolution by **J. L. Nehru** (13 Dec, 1946). [[article: Art. 368]] governs amendments." },
+            { "id": "nature", "kind": "markdown", "title": "Nature", "body": "**Non-Justiciable** — cannot be directly enforced in Court.", "meta": { "refs": [{"label": "Art. 1 — Union of States", "url": "https://legislative.gov.in/constitution-of-india"}, {"label": "Kesavananda Bharati (1973)", "url": "https://indiankanoon.org/doc/257876/"}] } }
+          ]
+        },
+        {
+          "id": "nature-flash",
+          "kind": "flashcards",
+          "title": "SSSDR — Nature of State",
+          "mnemonic": "SSSDR",
+          "meta": { "tags": ["flashcards","recall"], "difficulty": "easy" },
+          "cards": [
+            { "front": "Sovereign",  "back": "Internal + External independence (No foreign diktat)" },
+            { "front": "Socialist",  "back": "Reduce inequality (42nd AA, 1976)" },
+            { "front": "Secular",    "back": "Equal respect to all religions; positive secularism (42nd AA, 1976)" },
+            { "front": "Democratic", "back": "Govt via elections; UAF" },
+            { "front": "Republic",   "back": "Non-hereditary Head of State" }
+          ]
+        },
+        {
+          "id": "preamble-quiz",
+          "kind": "quiz",
+          "title": "Quick Revision Quiz",
+          "meta": { "tags": ["quiz"], "difficulty": "easy" },
+          "questions": [
+            { "id": "q1", "prompt": "Preamble is based on?", "options": ["Fundamental Rights", "Directive Principles", "Objective Resolution", "Cabinet Mission Plan"], "answerIndex": 2, "reason": "Presented by J. L. Nehru (13 Dec, 1946)." },
+            { "id": "q2", "prompt": "Added in 42nd AA (1976)?", "options": ["Justice, Liberty, Equality", "Sovereign, Democratic, Republic", "Socialist, Secular, Integrity", "Union, State, Territory"], "answerIndex": 2, "reason": "Three words added: Socialist, Secular, Integrity." }
+          ]
+        }
+      ]
+    },
+
+    {"slug": "polity-schedules",
+      "title": "भारतीय संविधान की अनुसूचियाँ (Schedules)",
+      "description": "12 Schedules — crisp, recall-ready.",
+      "brandColor": "emerald",
+      "nodes": [
+        {
+          "id": "s1-4",
+          "kind": "section",
+          "title": "Schedules 1–4: Basics",
+          "meta": { "tags": ["territory","emoluments"], "difficulty": "medium", "refs": [{"label":"Art. 1-4"},{"label":"Schedule I"}] },
+          "children": [
+            { "id": "sch-1", "kind": "markdown", "title": "Schedule I — Territory", "body": "List of **States/UTs** and extent. 28 states, 8 UTs." },
+            { "id": "sch-2", "kind": "markdown", "title": "Schedule II — Emoluments", "body": "Salaries of **President, Governors, Speakers, Judges, CAG** etc." }
+          ]
+        },
+        {
+          "id": "s7-8-flash",
+          "kind": "flashcards",
+          "title": "7th & 8th Schedule — Snapshot",
+          "meta": { "tags": ["flashcards"], "difficulty": "easy" },
+          "cards": [
+            { "front": "7th Schedule", "back": "3 Lists — Union (100), State (61), Concurrent (52)" },
+            { "front": "8th Schedule", "back": "22 languages (14 originally); not incl. English" }
+          ]
+        },
+        {
+          "id": "schedules-quiz",
+          "kind": "quiz",
+          "title": "Schedules Quick Quiz",
+          "questions": [
+            { "id": "q1", "prompt": "Original Constitution had how many Schedules?", "options": ["8","10","12","14"], "answerIndex": 0, "reason": "Originally 8; four added later." }
+          ]
+        }
+      ]
+    }
+  ]
+}

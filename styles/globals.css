@@ -1,0 +1,856 @@
+@import "tailwindcss/preflight";
+@import "tailwindcss/utilities";
+
+/* ===== Base Setup ===== */
+:root {
+  --bg-dark: #121212;
+  --surface-dark: #1f2937;
+  --text-dark: #f3f4f6;
+  --emerald-500: #10b981;
+  --emerald-600: #059669;
+  --emerald-700: #047857;
+  
+  /* Reading customization variables (set by ReadingControls) */
+  --reading-font-size: 1.125rem;
+  --reading-line-height: 1.75;
+  --reading-max-width: 720px;
+  --font-reading: 'Charter', 'Georgia', 'Iowan Old Style', serif;
+  --reading-font-family: var(--font-reading);
+  
+  color-scheme: light dark;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: var(--font-inter, 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  line-height: 1.6;
+}
+
+/* Monospace font for code */
+code, pre, kbd {
+  font-family: var(--font-jetbrains, 'JetBrains Mono', 'Consolas', 'Monaco', monospace);
+}
+
+/* === NOTES THEME SCOPE === */
+.notes-theme {
+  /* Reading optimized with customizable settings */
+  font-family: var(--reading-font-family);
+  font-size: var(--reading-font-size);
+  line-height: var(--reading-line-height);
+}
+
+/* Content wrapper respects reading width */
+.notes-theme .reading-content {
+  max-width: var(--reading-max-width);
+  margin: 0 auto;
+  transition: max-width 0.3s ease;
+}
+
+/* Apply reading settings to prose content */
+.notes-theme .reading-content .prose {
+  font-family: var(--reading-font-family) !important;
+  font-size: var(--reading-font-size) !important;
+  line-height: var(--reading-line-height) !important;
+}
+
+.notes-theme .reading-content .prose p,
+.notes-theme .reading-content .prose li,
+.notes-theme .reading-content .prose div {
+  font-family: var(--reading-font-family);
+  font-size: var(--reading-font-size);
+  line-height: var(--reading-line-height);
+}
+
+/* === NOTES THEME SCOPE === */
+
+/* --- Base Elements (Scoped) --- */
+
+.notes-theme .hero-dots {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mask-image: radial-gradient(circle at 40% 20%, black 40%, transparent 70%);
+}
+
+.notes-theme .card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+  border-radius: 1rem;
+  box-shadow: 0 15px 30px -15px rgba(0,0,0,0.25);
+}
+
+.notes-theme .card:hover { 
+  transform: translateY(-6px); 
+  box-shadow: 0 35px 50px -20px rgba(0,0,0,0.35); 
+}
+
+.notes-theme .mnemonic-text {
+  font-weight: 900;
+  color: #ef4444;
+  background: #fde68a;
+  padding: 2px 8px;
+  border-radius: 6px;
+  display: inline-block;
+  transform: rotate(-1deg);
+  box-shadow: 2px 2px 0 #92400e;
+}
+
+/* --- TOC (Desktop) --- */
+.notes-theme .toc li a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  border: 1px solid transparent;
+  color: #d1d5db; /* Always light gray for dark TOC */
+}
+.notes-theme .toc li a:hover { 
+  transform: translateX(2px);
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+.notes-theme .toc li a.active { 
+  font-weight: 600;
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.5);
+  color: #6ee7b7;
+}
+
+/* --- Tabs (Mobile) --- */
+.notes-theme .tab-chip {
+  white-space: nowrap;
+  border: 1px solid #10b981;
+  color: #047857;
+  background: rgba(16,185,129,0.08);
+  padding: 8px 12px; border-radius: 999px; font-weight: 600;
+  transition: all 0.2s ease;
+}
+.notes-theme .tab-chip.active { background: #10b981; color: white; }
+
+/* --- Search Highlight --- */
+.notes-theme mark.search-hit {
+  background: #fde68a;
+  color: #b91c1c;
+  padding: 0 2px;
+  border-radius: 3px;
+}
+
+
+/* ===================================================================
+   LIGHT MODE (html:not(.dark))
+   ================================================================= */
+
+html:not(.dark) .notes-theme {
+  background-color: #f8fafc;
+  color: #0f172a; /* <-- High contrast dark text */
+}
+
+/* Hero */
+html:not(.dark) .notes-theme .hero-bg {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+}
+html:not(.dark) .notes-theme .hero-bg h1,
+html:not(.dark) .notes-theme .hero-bg p {
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+}
+/* Solid hero buttons for light mode */
+html:not(.dark) .notes-theme .hero-buttons > button {
+  background: rgba(255,255,255,0.95) !important;
+  color: #111827 !important;
+  border-color: rgba(255,255,255,0.95) !important;
+  font-weight: 600;
+}
+html:not(.dark) .notes-theme .hero-buttons > button:hover { 
+  background: #ffffff !important; 
+}
+
+/* High-Contrast Grays */
+html:not(.dark) .notes-theme .text-gray-800,
+html:not(.dark) .notes-theme .text-gray-700 { color: #0f172a !important; }
+html:not(.dark) .notes-theme .text-gray-600 { color: #1f2937 !important; }
+html:not(.dark) .notes-theme .text-gray-500 { color: #334155 !important; }
+html:not(.dark) .notes-theme .text-gray-400 { color: #475569 !important; }
+
+/* Section Accents (from Schedules) */
+html:not(.dark) .notes-theme #contentWrap > section:nth-of-type(1) { border-top-color:#10b981; }
+html:not(.dark) .notes-theme #contentWrap > section:nth-of-type(2) { border-top-color:#f59e0b; }
+html:not(.dark) .notes-theme #contentWrap > section:nth-of-type(3) { border-top-color:#3b82f6; }
+html:not(.dark) .notes-theme #contentWrap > section:nth-of-type(4) { border-top-color:#ef4444; }
+
+
+/* ===================================================================
+   DARK MODE (html.dark)
+   ================================================================= */
+
+html.dark .notes-theme { 
+  background-color: #121212; 
+  color: #e5e7eb; 
+}
+
+/* Hero */
+html.dark .notes-theme .hero-bg {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+}
+/* Translucent hero buttons for dark mode */
+html.dark .notes-theme .hero-buttons > button {
+  background: rgba(255,255,255,0.12) !important;
+  color: #e5e7eb !important;
+  border-color: rgba(255,255,255,0.18) !important;
+  font-weight: 600;
+}
+html.dark .notes-theme .hero-buttons > button:hover {
+  background: rgba(255,255,255,0.18) !important;
+}
+
+/* Tabs (Mobile) */
+html.dark .notes-theme .tab-chip {
+  color: #a7f3d0;
+  border-color: rgba(16,185,129,0.45);
+  background: rgba(16,185,129,0.12);
+}
+html.dark .notes-theme .tab-chip.active { 
+  background: #10b981; 
+  color: #0b1220; 
+}
+
+/* Readable Grays */
+html.dark .notes-theme .text-gray-800, 
+html.dark .notes-theme .text-gray-700 { color: #e5e7eb !important; }
+html.dark .notes-theme .text-gray-600 { color: #cbd5e1 !important; }
+html.dark .notes-theme .text-gray-500 { color: #94a3b8 !important; }
+
+/* Inputs */
+html.dark .notes-theme input, 
+html.dark .notes-theme select, 
+html.dark .notes-theme textarea {
+  background-color: #111827;
+  border-color: #374151;
+  color: #e5e7eb;
+}
+html.dark .notes-theme input::placeholder, 
+html.dark .notes-theme textarea::placeholder {
+  color: #94a3b8;
+  opacity: 1;
+}
+
+/* Info Tints (for flashcards, quizzes, etc.) */
+html.dark .notes-theme .bg-emerald-50 { background-color: rgba(16,185,129,0.08) !important; }
+html.dark .notes-theme .bg-blue-50    { background-color: rgba(59,130,246,0.10) !important; }
+html.dark .notes-theme .bg-yellow-50  { background-color: rgba(245,158,11,0.12) !important; }
+html.dark .notes-theme .bg-red-50     { background-color: rgba(239,68,68,0.10) !important; }
+
+/* Enhanced Tables */
+.notes-theme .prose table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.notes-theme .prose thead {
+  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+}
+
+.notes-theme .prose th {
+  padding: 14px 18px;
+  font-weight: 700;
+  text-align: left;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #065f46;
+}
+
+.notes-theme .prose td {
+  padding: 12px 18px;
+  border-bottom: 1px solid #374151;
+  background-color: #1f2937;
+  color: #d1d5db;
+  transition: background-color 0.2s ease;
+}
+
+.notes-theme .prose tbody tr:hover td {
+  background-color: #374151;
+}
+
+.notes-theme .prose tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Enhanced Lists */
+.notes-theme .prose ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.notes-theme .prose ul li {
+  position: relative;
+  padding-left: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.notes-theme .prose ul li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: #10b981;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.notes-theme .prose ol {
+  padding-left: 0;
+  counter-reset: item;
+  list-style: none;
+}
+
+.notes-theme .prose ol li {
+  position: relative;
+  padding-left: 2.25rem;
+  margin-bottom: 0.5rem;
+  counter-increment: item;
+}
+
+.notes-theme .prose ol li::before {
+  content: counter(item);
+  position: absolute;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 0.75rem;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+/* Blockquotes */
+.notes-theme .prose blockquote {
+  border-left: 4px solid #10b981;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, transparent 100%);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: #d1d5db;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.notes-theme .prose blockquote p {
+  margin: 0;
+}
+
+/* Smooth Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.4s ease-out forwards;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.7);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ===================================================================
+   ACCESSIBILITY
+   ================================================================= */
+
+/* Skip to main content link */
+.skip-to-main {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  top: 0;
+  z-index: 9999;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 0 0 0.75rem 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease-out;
+}
+
+.skip-to-main:focus {
+  transform: translateX(-50%) translateY(0);
+  outline: 3px solid #34d399;
+  outline-offset: 2px;
+}
+
+/* Focus indicators - visible and styled */
+*:focus-visible {
+  outline: 3px solid #10b981 !important;
+  outline-offset: 2px !important;
+  border-radius: 4px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #10b981 !important;
+  outline-offset: 2px !important;
+}
+
+/* High contrast for better readability */
+@media (prefers-contrast: high) {
+  .notes-theme {
+    --bg-dark: #000000;
+    --text-dark: #ffffff;
+  }
+  
+  .notes-theme .card {
+    border-width: 2px !important;
+  }
+  
+  .notes-theme a {
+    text-decoration: underline !important;
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-fade-in,
+  .animate-slide-in-right,
+  .animate-pulse-glow {
+    animation: none !important;
+  }
+}
+
+/* Screen reader only class */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ===================================================================
+   MOBILE & RESPONSIVE OPTIMIZATIONS
+   ================================================================= */
+
+/* Mobile-friendly tables with horizontal scroll */
+@media (max-width: 768px) {
+  .notes-theme .prose table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .notes-theme .prose table thead,
+  .notes-theme .prose table tbody,
+  .notes-theme .prose table tr {
+    display: table;
+    width: 100%;
+  }
+}
+
+/* Touch-friendly sizing */
+@media (max-width: 768px) {
+  .notes-theme button,
+  .notes-theme a.button,
+  .notes-theme .interactive {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Larger tap targets for mobile */
+  .notes-theme .prose a {
+    padding: 2px 0;
+  }
+
+  /* Mobile-optimized spacing */
+  .notes-theme section {
+    padding: 1.5rem 0;
+  }
+
+  .notes-theme h1 {
+    font-size: 2rem;
+  }
+
+  .notes-theme h2 {
+    font-size: 1.5rem;
+  }
+
+  .notes-theme h3 {
+    font-size: 1.25rem;
+  }
+
+  /* Mobile code blocks */
+  .notes-theme .prose pre {
+    font-size: 0.75rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Safe area insets for notch/home indicator */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Hide scrollbars but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Smooth scroll on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Mobile navigation bar spacing */
+@media (max-width: 768px) {
+  .notes-theme main {
+    padding-bottom: 80px; /* Space for bottom nav */
+  }
+}
+
+/* Responsive images */
+.notes-theme img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Mobile drawer transitions */
+.drawer-enter {
+  transform: translateX(-100%);
+}
+
+.drawer-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms ease-in-out;
+}
+
+.drawer-exit {
+  transform: translateX(0);
+}
+
+.drawer-exit-active {
+  transform: translateX(-100%);
+  transition: transform 300ms ease-in-out;
+}
+
+/* Page transition animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation utility classes */
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slideInFromLeft 0.4s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInFromRight 0.4s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out backwards;
+}
+
+/* Stagger animations for lists */
+.stagger-children > * {
+  animation: slideUp 0.5s ease-out backwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
+.stagger-children > *:nth-child(9) { animation-delay: 0.45s; }
+.stagger-children > *:nth-child(10) { animation-delay: 0.5s; }
+.stagger-children > *:nth-child(11) { animation-delay: 0.55s; }
+.stagger-children > *:nth-child(12) { animation-delay: 0.6s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
+
+/* Smooth section transitions */
+.notes-theme section[id] {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Card hover effects */
+.notes-theme .card {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+              border-color 0.25s ease, 
+              background-color 0.25s ease;
+}
+
+/* Button press animation */
+button:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+/* Smooth modal backdrop */
+.modal-backdrop {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Scale-in animation */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Slide-up animation */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Bounce animation */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-bounce-once {
+  animation: bounce 0.6s ease-in-out;
+}
+
+/* Pulse glow animation */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 5px rgba(16, 185, 129, 0.6);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Shake animation for errors */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Slide-in from left */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Slide-in from right */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===================================================================
+   PRINT STYLES
+   ================================================================= */
+
+@media print {
+  .no-print { display: none !important; }
+  .notes-theme { background: white !important; color: black !important; }
+  .notes-theme .card { box-shadow: none !important; page-break-inside: avoid; }
+  .notes-theme a { color: black !important; text-decoration: underline !important; }
+}
