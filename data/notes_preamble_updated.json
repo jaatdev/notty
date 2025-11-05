@@ -1,6 +1,6 @@
-{
-  "subjects": [
-    {
+
+   
+ {
       "slug": "polity",
       "title": "Indian Polity",
       "description": "Master Indian Constitution, Governance, and Political System",
@@ -14,10 +14,102 @@
           "content": [
             {
               "id": "preamble-full-notes",
-              "kind": "markdown",
-              "title": "🏛️ The Preamble — Soul of Our Constitution",
-              "body": "<div class=\"animate-fade-in-up\">\n\n## 📜 The Preamble\n\n<div class=\"preamble-hero\">\n\n**WE, THE PEOPLE OF INDIA**, having solemnly resolved to constitute India into a **SOVEREIGN SOCIALIST SECULAR DEMOCRATIC REPUBLIC** and to secure to all its citizens:\n\n<div class=\"objectives-grid\">\n\n⚖️ **JUSTICE** — social, economic and political\n\n🕊️ **LIBERTY** — of thought, expression, belief, faith and worship\n\n🤝 **EQUALITY** — of status and of opportunity\n\n💫 **FRATERNITY** — assuring dignity and unity of the Nation\n\n</div>\n\n**IN OUR CONSTITUENT ASSEMBLY** this twenty-sixth day of November, 1949, do HEREBY ADOPT, ENACT AND GIVE TO OURSELVES THIS CONSTITUTION.\n\n</div>\n\n</div>\n\n---\n\n<div class=\"essence-card animate-slide-in-left\">\n\n## 💡 Essence — The Soul & Identity\n\n**The Preamble embodies the philosophical DNA of our Constitution**\n\n<div class=\"feature-pills\">\n<span class=\"pill\">✨ Source of Authority</span>\n<span class=\"pill\">🏛️ Nature of State</span>\n<span class=\"pill\">🎯 Core Objectives</span>\n<span class=\"pill\">📅 Historical Context</span>\n</div>\n\n</div>\n\n---\n\n<div class=\"animate-fade-in\">\n\n## 📚 Foundation & History\n\n<div class=\"timeline-grid\">\n\n<div class=\"timeline-card\">\n\n### 📅 Birth of the Preamble\n\n<div class=\"timeline-items\">\n\n**1946** · Objectives Resolution by Nehru (Dec 13)\n\n**1949** · Preamble Adopted (Nov 26)\n\n**1950** · Constitution Takes Effect (Jan 26) 🎉\n\n**1976** · 42nd Amendment adds Socialist, Secular, Integrity\n\n</div>\n\n</div>\n\n<div class=\"timeline-card\">\n\n### ⚖️ Judicial Journey\n\n<div class=\"case-pills\">\n\n<div class=\"case-pill red\">🔴 1960 · Berubari<br/><small>\"Not part of Constitution\"</small></div>\n\n<div class=\"case-pill green\">🟢 1973 · Kesavananda<br/><small>\"Part of Constitution + Basic Structure\"</small></div>\n\n<div class=\"case-pill green\">🟢 1995 · LIC<br/><small>\"Integral & Reaffirmed\"</small></div>\n\n</div>\n\n</div>\n\n</div>\n\n</div>\n\n---\n\n<div class=\"animate-fade-in-up\">\n\n## 🎯 Nature of State — **SSCDR**\n\n<div class=\"mnemonic-hero\">\n\n### 🔥 Mnemonic Magic\n# \"Strong Sexy Smart Desi Raja\"\n\n<div class=\"mnemonic-breakdown\">\n<span>S</span><span>S</span><span>C</span><span>D</span><span>R</span>\n</div>\n\n</div>\n\n<div class=\"sscdr-grid\">\n\n<div class=\"sscdr-card sovereign\">\n\n### 🛡️ SOVEREIGN\n\n**Independent in all affairs**\n\nNot subordinate to any external power\n\n<div class=\"visual-hint\">🚪 Strong gate — \"Apne Faisle Khud\"</div>\n\n</div>\n\n<div class=\"sscdr-card socialist\">\n\n### ⚖️ SOCIALIST\n\n**Democratic socialism**\n\nReduce inequality, mixed economy\n\n<div class=\"visual-hint\">🍽️ Equal plates — \"Aadmi Barabar\"</div>\n\n<span class=\"badge-42\">42nd Amendment</span>\n\n</div>\n\n<div class=\"sscdr-card secular\">\n\n### 🕉️ SECULAR\n\n**Equal respect to all faiths**\n\nNo official state religion\n\n<div class=\"visual-hint\">⚖️ Faith balance — \"Sab Dharam Barabar\"</div>\n\n<span class=\"badge-42\">42nd Amendment</span>\n\n</div>\n\n<div class=\"sscdr-card democratic\">\n\n### 🗳️ DEMOCRATIC\n\n**Power to the people**\n\nRepresentative parliamentary democracy\n\n<div class=\"visual-hint\">🗳️ Ballot box — \"Vote Se Sarkar\"</div>\n\n</div>\n\n<div class=\"sscdr-card republic\">\n\n### 👑 REPUBLIC\n\n**Elected head of state**\n\nNot hereditary monarchy\n\n<div class=\"visual-hint\">🎖️ Elected President — \"Vansh Anugat Nahi\"</div>\n\n</div>\n\n</div>\n\n</div>\n\n---\n\n<div class=\"animate-slide-in-right\">\n\n## 🎯 Objectives — **JLEF**\n\n<div class=\"jlef-container\">\n\n<div class=\"jlef-card justice\">\n\n### ⚖️ JUSTICE\n\n<div class=\"jlef-types\">\n\n**Social** · Tackles discrimination\n\n**Economic** · Addresses inequality\n\n**Political** · Guarantees rights\n\n</div>\n\n<div class=\"mnemonic-tag\">SEP → \"Sexy Exams Party\" 🎉</div>\n\n</div>\n\n<div class=\"jlef-card liberty\">\n\n### 🕊️ LIBERTY\n\n<div class=\"jlef-types\">\n\n💭 **Thought** · 🗣️ **Expression** · 🙏 **Belief**\n\n✨ **Faith** · 🛐 **Worship**\n\n</div>\n\n<div class=\"mnemonic-tag\">TEBFW → \"Thali Egg Bag Fan Water\" 🍽️</div>\n\n</div>\n\n<div class=\"jlef-card equality\">\n\n### 🤝 EQUALITY\n\n<div class=\"jlef-types\">\n\n**Status** · No special privileges\n\n**Opportunity** · Equal access for all\n\n</div>\n\n<div class=\"mnemonic-tag\">SO → \"Suit & Out\" 👔</div>\n\n</div>\n\n<div class=\"jlef-card fraternity\">\n\n### 💫 FRATERNITY\n\n<div class=\"jlef-types\">\n\n🌟 **Dignity** of the individual\n\n🇮🇳 **Unity & Integrity** of the Nation\n\n</div>\n\n<div class=\"mnemonic-tag\">🫱🏽‍🫲🏾 People + Map = Unity</div>\n\n</div>\n\n</div>\n\n</div>\n\n---\n\n<div class=\"animate-fade-in\">\n\n## 📚 Legal Significance\n\n<div class=\"legal-grid\">\n\n<div class=\"legal-card\">\n\n### 🔍 Interpretation Tool\n\nCourts use it to resolve ambiguous constitutional provisions\n\n</div>\n\n<div class=\"legal-card\">\n\n### 🏛️ Part of Constitution\n\nIntegral component (Kesavananda 1973)\n\n</div>\n\n<div class=\"legal-card\">\n\n### 💎 Basic Structure\n\nCore values cannot be destroyed\n\n</div>\n\n<div class=\"legal-card\">\n\n### ✏️ Amendable\n\nBUT not to violate Basic Structure\n\n</div>\n\n</div>\n\n</div>\n\n---\n\n<div class=\"summary-card animate-scale-in\">\n\n## 📌 Quick Reference Card\n\n| 🏷️ Element | 📝 Details |\n|-----------|------------|\n| 👥 **Source** | We, The People of India |\n| 🏛️ **Nature** | **SSCDR** (Sovereign·Socialist·Secular·Democratic·Republic) |\n| 🎯 **Objectives** | **JLEF** (Justice·Liberty·Equality·Fraternity) |\n| 📅 **Adopted** | 26 November 1949 |\n| ✅ **Effective** | 26 January 1950 (Republic Day) |\n| ✏️ **Amended** | 42nd (1976) — Socialist, Secular, Integrity |\n| ⚖️ **Landmark Cases** | Berubari '60 · Kesavananda '73 · LIC '95 |\n\n</div>\n",
-              "mnemonic": "SSCDR (Nature) + JLEF (Objectives) — Hinglish Jugaad Power!",
+              "kind": "json_data",
+              "title": "Preamble Complete Data & Mnemonic Guide (Read Once, Remember Always)",
+              "body": {
+                "preamble_text": "WE, THE PEOPLE OF INDIA, having solemnly resolved to constitute India into a SOVEREIGN SOCIALIST SECULAR DEMOCRATIC REPUBLIC and to secure to all its citizens: JUSTICE, social, economic and political; LIBERTY of thought, expression, belief, faith and worship; EQUALITY of status and of opportunity; and to promote among them all FRATERNITY assuring the dignity of the individual and the unity and integrity of the Nation; IN OUR CONSTITUENT ASSEMBLY this twenty-sixth day of November, 1949, do HEREBY ADOPT, ENACT AND GIVE TO OURSELVES THIS CONSTITUTION.",
+                "essence": "The Preamble is the philosophical and political essence (soul/identity) of the Constitution. It states the source of authority, the nature of state, the objectives of the Constitution, and the date of adoption.",
+                "foundation_and_history": {
+                  "based_on": "Objectives Resolution (moved by Jawaharlal Nehru on 13 December 1946).",
+                  "adopted_on": "26 November 1949.",
+                  "came_into_effect": "26 January 1950 (Republic Day).",
+                  "enactment_note": "Preamble was enacted after the rest of the Constitution to ensure conformity.",
+                  "amendment_history": "Only amended by the 42nd Amendment (1976) which added the words Socialist, Secular and Integrity (to 'Unity').",
+                  "judicial_history_summary": {
+                    "Berubari Union Case (1960)": "Held that the Preamble is NOT a part of the Constitution (earlier view).",
+                    "Kesavananda Bharati Case (1973)": "Held that the Preamble IS a part of the Constitution and embodies the Basic Structure; marks the modern position.",
+                    "LIC of India Case (1995)": "Reaffirmed that the Preamble is an integral part of the Constitution."
+                  }
+                },
+                "nature_of_state": {
+                  "sequence": ["Sovereign", "Socialist", "Secular", "Democratic", "Republic"],
+                  "mnemonic": "SSCDR → 'Strong Sexy Smart Desi Raja' (Sovereign Socialst Secular Democratic Republic).",
+                  "definitions": {
+                    "Sovereign": "Independent in internal and external affairs; not subordinate to any external power.",
+                    "Socialist": "Democratic socialism (added by 42nd Amendment) — aims to reduce socio-economic inequality; mixed economy model.",
+                    "Secular": "State has no official religion and treats all religions impartially (added by 42nd Amendment).",
+                    "Democratic": "People hold political power directly or via representatives; representative parliamentary democracy.",
+                    "Republic": "Head of state is elected (not hereditary)."
+                  },
+                  "best_trick": {
+                    "Sovereign": "Visual: A strong gate that won't open for outsiders — 'Apne Faisle Khud'.",
+                    "Socialist": "Visual: Equal plates of food for everyone — 'Aadmi Barabar'.",
+                    "Secular": "Visual: Different faith symbols on an equal-scale balance — 'Sab Dharam Barabar'.",
+                    "Democratic": "Visual: Ballot box with many hands — 'Vote Se Sarkar'.",
+                    "Republic": "Visual: A President’s sash passed by election, not inheritance — 'Vansh Anugat Nahi'."
+                  }
+                },
+                "objectives": {
+                  "list": ["Justice", "Liberty", "Equality", "Fraternity"],
+                  "mnemonic": "JLEF → Justice, Liberty, Equality, Fraternity (JLEF).",
+                  "details": {
+                    "Justice": {
+                      "types": ["Social Justice", "Economic Justice", "Political Justice"],
+                      "explain": "Social justice tackles social discrimination, economic justice addresses wealth inequalities, political justice guarantees political rights."
+                    },
+                    "Liberty": {
+                      "types": ["Thought", "Expression", "Belief", "Faith", "Worship"],
+                      "explain": "Five-fold liberty (TEBFW) — protected but subject to constitutional limits (reasonable restrictions)."
+                    },
+                    "Equality": {
+                      "types": ["Equality of status", "Equality of opportunity"],
+                      "explain": "No special privileges; equal opportunities for all citizens."
+                    },
+                    "Fraternity": {
+                      "assurances": ["Dignity of the individual", "Unity and Integrity of the Nation"],
+                      "explain": "Promotes brotherhood, national unity and removes feelings of discrimination."
+                    }
+                  },
+                  "best_tricks": {
+                    "Justice": "Mnemonic SEP → 'Sexy Exams Party' to recall Social, Economic, Political.",
+                    "Liberty": "Mnemonic TEBFW → 'Thali Egg Bag Fan Water' — one cue per liberty type.",
+                    "Equality": "SO → 'Suit' (status) & 'Out' (opportunity out/no one out).",
+                    "Fraternity": "Visual: People holding hands around a map — 'Dignity + Unity'."
+                  }
+                },
+                "legal_significance_and_usage": {
+                  "interpretation_role": "Preamble is used to interpret ambiguous provisions of the Constitution; it represents the basic philosophy (helps in purposive interpretation).",
+                  "justiciability": "Conference of view historically changed — currently the Preamble is treated as part of the Constitution and core to the Basic Structure doctrine (Kesavananda), though not all of it is directly enforceable as a right.",
+                  "amendability": "Preamble can be amended as held in Kesavananda (subject to not violating Basic Structure). Note: 42nd Amendment altered its language in 1976."
+                },
+                "famous_quotes": [
+                  {
+                    "person": "N. A. Palkiwala",
+                    "quote": "Identity Card of the Constitution",
+                    "mnemonic": "Palki Mein ID"
+                  },
+                  {
+                    "person": "Thakur Das Bhargava",
+                    "quote": "Soul (Aatma) of the Constitution",
+                    "mnemonic": "Bhargava ki Aatma"
+                  },
+                  {
+                    "person": "K. M. Munshi",
+                    "quote": "Political Horoscope (Rajneetik Kundli) of the Constitution",
+                    "mnemonic": "Munshi ka Horoscope"
+                  }
+                ],
+                "summary_quick": {
+                  "source_of_authority": "We, The People of India",
+                  "nature_of_state_sequence": "Sovereign | Socialist | Secular | Democratic | Republic (SSCDR)",
+                  "objectives_sequence": "Justice (SEP) | Liberty (TEBFW) | Equality (SO) | Fraternity",
+                  "adoption_date": "26 November 1949",
+                  "effect_date": "26 January 1950",
+                  "42nd_amendment": "Added 'Socialist', 'Secular' and 'Integrity' (to 'Unity')",
+                  "key_cases": ["Berubari (1960)", "Kesavananda (1973)", "LIC (1995)"]
+                }
+              },
+              "mnemonic": "SSCDR (Nature) and JLEF (Objectives) with Hinglish Jugaad cues",
               "meta": {
                 "tags": [
                   "preamble",
@@ -32,61 +124,62 @@
             },
             {
               "id": "preamble-revision-flashcards",
-              "kind": "flashcards",
+              "kind": "json_data",
               "title": "Revision Flashcards (Quick-fire Q → A)",
-              "shuffle": true,
-              "cards": [
-                {
-                  "front": "What is the source of authority mentioned in the Preamble?",
-                  "back": "We, The People of India (sovereignty rests with the people).",
-                  "hint": "Think 'People power' — Preamble begins with 'WE, THE PEOPLE OF INDIA'."
-                },
-                {
-                  "front": "List the five words describing the nature of the Indian state.",
-                  "back": "Sovereign, Socialist, Secular, Democratic, Republic (SSCDR).",
-                  "hint": "Mnemonic: 'Strong Sexy Smart Desi Raja'."
-                },
-                {
-                  "front": "When was the Preamble adopted?",
-                  "back": "26 November 1949.",
-                  "hint": "Adopted 26 Nov 1949; constitution effective 26 Jan 1950."
-                },
-                {
-                  "front": "Which amendment added 'Socialist' and 'Secular'?",
-                  "back": "42nd Constitutional Amendment Act, 1976 (also added word 'Integrity').",
-                  "hint": "SSI → Socialist Secular Integrity (42nd)."
-                },
-                {
-                  "front": "What are the components of 'Justice' in the Preamble?",
-                  "back": "Social Justice, Economic Justice and Political Justice.",
-                  "hint": "SEP → Sexy Exams Party."
-                },
-                {
-                  "front": "Name the five freedoms under 'Liberty'.",
-                  "back": "Thought, Expression, Belief, Faith and Worship (TEBFW).",
-                  "hint": "TEBFW cue words: Thali Egg Bag Fan Water."
-                },
-                {
-                  "front": "What does 'Republic' in the Preamble signify?",
-                  "back": "The head of state is elected, not hereditary.",
-                  "hint": "Vansh Anugat Nahi — President by election."
-                },
-                {
-                  "front": "Which case held Preamble is part of the Constitution and laid Basic Structure?",
-                  "back": "Kesavananda Bharati Case (1973).",
-                  "hint": "1973 Haa Hoga."
-                },
-                {
-                  "front": "Which case earlier said Preamble is not part of the Constitution?",
-                  "back": "Berubari Union Case (1960).",
-                  "hint": "1960 Nahi Hoga."
-                },
-                {
-                  "front": "What two assurances does Fraternity provide?",
-                  "back": "Dignity of the individual and Unity & Integrity of the Nation.",
-                  "hint": "Dignity + Unity visual of people & map."
-                }
-              ]
+              "body": {
+                "flashcards": [
+                  {
+                    "q": "What is the source of authority mentioned in the Preamble?",
+                    "a": "We, The People of India (sovereignty rests with the people).",
+                    "tip": "Think 'People power' — Preamble begins with 'WE, THE PEOPLE OF INDIA'."
+                  },
+                  {
+                    "q": "List the five words describing the nature of the Indian state.",
+                    "a": "Sovereign, Socialist, Secular, Democratic, Republic (SSCDR).",
+                    "tip": "Mnemonic: 'Strong Sexy Smart Desi Raja'."
+                  },
+                  {
+                    "q": "When was the Preamble adopted?",
+                    "a": "26 November 1949.",
+                    "tip": "Adopted 26 Nov 1949; constitution effective 26 Jan 1950."
+                  },
+                  {
+                    "q": "Which amendment added 'Socialist' and 'Secular'?",
+                    "a": "42nd Constitutional Amendment Act, 1976 (also added word 'Integrity').",
+                    "tip": "SSI → Socialist Secular Integrity (42nd)."
+                  },
+                  {
+                    "q": "What are the components of 'Justice' in the Preamble?",
+                    "a": "Social Justice, Economic Justice and Political Justice.",
+                    "tip": "SEP → Sexy Exams Party."
+                  },
+                  {
+                    "q": "Name the five freedoms under 'Liberty'.",
+                    "a": "Thought, Expression, Belief, Faith and Worship (TEBFW).",
+                    "tip": "TEBFW cue words: Thali Egg Bag Fan Water."
+                  },
+                  {
+                    "q": "What does 'Republic' in the Preamble signify?",
+                    "a": "The head of state is elected, not hereditary.",
+                    "tip": "Vansh Anugat Nahi — President by election."
+                  },
+                  {
+                    "q": "Which case held Preamble is part of the Constitution and laid Basic Structure?",
+                    "a": "Kesavananda Bharati Case (1973).",
+                    "tip": "1973 Haa Hoga."
+                  },
+                  {
+                    "q": "Which case earlier said Preamble is not part of the Constitution?",
+                    "a": "Berubari Union Case (1960).",
+                    "tip": "1960 Nahi Hoga."
+                  },
+                  {
+                    "q": "What two assurances does Fraternity provide?",
+                    "a": "Dignity of the individual and Unity & Integrity of the Nation.",
+                    "tip": "Dignity + Unity visual of people & map."
+                  }
+                ]
+              }
             }
           ],
           "quiz": [
@@ -250,17 +343,17 @@
               "id": "q-preamble-014",
               "prompt": "Which of the following best captures 'Republic' as used in the Preamble?",
               "options": [
-                "Rule by monarch",
-                "Rule by bureaucracy",
-                "Rule by the people through elected representatives",
-                "Rule by foreign power"
+                "Head of state is a hereditary monarch",
+                "Head of state is elected and not hereditary",
+                "Head of state is appointed by foreign power",
+                "Head of state is a divine ruler"
               ],
-              "answerIndex": 2,
-              "reason": "Democratic indicates popular rule, exercised directly or via representatives."
+              "answerIndex": 1,
+              "reason": "Republic means the Head of State is elected and not hereditary."
             },
             {
               "id": "q-preamble-015",
-              "prompt": "Which of the following is a function of the Preamble?",
+              "prompt": "Which one of the following is a function of the Preamble?",
               "options": [
                 "Provide an exhaustive list of all laws",
                 "State the guiding philosophy and help in interpretation",
@@ -304,23 +397,23 @@
                 "Supremacy of a hereditary monarch"
               ],
               "answerIndex": 3,
-              "reason": "Supremacy of a hereditary monarch is not an objective; the Preamble supports equality and democracy."
+              "reason": "Supremacy of a hereditary monarch is not an objective; the Preamble supports Republic not monarchy."
             },
             {
               "id": "q-preamble-019",
-              "prompt": "Which phrase in the Preamble connects most closely with which objective?",
+              "prompt": "The phrase 'Unity and Integrity of the Nation' in the Preamble connects most closely with which objective?",
               "options": [
-                "Unity and Integrity — Justice",
-                "Unity and Integrity — Liberty",
-                "Unity and Integrity — Equality",
-                "Unity and Integrity — Fraternity"
+                "Justice",
+                "Liberty",
+                "Equality",
+                "Fraternity"
               ],
               "answerIndex": 3,
               "reason": "Fraternity assures dignity and unity & integrity of the Nation."
             },
             {
               "id": "q-preamble-020",
-              "prompt": "Which of the following is true about the Preamble's justiciability?",
+              "prompt": "Which of these is true about the Preamble's justiciability?",
               "options": [
                 "It was always treated as enforceable law",
                 "It is never referred to in court judgments",
@@ -388,11 +481,11 @@
                 "Authority of the Judiciary"
               ],
               "answerIndex": 1,
-              "reason": "'We the People' denotes that the Constitution derives authority from the people (popular sovereignty)."
+              "reason": "'We the People' denotes that the Constitution derives authority from the people."
             },
             {
               "id": "q-preamble-026",
-              "prompt": "Which of these is an appropriate short mnemonic for the Preamble's objectives?",
+              "prompt": "Which of the following is an appropriate short mnemonic for the Preamble's objectives?",
               "options": [
                 "TEB-FW",
                 "SSCDR",
@@ -418,7 +511,7 @@
               "id": "q-preamble-028",
               "prompt": "The Preamble's phrase 'to secure to all its citizens' most directly signals:",
               "options": [
-                "Privileges for the elite",
+                "Privileges for a select class",
                 "Universal aims and goals for all citizens",
                 "Power to the bureaucracy",
                 "Immunity from the law"
@@ -428,7 +521,7 @@
             },
             {
               "id": "q-preamble-029",
-              "prompt": "Which of the following is a correct shorthand for the five liberties listed under 'Liberty'?",
+              "prompt": "Which of these is a correct shorthand for the five liberties listed under 'Liberty'?",
               "options": [
                 "SEP",
                 "TEBFW",
@@ -484,7 +577,7 @@
                 "Change of adoption date"
               ],
               "answerIndex": 1,
-              "reason": "42nd Amendment inserted the word 'Integrity' after 'Unity'."
+              "reason": "42nd Amendment added the word 'Integrity' after 'Unity'."
             },
             {
               "id": "q-preamble-034",
@@ -492,8 +585,8 @@
               "options": [
                 "Security, Strength, Community, Democracy, Rule",
                 "Sovereign, Socialist, Secular, Democratic, Republic",
-                "Some Sweet Candy Deliciously Round",
-                "Silly Students Can't Do Research"
+                "State, System, Constitution, Democracy, Rights",
+                "Society, State, Culture, Democracy, Rights"
               ],
               "answerIndex": 1,
               "reason": "SSCDR is short for Sovereign, Socialist, Secular, Democratic, Republic."
@@ -524,7 +617,7 @@
             },
             {
               "id": "q-preamble-037",
-              "prompt": "Which one of the following is a famous description of the Preamble by N.A. Palkiwala?",
+              "prompt": "Which one is a famous description of the Preamble by N.A. Palkiwala?",
               "options": [
                 "The Preamble is the Constitution's appendix",
                 "The Preamble is the Identity Card of the Constitution",
@@ -532,11 +625,11 @@
                 "The Preamble is a legislative power"
               ],
               "answerIndex": 1,
-              "reason": "N. A. Palkiwala called the Preamble the Identity Card of the Constitution."
+              "reason": "Palkiwala described the Preamble as the Identity Card of the Constitution."
             },
             {
               "id": "q-preamble-038",
-              "prompt": "Which of the following statements about the Preamble's amendment is correct?",
+              "prompt": "Which of these is correct about the Preamble's amendment?",
               "options": [
                 "It can never be amended",
                 "It was amended once by the 42nd Amendment",
@@ -560,7 +653,7 @@
             },
             {
               "id": "q-preamble-040",
-              "prompt": "Which of the following is directly connected to the Preamble's 'Liberty of Expression'?",
+              "prompt": "Preamble's 'Liberty of Expression' is directly connected to which Constitutional provision?",
               "options": [
                 "Article 19 (freedom of speech and expression)",
                 "Article 370",
@@ -572,7 +665,7 @@
             },
             {
               "id": "q-preamble-041",
-              "prompt": "Which of the following best describes the relationship between Preamble and Basic Structure?",
+              "prompt": "Which of the following best explains the relationship between Preamble and Basic Structure?",
               "options": [
                 "Preamble is outside the Basic Structure",
                 "Preamble embodies values that are part of the Basic Structure",
@@ -584,7 +677,7 @@
             },
             {
               "id": "q-preamble-042",
-              "prompt": "Which phrase in the Preamble explicitly expresses the intent to establish justice?",
+              "prompt": "Which phrase in the Preamble indicates the goal of social equality?",
               "options": [
                 "Justice, social, economic and political",
                 "Unity and Integrity",
@@ -596,7 +689,7 @@
             },
             {
               "id": "q-preamble-043",
-              "prompt": "Which of the following best describes the mnemonic used for the Preamble's 'Liberty'?",
+              "prompt": "Which of these is the best short mnemonic to remember the five liberties of the Preamble?",
               "options": [
                 "SEP",
                 "SSCDR",
@@ -604,19 +697,19 @@
                 "JLEF"
               ],
               "answerIndex": 2,
-              "reason": "TEBFW is used to recall Thought, Expression, Belief, Faith, Worship."
+              "reason": "TEBFW is used to recall Thought, Expression, Belief, Faith and Worship."
             },
             {
               "id": "q-preamble-044",
-              "prompt": "Which of the following indicates the Preamble's principle of popular sovereignty?",
+              "prompt": "The Preamble's 'We, the People' suggests which constitutional principle?",
               "options": [
                 "Popular sovereignty",
-                "Sovereignty rests with the people",
-                "Authority of the British Crown",
-                "Authority of the Judiciary"
+                "Judicial supremacy",
+                "Bureaucratic rule",
+                "Colonial authority"
               ],
-              "answerIndex": 1,
-              "reason": "'We the People' denotes that sovereignty rests with the people."
+              "answerIndex": 0,
+              "reason": "'We, the People' denotes that the Constitution's authority originates from the people (popular sovereignty)."
             },
             {
               "id": "q-preamble-045",
@@ -632,7 +725,7 @@
             },
             {
               "id": "q-preamble-046",
-              "prompt": "Which of the following is an effect of including 'Socialist' into the Preamble?",
+              "prompt": "Which of these is an effect of including 'Socialist' into the Preamble?",
               "options": [
                 "Mandates a communist state",
                 "Highlights the commitment to reduce inequality and pursue social justice",
@@ -668,7 +761,7 @@
             },
             {
               "id": "q-preamble-049",
-              "prompt": "Which of the following helps memorize the 'Justice' types?",
+              "prompt": "Which of the following is a helpful trick to remember 'Justice' types?",
               "options": [
                 "Remember SEP → Social, Economic, Political",
                 "Remember ABC → Always Be Calm",
@@ -692,7 +785,7 @@
             },
             {
               "id": "q-preamble-051",
-              "prompt": "Which of the following best describes the Preamble's status after Kesavananda?",
+              "prompt": "Which of the following best describes Preamble's status after Kesavananda?",
               "options": [
                 "It is merely a decorative preface",
                 "A guiding part of the Constitution and linked to Basic Structure",
@@ -716,19 +809,19 @@
             },
             {
               "id": "q-preamble-053",
-              "prompt": "Which mnemonic helps remember the Preamble's nature (SSCDR)?",
+              "prompt": "Which one of these is the best short mnemonic to remember the Preamble's nature (SSCDR)?",
               "options": [
-                "ABCDE",
-                "SSCDR → Strong Sexy Smart Desi Raja",
-                "12345",
-                "PQRST"
+                "Strong Sexy Smart Desi Raja",
+                "Small Square Circle Dense Rectangle",
+                "Some Sweet Candy Deliciously Round",
+                "Silly Students Can't Do Research"
               ],
-              "answerIndex": 1,
-              "reason": "SSCDR with Hinglish cues is the recommended mnemonic."
+              "answerIndex": 0,
+              "reason": "The mnemonic 'Strong Sexy Smart Desi Raja' is used to remember SSCDR."
             },
             {
               "id": "q-preamble-054",
-              "prompt": "Which of the following statements about the Preamble is CORRECT?",
+              "prompt": "Which of the following statements about Preamble is CORRECT?",
               "options": [
                 "Preamble is a source of law like statutes",
                 "Preamble cannot be used by courts at all",
@@ -740,7 +833,7 @@
             },
             {
               "id": "q-preamble-055",
-              "prompt": "Which of the following describes the adoption vs effect dates?",
+              "prompt": "Which of these describes the 'adoption' vs 'effect' of the Constitution?",
               "options": [
                 "Adopted 26 Nov 1949; came into effect 26 Jan 1950",
                 "Adopted and effective on same date 26 Nov 1949",
@@ -752,7 +845,7 @@
             },
             {
               "id": "q-preamble-056",
-              "prompt": "Which of the following best summarizes the Preamble's aim?",
+              "prompt": "Which is a correct summary of the Preamble's aim?",
               "options": [
                 "To secure privileges for the elite",
                 "To secure Justice, Liberty, Equality and Fraternity for all citizens",
@@ -776,7 +869,7 @@
             },
             {
               "id": "q-preamble-058",
-              "prompt": "Which important judicial doctrine relates to the Preamble and prevents destruction of core values?",
+              "prompt": "What important judicial doctrine relates to the Preamble and prevents destruction of core values?",
               "options": [
                 "Doctrine of Parens Patriae",
                 "Doctrine of Basic Structure",
@@ -788,7 +881,7 @@
             },
             {
               "id": "q-preamble-059",
-              "prompt": "Which of the following best describes the Preamble's language after 42nd Amendment?",
+              "prompt": "Which of these best describes the Preamble's language after 42nd Amendment?",
               "options": [
                 "Shorter and removed 'Liberty'",
                 "Added 'Socialist', 'Secular' & 'Integrity'",
@@ -812,7 +905,7 @@
             },
             {
               "id": "q-preamble-061",
-              "prompt": "Which of the following is the relationship between Directive Principles (DPSP) and the Preamble?",
+              "prompt": "What is the relation between Directive Principles (DPSP) and the Preamble?",
               "options": [
                 "No relation",
                 "DPSP help realize social and economic goals of Preamble",
@@ -824,7 +917,7 @@
             },
             {
               "id": "q-preamble-062",
-              "prompt": "Which of the following is true about the Preamble and Fundamental Rights?",
+              "prompt": "Which of these is true about the Preamble and Fundamental Rights?",
               "options": [
                 "Fundamental Rights are independent of Preamble",
                 "Fundamental Rights and Preamble are unrelated",
@@ -836,7 +929,7 @@
             },
             {
               "id": "q-preamble-063",
-              "prompt": "Which of the following is a correct short-cue to recall 'Justice types'?",
+              "prompt": "Which one of these is an accurate short-cue to recall 'Justice types'?",
               "options": [
                 "ABC",
                 "SEP",
@@ -880,11 +973,11 @@
                 "Inserted later"
               ],
               "answerIndex": 0,
-              "reason": "The closing clause of the Preamble includes the adoption date."
+              "reason": "The closing clause of the Preamble includes the date of adoption."
             },
             {
               "id": "q-preamble-067",
-              "prompt": "Which of the following is the best exam-friendly summary of the Preamble?",
+              "prompt": "Which of these is the MOST exam-friendly summary of the Preamble?",
               "options": [
                 "Short poetic lines",
                 "SSCDR + JLEF + adoption date (26 Nov 1949) + 42nd amendment additions",
@@ -908,7 +1001,7 @@
             },
             {
               "id": "q-preamble-069",
-              "prompt": "Which of the following best represents the mnemonic used for the Preamble's nature (SSCDR)?",
+              "prompt": "Which of these best represents the mnemonic used for the Preamble's nature (SSCDR)?",
               "options": [
                 "Strong Sexy Smart Desi Raja",
                 "Simple Symbols Count Daily Rates",
@@ -920,7 +1013,7 @@
             },
             {
               "id": "q-preamble-070",
-              "prompt": "Which of the following best captures 'Equality of opportunity'?",
+              "prompt": "Which of these best captures 'Equality of opportunity'?",
               "options": [
                 "Same status for all regardless of talent",
                 "Equal chance to compete and access resources",
@@ -932,7 +1025,7 @@
             },
             {
               "id": "q-preamble-071",
-              "prompt": "Which of the following most accurately reflects the Preamble's core values?",
+              "prompt": "Which of these does the Preamble primarily reflect?",
               "options": [
                 "The social, political and ethical values of the constitution makers",
                 "A detailed list of laws",
@@ -952,11 +1045,11 @@
                 "None of the above"
               ],
               "answerIndex": 0,
-              "reason": "The Objectives Resolution (moved by Nehru) is the direct basis of the Preamble."
+              "reason": "The Objectives Resolution (moved by Nehru) is the direct basis of Preamble."
             },
             {
               "id": "q-preamble-073",
-              "prompt": "Which of the following is an effective technique to memorize Preamble facts?",
+              "prompt": "Which of following is a correct technique to memorize Preamble facts?",
               "options": [
                 "Hinglish Mnemonics (Jugaad) associating words with images",
                 "Memorize randomly without logic",
@@ -968,19 +1061,19 @@
             },
             {
               "id": "q-preamble-074",
-              "prompt": "Which of the following statements about the Preamble and amendments is CORRECT?",
+              "prompt": "Which of the following statements is CORRECT about the Preamble and amendments?",
               "options": [
                 "Preamble cannot be amended at all",
                 "Preamble has been amended once (42nd Amendment) and may be amended but not to destroy Basic Structure",
                 "Preamble was amended 10 times",
-                "Preamble was replaced by a new Preamble in 1980"
+                "Preamble has no legal standing"
               ],
               "answerIndex": 1,
               "reason": "Preamble amended once; Basic Structure doctrine protects core features against destructive amendment."
             },
             {
               "id": "q-preamble-075",
-              "prompt": "Which of the following is a short flashcard tip for remembering the adoption/effect dates?",
+              "prompt": "Which of these is a short flashcard tip for remembering the adoption/effect dates?",
               "options": [
                 "Adopt 26 Nov 1949 → Effect 26 Jan 1950 (Republic Day)",
                 "Adopt 26 Jan 1950 → Effect 26 Nov 1949",
@@ -1004,7 +1097,7 @@
             },
             {
               "id": "q-preamble-077",
-              "prompt": "Which of the following best describes the link between Preamble and Fundamental Duties (Part IVA)?",
+              "prompt": "Which of these best captures the link between Preamble and Fundamental Duties (Part IVA)?",
               "options": [
                 "No link",
                 "Fundamental Duties are expressions of Preamble's spirit and aim to promote Fraternity and civic responsibility",
@@ -1016,7 +1109,7 @@
             },
             {
               "id": "q-preamble-078",
-              "prompt": "Which of the following is a correct short-hand to recall the five words describing nature of state?",
+              "prompt": "Which of these is a correct short-hand to recall the five words describing nature of state?",
               "options": [
                 "JLEF",
                 "TEBFW",
@@ -1040,7 +1133,7 @@
             },
             {
               "id": "q-preamble-080",
-              "prompt": "Which of the following is true about the addition of 'Integrity' in the Preamble?",
+              "prompt": "Which of these is true about the addition of 'Integrity' in the Preamble?",
               "options": [
                 "Added to emphasize territorial integrity and unity",
                 "Added to remove 'Fraternity'",
@@ -1048,7 +1141,7 @@
                 "Not added at all"
               ],
               "answerIndex": 0,
-              "reason": "'Integrity' was added by 42nd Amendment to emphasize territorial integrity along with unity."
+              "reason": "'Integrity' was added (42nd Amendment) to emphasize unity & territorial integrity."
             },
             {
               "id": "q-preamble-081",
@@ -1064,7 +1157,7 @@
             },
             {
               "id": "q-preamble-082",
-              "prompt": "Which of the following indicates the Preamble's influence on interpretation?",
+              "prompt": "Which one of the following indicates the Preamble's influence on interpretation?",
               "options": [
                 "Courts may ignore the Preamble",
                 "Courts can use Preamble's language to construe ambiguous constitutional provisions",
@@ -1072,11 +1165,11 @@
                 "Preamble is used to issue tax orders"
               ],
               "answerIndex": 1,
-              "reason": "Courts use the Preamble as interpretive aid to ensure laws are consistent with constitutional aims."
+              "reason": "Courts use the Preamble to guide interpretation of ambiguous provisions."
             },
             {
               "id": "q-preamble-083",
-              "prompt": "Which of the following best explains 'Political Justice' as in the Preamble?",
+              "prompt": "Which of these best explains 'Political Justice' as in the Preamble?",
               "options": [
                 "Right to vote and participate in political process",
                 "Right to property for the elite",
@@ -1124,7 +1217,7 @@
             },
             {
               "id": "q-preamble-087",
-              "prompt": "Which of the following best describes the Preamble's tone?",
+              "prompt": "Which of these best describes the Preamble's tone?",
               "options": [
                 "Instructional, purposive and philosophical",
                 "Technical legal code only",
@@ -1153,14 +1246,14 @@
                 "TEBFW (Thali, Egg, Bag, Fan, Water) to cue Thought, Expression, Belief, Faith, Worship",
                 "SSCDR",
                 "SEP",
-                "JLEF"
+                "No mnemonic"
               ],
               "answerIndex": 0,
               "reason": "TEBFW is provided as the memory cue for the five liberties."
             },
             {
               "id": "q-preamble-090",
-              "prompt": "Which of the following is an accurate recollection: the Preamble's nature sequence & objectives?",
+              "prompt": "Which of these is an accurate recollection: the Preamble's nature sequence & objectives?",
               "options": [
                 "SSCDR & JLEF",
                 "ABCDE & FGH",
@@ -1196,7 +1289,7 @@
             },
             {
               "id": "q-preamble-093",
-              "prompt": "Which of the following is an example of how courts use the Preamble?",
+              "prompt": "Which of these is an example of how courts use the Preamble?",
               "options": [
                 "To interpret ambiguous constitutional provisions in line with declared objectives",
                 "To legislate laws directly",
@@ -1204,11 +1297,11 @@
                 "To declare war"
               ],
               "answerIndex": 0,
-              "reason": "Courts use Preamble as interpretive aid to resolve constitutional ambiguities."
+              "reason": "Courts use Preamble as interpretive aid to ensure laws are consistent with constitutional aims."
             },
             {
               "id": "q-preamble-094",
-              "prompt": "Which of the following best describes the Preamble's relation to sovereignty?",
+              "prompt": "Which of the following most accurately describes the Preamble's relation to sovereignty?",
               "options": [
                 "States that the Constitution derives authority from Parliament",
                 "States that sovereignty rests with the people ('We, The People of India')",
@@ -1232,7 +1325,7 @@
             },
             {
               "id": "q-preamble-096",
-              "prompt": "Which of the following statements about the Preamble and Kesavananda case is CORRECT?",
+              "prompt": "Which of the following statements is CORRECT about the Preamble and the Kesavananda case?",
               "options": [
                 "Kesavananda held Preamble irrelevant to Basic Structure",
                 "Kesavananda held Preamble part of the Constitution and forming part of Basic Structure",
@@ -1268,7 +1361,7 @@
             },
             {
               "id": "q-preamble-099",
-              "prompt": "Which of the following statements about 'Fraternity' is correct?",
+              "prompt": "Which of these statements about 'Fraternity' is correct?",
               "options": [
                 "It is about ensuring dignity and national unity",
                 "It imposes inequality",
@@ -1305,138 +1398,6 @@
               ]
             }
           ]
-        },
-        {
-          "id": "schedules",
-          "title": "Schedules of Constitution",
-          "description": "The 12 schedules that organize constitutional provisions",
-          "content": [
-            {
-              "id": "schedules-intro",
-              "kind": "markdown",
-              "title": "What are Schedules?",
-              "body": "**Schedules** are lists in the Constitution that categorize bureaucratic activity and government policy.\n\n## Originally 8 Schedules, Now 12:\n1. **1st Schedule** - States and Union Territories\n2. **2nd Schedule** - Salaries of officials\n3. **3rd Schedule** - Oaths and Affirmations\n4. **4th Schedule** - Rajya Sabha seat allocation\n5. **5th Schedule** - Scheduled Areas and Tribes\n6. **6th Schedule** - Tribal Areas (NE)\n7. **7th Schedule** - Division of Powers (3 Lists)\n8. **8th Schedule** - Recognized Languages\n9. **9th Schedule** - Land reforms (added 1951)\n10. **10th Schedule** - Anti-Defection Law (added 1985)\n11. **11th Schedule** - Panchayats (added 1992)\n12. **12th Schedule** - Municipalities (added 1992)",
-              "mnemonic": "SSOA RSTT LLAM - Schedules Starting from One",
-              "meta": {
-                "difficulty": "medium",
-                "tags": [
-                  "schedules"
-                ]
-              }
-            }
-          ],
-          "quiz": [
-            {
-              "id": "q-schedules-1",
-              "prompt": "Which schedule deals with the division of powers between Union and States?",
-              "options": [
-                "Schedule 5",
-                "Schedule 7",
-                "Schedule 8",
-                "Schedule 10"
-              ],
-              "answerIndex": 1,
-              "reason": "The 7th Schedule contains three lists: Union List, State List, and Concurrent List.",
-              "meta": {
-                "difficulty": "medium",
-                "tags": [
-                  "schedules",
-                  "federalism"
-                ]
-              }
-            }
-          ],
-          "subTopics": []
         }
       ]
-    },
-    {
-      "slug": "history",
-      "title": "History",
-      "description": "Ancient, Medieval, and Modern History of India and World",
-      "emoji": "📜",
-      "brandColor": "amber",
-      "topics": []
-    },
-    {
-      "slug": "geography",
-      "title": "Geography",
-      "description": "World Geography, Indian Geography, and Physical Features",
-      "emoji": "🌍",
-      "brandColor": "emerald",
-      "topics": []
-    },
-    {
-      "slug": "maths",
-      "title": "Mathematics",
-      "description": "Quantitative Aptitude, Arithmetic, and Advanced Maths",
-      "emoji": "📊",
-      "brandColor": "blue",
-      "topics": []
-    },
-    {
-      "slug": "reasoning",
-      "title": "Reasoning",
-      "description": "Logical Reasoning, Analytical Ability, and Puzzles",
-      "emoji": "🧠",
-      "brandColor": "purple",
-      "topics": []
-    },
-    {
-      "slug": "biology",
-      "title": "Biology",
-      "description": "General Science - Biology, Botany, and Zoology",
-      "emoji": "🧬",
-      "brandColor": "green",
-      "topics": []
-    },
-    {
-      "slug": "physics",
-      "title": "Physics",
-      "description": "General Science - Mechanics, Optics, and Modern Physics",
-      "emoji": "⚛️",
-      "brandColor": "cyan",
-      "topics": []
-    },
-    {
-      "slug": "chemistry",
-      "title": "Chemistry",
-      "description": "General Science - Inorganic, Organic, and Physical Chemistry",
-      "emoji": "🧪",
-      "brandColor": "pink",
-      "topics": []
-    },
-    {
-      "slug": "hindi",
-      "title": "Hindi",
-      "description": "व्याकरण, साहित्य, और समझ",
-      "emoji": "✍️",
-      "brandColor": "orange",
-      "topics": []
-    },
-    {
-      "slug": "english",
-      "title": "English",
-      "description": "Grammar, Vocabulary, and Comprehension",
-      "emoji": "🇬🇧",
-      "brandColor": "slate",
-      "topics": []
-    },
-    {
-      "slug": "moolvidhi",
-      "title": "Moolvidhi",
-      "description": "IPC, CrPC, Evidence Act, and Constitutional Law",
-      "emoji": "⚖️",
-      "brandColor": "red",
-      "topics": []
-    },
-    {
-      "slug": "gk-current",
-      "title": "GK & Current Affairs",
-      "description": "Economy, Banking, Current Affairs, and General Knowledge",
-      "emoji": "📰",
-      "brandColor": "yellow",
-      "topics": []
     }
-  ]
-}

@@ -24,3 +24,657 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ============================================================================
+   GLOBAL MODERN ANIMATIONS (Apply to ALL pages)
+   ============================================================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.6); }
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Universal Animation Classes (Use anywhere!) */
+.animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
+.animate-slide-in-left { animation: slideInLeft 0.8s ease-out forwards; }
+.animate-slide-in-right { animation: slideInRight 0.8s ease-out forwards; }
+.animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
+.animate-scale-in { animation: scaleIn 0.6s ease-out forwards; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-pulse { animation: pulse 2s ease-in-out infinite; }
+.animate-glow { animation: glow 3s ease-in-out infinite; }
+.animate-spin { animation: spin 20s linear infinite; }
+.animate-bounce { animation: bounce 2s ease-in-out infinite; }
+
+/* Delay variants for staggered animations */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+.delay-700 { animation-delay: 0.7s; }
+.delay-800 { animation-delay: 0.8s; }
+
+/* ============================================================================
+   UNIVERSAL CARD STYLES (Adaptive to all content types)
+   ============================================================================ */
+
+/* Modern Card Base - Works for ALL sections */
+.modern-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+}
+
+.modern-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.modern-card:hover::before {
+  left: 100%;
+}
+
+.modern-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+/* Gradient Variants - Auto-apply based on subject color */
+.card-gradient-indigo {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.2), rgba(99, 102, 241, 0.1));
+  border: 2px solid rgba(99, 102, 241, 0.3);
+}
+
+.card-gradient-purple {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(168, 85, 247, 0.1));
+  border: 2px solid rgba(168, 85, 247, 0.3);
+}
+
+.card-gradient-pink {
+  background: linear-gradient(135deg, rgba(219, 39, 119, 0.2), rgba(236, 72, 153, 0.1));
+  border: 2px solid rgba(236, 72, 153, 0.3);
+}
+
+.card-gradient-blue {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(59, 130, 246, 0.1));
+  border: 2px solid rgba(59, 130, 246, 0.3);
+}
+
+.card-gradient-green {
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.2), rgba(34, 197, 94, 0.1));
+  border: 2px solid rgba(34, 197, 94, 0.3);
+}
+
+.card-gradient-amber {
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.2), rgba(251, 191, 36, 0.1));
+  border: 2px solid rgba(251, 191, 36, 0.3);
+}
+
+.card-gradient-red {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(239, 68, 68, 0.1));
+  border: 2px solid rgba(239, 68, 68, 0.3);
+}
+
+.card-gradient-teal {
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(45, 212, 191, 0.1));
+  border: 2px solid rgba(45, 212, 191, 0.3);
+}
+
+/* Hero Sections - Reusable for any page header */
+.hero-section {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.2) 0%, rgba(147, 51, 234, 0.2) 100%);
+  border: 2px solid rgba(99, 102, 241, 0.3);
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  margin: 2rem 0;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(99, 102, 241, 0.1),
+    transparent
+  );
+  animation: shimmer 3s infinite;
+}
+
+/* Pill/Badge Styles - Universal */
+.pill-badge {
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-block;
+  cursor: default;
+}
+
+.pill-badge:hover {
+  background: rgba(59, 130, 246, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* ============================================================================
+   MARKDOWN/PROSE ENHANCEMENTS (All subjects)
+   ============================================================================ */
+
+.prose div[class*="bg-"] { margin-bottom: 1rem; }
+.prose div[class*="border-l-4"] { padding-left: 1rem; border-left-width: 4px; }
+.prose div[class*="grid"] { display: grid; }
+
+/* Preamble-specific styles */
+.prose .preamble-hero {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.2) 0%, rgba(147, 51, 234, 0.2) 100%);
+  border: 2px solid rgba(99, 102, 241, 0.3);
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  margin: 2rem 0;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.prose .preamble-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+  animation: shimmer 3s infinite;
+}
+
+.prose .objectives-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+}
+
+.prose .essence-card {
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.15) 0%, rgba(234, 179, 8, 0.15) 100%);
+  border-left: 5px solid rgb(251, 191, 36);
+  border-radius: 1rem;
+  padding: 2rem;
+  margin: 2rem 0;
+  animation: glow 3s ease-in-out infinite;
+}
+
+.prose .feature-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.prose .pill {
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.prose .pill:hover {
+  background: rgba(59, 130, 246, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.prose .timeline-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.prose .timeline-card {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.2) 0%, rgba(67, 56, 202, 0.2) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.prose .timeline-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+}
+
+.prose .timeline-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.prose .case-pills {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.prose .case-pill {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.prose .case-pill.red {
+  background: rgba(220, 38, 38, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.prose .case-pill.green {
+  background: rgba(22, 163, 74, 0.2);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.prose .case-pill:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.prose .mnemonic-hero {
+  background: linear-gradient(135deg, 
+    rgba(99, 102, 241, 0.2) 0%, 
+    rgba(168, 85, 247, 0.2) 50%,
+    rgba(236, 72, 153, 0.2) 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 5s ease infinite;
+  border: 2px solid rgba(168, 85, 247, 0.4);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.prose .mnemonic-hero h1 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #818cf8, #c084fc, #f472b6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 1rem 0;
+  animation: float 3s ease-in-out infinite;
+}
+
+.prose .mnemonic-breakdown {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.prose .mnemonic-breakdown span {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(99, 102, 241, 0.3);
+  border: 2px solid rgba(99, 102, 241, 0.6);
+  border-radius: 50%;
+  font-size: 1.5rem;
+  font-weight: 900;
+  animation: float 3s ease-in-out infinite;
+}
+
+.prose .mnemonic-breakdown span:nth-child(2) { animation-delay: 0.2s; }
+.prose .mnemonic-breakdown span:nth-child(3) { animation-delay: 0.4s; }
+.prose .mnemonic-breakdown span:nth-child(4) { animation-delay: 0.6s; }
+.prose .mnemonic-breakdown span:nth-child(5) { animation-delay: 0.8s; }
+
+.prose .sscdr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.prose .sscdr-card {
+  border-radius: 1.25rem;
+  padding: 1.75rem;
+  border: 2px solid transparent;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.prose .sscdr-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, currentColor, transparent);
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+}
+
+.prose .sscdr-card:hover::before { transform: scaleX(1); }
+
+.prose .sscdr-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.prose .sscdr-card.sovereign {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(239, 68, 68, 0.1));
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.prose .sscdr-card.socialist {
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.15), rgba(249, 115, 22, 0.1));
+  border-color: rgba(249, 115, 22, 0.3);
+}
+
+.prose .sscdr-card.secular {
+  background: linear-gradient(135deg, rgba(202, 138, 4, 0.15), rgba(234, 179, 8, 0.1));
+  border-color: rgba(234, 179, 8, 0.3);
+}
+
+.prose .sscdr-card.democratic {
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.15), rgba(34, 197, 94, 0.1));
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.prose .sscdr-card.republic {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(59, 130, 246, 0.1));
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.prose .visual-hint {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.prose .badge-42 {
+  display: inline-block;
+  background: rgba(168, 85, 247, 0.3);
+  border: 1px solid rgba(168, 85, 247, 0.5);
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.7rem;
+  margin-top: 0.75rem;
+  font-weight: 700;
+}
+
+.prose .jlef-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.prose .jlef-card {
+  border-radius: 1.25rem;
+  padding: 1.75rem;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.prose .jlef-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(99, 102, 241, 0.25);
+}
+
+.prose .jlef-card.justice {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.2), rgba(99, 102, 241, 0.1));
+  border: 2px solid rgba(99, 102, 241, 0.3);
+}
+
+.prose .jlef-card.liberty {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(168, 85, 247, 0.1));
+  border: 2px solid rgba(168, 85, 247, 0.3);
+}
+
+.prose .jlef-card.equality {
+  background: linear-gradient(135deg, rgba(219, 39, 119, 0.2), rgba(236, 72, 153, 0.1));
+  border: 2px solid rgba(236, 72, 153, 0.3);
+}
+
+.prose .jlef-card.fraternity {
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(45, 212, 191, 0.1));
+  border: 2px solid rgba(45, 212, 191, 0.3);
+}
+
+.prose .jlef-types {
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+.prose .mnemonic-tag {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.prose .legal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+
+.prose .legal-card {
+  background: rgba(51, 65, 85, 0.3);
+  border: 1px solid rgba(100, 116, 139, 0.4);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.prose .legal-card:hover {
+  background: rgba(71, 85, 105, 0.4);
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+}
+
+.prose .summary-card {
+  background: linear-gradient(135deg, 
+    rgba(99, 102, 241, 0.2) 0%,
+    rgba(147, 51, 234, 0.2) 50%,
+    rgba(236, 72, 153, 0.2) 100%);
+  border: 2px solid rgba(168, 85, 247, 0.4);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(71, 85, 105, 0.3);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.prose table thead {
+  background: linear-gradient(135deg, rgba(71, 85, 105, 0.3), rgba(51, 65, 85, 0.3));
+}
+
+.prose table th {
+  padding: 1rem 1.25rem;
+  text-align: left;
+  font-weight: 700;
+  color: rgb(167, 243, 208);
+  border-bottom: 2px solid rgba(99, 102, 241, 0.4);
+  font-size: 0.95rem;
+}
+
+.prose table td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+  font-size: 0.9rem;
+}
+
+.prose table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.prose table tbody tr:hover {
+  background: rgba(99, 102, 241, 0.1);
+  transform: scale(1.01);
+}
+
+.prose table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .prose .sscdr-grid,
+  .prose .jlef-container,
+  .prose .timeline-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+

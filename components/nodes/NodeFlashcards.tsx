@@ -58,12 +58,11 @@ function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate }: {
     if (!flip) {
       setFlip(true)
       setShowRating(true)
-      setSessionStart(Date.now()) // Start timing
-      vibrate(10) // Haptic feedback on flip
+      setSessionStart(Date.now())
+      vibrate(10)
     }
   }
 
-  // Swipe to flip card (mobile)
   const swipeHandlers = useSwipe({
     onSwipeUp: () => {
       if (!flip) {
@@ -76,22 +75,19 @@ function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate }: {
   const handleRating = (quality: number) => {
     if (!progress) return
     
-    // Calculate study time (in seconds)
     const studyTimeSeconds = sessionStart > 0 ? Math.round((Date.now() - sessionStart) / 1000) : 5
     
     const newProgress = calculateNextReview(progress, quality)
     setCardProgress(subjectSlug, cardId, newProgress)
     setProgress(newProgress)
     
-    // Update learning stats - get accurate counts from localStorage
     const currentStats = getLearningStats(subjectSlug, totalCards)
     const { mastered, due } = getCardStats(subjectSlug)
     
-    // Add study time (convert to minutes, minimum 1 minute per card)
     const newStudyTime = currentStats.totalStudyTime + Math.max(1, Math.round(studyTimeSeconds / 60))
     
     const updatedStats = {
-      ...currentStats, // Include ALL current stats including achievements
+      ...currentStats,
       totalCards,
       masteredCards: mastered,
       dueCards: due,
@@ -100,10 +96,8 @@ function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate }: {
     
     updateLearningStats(subjectSlug, updatedStats)
     
-    // Check for achievements AFTER updating stats
     const unlockedAchievements = checkAchievements(subjectSlug, updatedStats)
     
-    // Show achievement notifications
     if (unlockedAchievements.length > 0) {
       unlockedAchievements.forEach(achievement => {
         import('@/lib/learningProgress').then(({ ACHIEVEMENTS }) => {
@@ -113,7 +107,6 @@ function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate }: {
               message: `🏆 Achievement Unlocked: ${ach.icon} ${ach.name}!`,
               variant: 'success'
             })
-            // Trigger achievement confetti
             import('@/lib/confetti').then(({ achievementUnlock }) => {
               achievementUnlock()
             })
@@ -122,27 +115,20 @@ function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate }: {
       })
     }
     
-    // Show feedback based on quality
     if (quality >= 4) {
       showToast({
         message: quality === 5 ? '⚡ Perfect! Easy recall!' : '👍 Good job!',
         variant: 'success'
       })
-      // Trigger confetti for high ratings
       if (quality === 5) {
         flashcardMastery()
       }
     }
     
     setShowRating(false)
-    
-    // Trigger stats refresh in parent
     onStatsUpdate?.()
-    
-    // Dispatch event for LearningStatsDashboard
     window.dispatchEvent(new CustomEvent('notty:statsUpdated'))
     
-    // Reset flip after 1 second
     setTimeout(() => setFlip(false), 1000)
   }
 
@@ -150,16 +136,15 @@ function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate }: {
   const isDue = progress && progress.nextReview <= Date.now()
 
   return (
-    <div className="relative">
-      {/* Progress Indicator */}
+    <div className="relative modern-card animate-fade-in-up">
       {progress && progress.repetitions > 0 && (
-        <div className="absolute -top-2 -right-2 z-10 bg-emerald-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg flex items-center gap-1">
+        <div className="absolute -top-2 -right-2 z-10 bg-emerald-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg flex items-center gap-1 animate-pulse">
           {isMastered && <span>🎓</span>}
           <span>{progress.repetitions} {progress.repetitions === 1 ? 'rep' : 'reps'}</span>
         </div>
       )}
       {isDue && (
-        <div className="absolute -top-2 -left-2 z-10 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+        <div className="absolute -top-2 -left-2 z-10 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg animate-bounce">
           📅 Due
         </div>
       )}
@@ -170,39 +155,39 @@ function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate }: {
         {...swipeHandlers}
       >
         <div className={`relative w-full h-full text-center transition-transform duration-500 preserve-3d min-h-40 ${flip ? 'rotate-y-180' : ''}`}>
-          <div className="absolute inset-0 backface-hidden rounded-xl p-4 border border-emerald-700 bg-gray-800 overflow-y-auto flex flex-col justify-center">
-            <p className="font-bold text-emerald-400 wrap-break-word">{card.front}</p>
-            {card.hint && <p className="text-xs text-gray-400 mt-2 wrap-break-word">Hint: {card.hint}</p>}
-            {card.mnemonic && <p className="text-xs mt-2 wrap-break-word">💡 <span className="mnemonic-text">{card.mnemonic}</span></p>}
-            <p className="text-gray-500 text-sm mt-2">Tap or swipe up to flip</p>
+          <div className="absolute inset-0 backface-hidden rounded-xl p-4 border-2 border-emerald-700/50 bg-linear-to-br from-gray-800/90 to-gray-900/90 overflow-y-auto flex flex-col justify-center backdrop-blur-sm">
+            <p className="font-bold text-emerald-400 wrap-break-word text-lg">{card.front}</p>
+            {card.hint && <p className="text-xs text-gray-400 mt-2 wrap-break-word">💡 Hint: {card.hint}</p>}
+            {card.mnemonic && <p className="text-xs mt-2 wrap-break-word"><span className="mnemonic-text bg-purple-900/30 px-2 py-1 rounded">✨ {card.mnemonic}</span></p>}
+            <p className="text-gray-500 text-sm mt-3 animate-pulse">👆 Tap or swipe up to flip</p>
           </div>
-          <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-xl p-4 border border-emerald-600 bg-emerald-900/40 overflow-y-auto flex flex-col">
-            <p className="text-gray-200 mb-4 wrap-break-word shrink-0">{card.back}</p>
+          <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-xl p-4 border-2 border-emerald-600 bg-linear-to-br from-emerald-900/50 to-teal-900/50 overflow-y-auto flex flex-col backdrop-blur-sm">
+            <p className="text-gray-200 mb-4 wrap-break-word shrink-0 text-lg font-medium">{card.back}</p>
             {showRating && (
               <div className="mt-auto pt-4 border-t border-emerald-700/50 shrink-0" onClick={(e) => e.stopPropagation()}>
-                <p className="text-xs text-gray-400 mb-3 text-center">How well did you know this?</p>
+                <p className="text-xs text-gray-400 mb-3 text-center font-semibold">⚡ How well did you know this?</p>
                 <div className="flex flex-wrap gap-2 justify-center">
                   <button 
                     onClick={() => { vibrate(15); handleRating(1); }} 
-                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white text-xs font-semibold rounded transition-colors"
+                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all transform hover:scale-105 shadow-lg"
                   >
                     ❌ Again
                   </button>
                   <button 
                     onClick={() => { vibrate(15); handleRating(3); }} 
-                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-800 text-white text-xs font-semibold rounded transition-colors"
+                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-linear-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all transform hover:scale-105 shadow-lg"
                   >
                     🤔 Hard
                   </button>
                   <button 
                     onClick={() => { vibrate(15); handleRating(4); }} 
-                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs font-semibold rounded transition-colors"
+                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all transform hover:scale-105 shadow-lg"
                   >
                     👍 Good
                   </button>
                   <button 
                     onClick={() => { vibrate(20); handleRating(5); }} 
-                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-semibold rounded transition-colors"
+                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-linear-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all transform hover:scale-105 shadow-lg animate-glow"
                   >
                     ⚡ Easy
                   </button>
@@ -238,29 +223,40 @@ export default function NodeFlashcards({
   const total = totalCards || cards.length
 
   return (
-    <section id={node.id} data-node-id={node.id} className="bg-gray-900 dark:bg-gray-950 p-6 rounded-2xl card border-t-4 border-emerald-500 shadow-xl">
+    <section id={node.id} data-node-id={node.id} className="modern-card gradient-card-emerald animate-fade-in-up p-6 border-t-4 border-emerald-500 shadow-2xl">
       <div className="flex items-center justify-between gap-3 mb-2">
-        <h3 className="text-xl md:text-2xl font-bold text-emerald-400">{node.title}</h3>
+        <h3 className="text-xl md:text-2xl font-bold text-emerald-300 animate-slide-in-left">{node.title}</h3>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-400 font-semibold">{cards.length} cards</span>
+          <span className="pill-badge bg-emerald-600/30 text-emerald-200 border-emerald-500/50">{cards.length} cards</span>
           {node.meta?.refs?.length ? (
-            <button onClick={()=>setShowRefs(true)} className="text-xs border px-2 py-1 rounded bg-emerald-900/30 text-emerald-300 border-emerald-700 hover:bg-emerald-800/40">References</button>
+            <button onClick={()=>setShowRefs(true)} className="pill-badge bg-emerald-900/50 text-emerald-300 border-emerald-600 hover:bg-emerald-800/60 hover:scale-105 transition-all">
+              📚 References
+            </button>
           ) : null}
           <BookmarkButton active={bookmarked} onToggle={onToggleBookmark} />
         </div>
       </div>
-      {node.mnemonic && <p className="mt-1 text-sm">💡 Mnemonic: <span className="mnemonic-text">{node.mnemonic}</span></p>}
+      {node.mnemonic && (
+        <p className="mt-1 text-sm animate-fade-in-up delay-100">
+          💡 Mnemonic: <span className="mnemonic-text bg-purple-900/40 px-2 py-1 rounded-lg font-semibold text-purple-200">{node.mnemonic}</span>
+        </p>
+      )}
       <MetaBar meta={node.meta} />
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
         {cards.map((c, i) => (
-          <FlashCard 
-            key={i} 
-            card={c} 
-            cardId={`${node.id}-card-${i}`}
-            subjectSlug={slug}
-            totalCards={total}
-            onStatsUpdate={onStatsUpdate}
-          />
+          <div 
+            key={i}
+            className="animate-fade-in-up"
+            style={{ animationDelay: `${i * 100}ms` }}
+          >
+            <FlashCard 
+              card={c} 
+              cardId={`${node.id}-card-${i}`}
+              subjectSlug={slug}
+              totalCards={total}
+              onStatsUpdate={onStatsUpdate}
+            />
+          </div>
         ))}
       </div>
 

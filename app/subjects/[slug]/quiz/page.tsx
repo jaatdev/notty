@@ -1,131 +1,98 @@
 'use client'
-
 import { useEffect, useState } from 'react'
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { getSubjectBySlug, findTopicByPath } from '@/lib/data'
-import type { QuizQuestion, Subject, Topic } from '@/lib/types'
-import { brandMap } from '@/lib/brand'
+import { getSubjectData, collectAllQuizQuestions, sampleRandom } from '@/lib/data'
+import type { QuizQuestion } from '@/lib/types'
 import { quizComplete } from '@/lib/confetti'
-
-type QuizState = {
-  questions: QuizQuestion[]
-  currentIndex: number
-  answers: Record<string, number>
-  showResults: boolean
-}
 
 export default function QuizPage() {
   const params = useParams()
-  const searchParams = useSearchParams()
   const router = useRouter()
-  
   const slug = params?.slug as string
-  const topicPath = searchParams?.get('topic') // e.g., "preamble" or "preamble/pillars-preamble"
-  
-  const [subject, setSubject] = useState<Subject | null>(null)
-  const [quiz, setQuiz] = useState<QuizState | null>(null)
-  const [loading, setLoading] = useState(true)
+
+  const [questions, setQuestions] = useState<QuizQuestion[]>([])
+  const [picked, setPicked] = useState<Record<string, number>>({})
+  const [checked, setChecked] = useState(false)
   const [celebrated, setCelebrated] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function loadQuiz() {
-      try {
-        const subjectData = await getSubjectBySlug(slug)
-        if (!subjectData) {
-          setLoading(false)
-          return
-        }
-        
-        setSubject(subjectData)
-        
-        let allQuestions: QuizQuestion[] = []
-        
-        if (topicPath) {
-          // Topic or subtopic quiz
-          const pathParts = topicPath.split('/')
-          const topic = findTopicByPath(subjectData, pathParts)
-          
-          if (topic) {
-            // Collect questions from this topic and all its subtopics recursively
-            const collectQuestions = (t: Topic): QuizQuestion[] => {
-              const questions = [...(t.quiz || [])]
-              if (t.subTopics) {
-                t.subTopics.forEach(st => {
-                  questions.push(...collectQuestions(st))
-                })
-              }
-              return questions
-            }
-            
-            allQuestions = collectQuestions(topic)
-          }
-        } else {
-          // Subject-level quiz - collect from all topics
-          const collectFromTopics = (topics: Topic[]): QuizQuestion[] => {
-            let questions: QuizQuestion[] = []
-            topics.forEach(topic => {
-              questions.push(...(topic.quiz || []))
-              if (topic.subTopics) {
-                questions.push(...collectFromTopics(topic.subTopics))
-              }
-            })
-            return questions
-          }
-          
-          allQuestions = collectFromTopics(subjectData.topics || [])
-        }
-        
-        // Shuffle and pick 10 random questions
-        const shuffled = allQuestions.sort(() => Math.random() - 0.5)
-        const selected = shuffled.slice(0, Math.min(10, shuffled.length))
-        
-        setQuiz({
-          questions: selected,
-          currentIndex: 0,
-          answers: {},
-          showResults: false,
-        })
-        
-        setLoading(false)
-      } catch (error) {
-        console.error('Error loading quiz:', error)
-        setLoading(false)
-      }
+    if (!slug) return
+
+    const subject = getSubjectData(slug)
+    if (!subject) {
+      router.push('/subjects')
+      return
     }
-    
-    loadQuiz()
-  }, [slug, topicPath])
+
+    // Collect all questions from the subject
+    const allQuestions = collectAllQuizQuestions(subject)
+
+    // Select 10 random questions
+    const randomQuestions = sampleRandom(allQuestions, 10)
+
+    setQuestions(randomQuestions)
+    setLoading(false)
+  }, [slug, router])
+
+  function onPick(qid: string, idx: number) {
+    const next = { ...picked, [qid]: idx }
+    setPicked(next)
+  }
+
+  const total = questions.length
+  const correct = questions.reduce((acc, q) => acc + (picked[q.id] === q.answerIndex ? 1 : 0), 0)
+  const score = total > 0 ? Math.round((correct / total) * 100) : 0
+
+  // Trigger confetti when quiz is checked and score is calculated
+  useEffect(() => {
+    if (checked && !celebrated && Object.keys(picked).length === total) {
+      quizComplete(score)
+      setCelebrated(true)
+    }
+  }, [checked, score, total, celebrated, picked])
+
+  // Reset celebration flag when quiz is reset
+  useEffect(() => {
+    if (!checked) {
+      setCelebrated(false)
+    }
+  }, [checked])
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading quiz...</div>
+      <div className="min-h-screen p-6 bg-gray-900 text-white">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-gray-800 rounded-2xl p-8 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto mb-4"></div>
+            <p className="text-gray-400">Loading quiz questions...</p>
+          </div>
+        </div>
       </div>
     )
   }
 
-  if (!subject || !quiz || quiz.questions.length === 0) {
+  if (questions.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-900 text-white p-6">
+      <div className="min-h-screen p-6 bg-gray-900 text-white">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6">
             <Link href={`/subjects/${slug}`} className="text-indigo-400 hover:text-indigo-300">
               ← Back to Subject
             </Link>
           </div>
-          
+
           <div className="bg-gray-800 rounded-2xl p-8 text-center">
-            <div className="text-6xl mb-4">📝</div>
-            <h1 className="text-3xl font-bold mb-4">No Quiz Available</h1>
+            <h1 className="text-3xl font-bold mb-4">No Quiz Questions Available</h1>
             <p className="text-gray-400 mb-6">
-              There are no quiz questions available for this {topicPath ? 'topic' : 'subject'} yet.
+              This subject doesn't have any quiz questions yet.
             </p>
             <Link
               href={`/subjects/${slug}`}
-              className="inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
             >
-              Back to {subject?.title || 'Subject'}
+              Back to Subject
             </Link>
           </div>
         </div>
@@ -133,295 +100,102 @@ export default function QuizPage() {
     )
   }
 
-  const colors = brandMap[subject.brandColor]
-  const currentQuestion = quiz.questions[quiz.currentIndex]
-  const totalQuestions = quiz.questions.length
-  const isLastQuestion = quiz.currentIndex === totalQuestions - 1
+  return (
+    <div className="min-h-screen p-6 bg-gray-900 text-white">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-6">
+          <Link href={`/subjects/${slug}`} className="text-indigo-400 hover:text-indigo-300">
+            ← Back to Subject
+          </Link>
+        </div>
 
-  const handleAnswer = (questionId: string, answerIndex: number) => {
-    setQuiz(prev => prev ? {
-      ...prev,
-      answers: { ...prev.answers, [questionId]: answerIndex }
-    } : null)
-  }
-
-  const handleNext = () => {
-    if (!isLastQuestion) {
-      setQuiz(prev => prev ? { ...prev, currentIndex: prev.currentIndex + 1 } : null)
-    }
-  }
-
-  const handlePrevious = () => {
-    if (quiz.currentIndex > 0) {
-      setQuiz(prev => prev ? { ...prev, currentIndex: prev.currentIndex - 1 } : null)
-    }
-  }
-
-  const handleSubmit = () => {
-    const answered = Object.keys(quiz.answers).length
-    if (answered < totalQuestions) {
-      const confirm = window.confirm(
-        `You have only answered ${answered} out of ${totalQuestions} questions. Submit anyway?`
-      )
-      if (!confirm) return
-    }
-    
-    setQuiz(prev => prev ? { ...prev, showResults: true } : null)
-    
-    // Calculate score and trigger confetti
-    const correct = quiz.questions.reduce((acc, q) => 
-      acc + (quiz.answers[q.id] === q.answerIndex ? 1 : 0), 0
-    )
-    const score = Math.round((correct / totalQuestions) * 100)
-    
-    if (!celebrated) {
-      quizComplete(score)
-      setCelebrated(true)
-    }
-  }
-
-  const handleRetry = () => {
-    // Reshuffle and pick new questions
-    const allQuestions = quiz.questions
-    const shuffled = allQuestions.sort(() => Math.random() - 0.5)
-    
-    setQuiz({
-      questions: shuffled,
-      currentIndex: 0,
-      answers: {},
-      showResults: false,
-    })
-    setCelebrated(false)
-  }
-
-  if (quiz.showResults) {
-    const correct = quiz.questions.reduce((acc, q) => 
-      acc + (quiz.answers[q.id] === q.answerIndex ? 1 : 0), 0
-    )
-    const score = Math.round((correct / totalQuestions) * 100)
-    
-    return (
-      <div className="min-h-screen bg-gray-900 text-white p-6">
-        <div className="max-w-4xl mx-auto">
-          <div className={`bg-gradient-to-br ${colors.hero} rounded-2xl p-8 mb-8 text-center`}>
-            <div className="text-6xl mb-4">
-              {score >= 80 ? '🎉' : score >= 60 ? '👍' : '📚'}
-            </div>
-            <h1 className="text-4xl font-bold mb-4">Quiz Complete!</h1>
-            <div className="text-6xl font-bold mb-2">{score}%</div>
-            <p className="text-xl text-white/90">
-              You got {correct} out of {totalQuestions} questions correct
-            </p>
+        <div className="bg-gray-800 rounded-2xl p-8 shadow-xl border-t-4 border-emerald-500">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold mb-2">Quiz: {getSubjectData(slug)?.title}</h1>
+            <p className="text-gray-400">Test your knowledge with 10 random questions</p>
           </div>
 
-          {/* Review Answers */}
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold mb-4">Review Your Answers</h2>
-            {quiz.questions.map((q, idx) => {
-              const userAnswer = quiz.answers[q.id]
-              const isCorrect = userAnswer === q.answerIndex
-              const wasAnswered = userAnswer !== undefined
-              
+            {questions.map((q, index) => {
+              const user = picked[q.id]
+              const isCorrect = checked && user === q.answerIndex
+              const isWrong = checked && user !== undefined && user !== q.answerIndex
               return (
-                <div 
-                  key={q.id} 
-                  className="bg-gray-800 rounded-xl p-6 border-l-4"
-                  style={{ 
-                    borderColor: !wasAnswered ? '#6b7280' : isCorrect ? '#10b981' : '#ef4444' 
-                  }}
-                >
-                  <div className="flex items-start gap-3 mb-3">
-                    <span className="text-2xl">
-                      {!wasAnswered ? '⚪' : isCorrect ? '✅' : '❌'}
-                    </span>
-                    <div className="flex-1">
-                      <p className="font-semibold text-lg mb-3">
-                        {idx + 1}. {q.prompt}
-                      </p>
-                      <div className="space-y-2">
-                        {q.options.map((opt, optIdx) => {
-                          const isUserAnswer = userAnswer === optIdx
-                          const isCorrectAnswer = optIdx === q.answerIndex
-                          
-                          return (
-                            <div
-                              key={optIdx}
-                              className={`p-3 rounded-lg border-2 ${
-                                isCorrectAnswer
-                                  ? 'bg-green-900/40 border-green-500 text-green-200'
-                                  : isUserAnswer
-                                  ? 'bg-red-900/40 border-red-500 text-red-200'
-                                  : 'bg-gray-700 border-gray-600'
-                              }`}
-                            >
-                              <div className="flex items-center gap-2">
-                                {isCorrectAnswer && <span className="text-green-400">✓</span>}
-                                {isUserAnswer && !isCorrectAnswer && <span className="text-red-400">✗</span>}
-                                <span>{opt}</span>
-                              </div>
-                            </div>
-                          )
-                        })}
-                      </div>
-                      {q.reason && (
-                        <div className="mt-3 p-3 bg-blue-900/30 border border-blue-700 rounded-lg">
-                          <p className="text-sm text-blue-200">
-                            <strong>Explanation:</strong> {q.reason}
-                          </p>
-                        </div>
-                      )}
-                    </div>
+                <div key={q.id} className="p-6 bg-gray-700 rounded-lg shadow-md border-l-4 border-emerald-500">
+                  <p className="font-semibold text-lg text-gray-200 mb-4">
+                    {index + 1}. {q.prompt}
+                  </p>
+                  <div className="space-y-3">
+                    {q.options.map((opt, idx) => (
+                      <label key={idx} className="flex items-center space-x-3 text-gray-300 hover:bg-gray-600 p-3 rounded-md cursor-pointer transition">
+                        <input
+                          type="radio"
+                          name={`q-${q.id}`}
+                          checked={user === idx}
+                          onChange={() => onPick(q.id, idx)}
+                          className="text-emerald-500 h-4 w-4"
+                        />
+                        <span className={`${
+                          checked
+                            ? (idx === q.answerIndex ? 'text-green-400 font-bold' : (user === idx ? 'text-red-400' : ''))
+                            : ''
+                        }`}>
+                          {opt}
+                        </span>
+                      </label>
+                    ))}
                   </div>
+                  {checked && (
+                    <div className={`mt-4 p-3 text-sm font-medium rounded ${
+                      isCorrect
+                        ? 'bg-green-900/40 text-green-300 border border-green-700'
+                        : isWrong
+                        ? 'bg-red-900/40 text-red-300 border border-red-700'
+                        : 'bg-emerald-900/40 text-emerald-300 border border-emerald-700'
+                    }`}>
+                      {isCorrect
+                        ? '✅ Correct!'
+                        : isWrong
+                        ? <>❌ Incorrect. Correct: <strong>{q.options[q.answerIndex]}</strong>{q.reason ? <> — {q.reason}</> : null}</>
+                        : 'Select an option'
+                      }
+                    </div>
+                  )}
                 </div>
               )
             })}
           </div>
 
-          {/* Actions */}
           <div className="flex flex-wrap gap-3 mt-8 justify-center">
-            <button
-              onClick={handleRetry}
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition"
-            >
-              🔄 Try Again
-            </button>
-            <Link
-              href={topicPath ? `/subjects/${slug}/${topicPath}` : `/subjects/${slug}`}
-              className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition"
-            >
-              ← Back to {topicPath ? 'Topic' : 'Subject'}
-            </Link>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // Quiz in progress
-  const userAnswer = quiz.answers[currentQuestion.id]
-  const progress = ((quiz.currentIndex + 1) / totalQuestions) * 100
-
-  return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-6">
-          <Link 
-            href={topicPath ? `/subjects/${slug}/${topicPath}` : `/subjects/${slug}`}
-            className="text-indigo-400 hover:text-indigo-300 inline-block mb-4"
-          >
-            ← Back
-          </Link>
-          
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-2xl font-bold">{subject.emoji} {subject.title}</h1>
-              <p className="text-gray-400">
-                {topicPath ? `Topic Quiz: ${topicPath.split('/').pop()}` : 'Subject Quiz'}
-              </p>
-            </div>
-            <div className="text-right">
-              <div className="text-3xl font-bold">{quiz.currentIndex + 1}/{totalQuestions}</div>
-              <div className="text-sm text-gray-400">Questions</div>
-            </div>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="w-full bg-gray-700 rounded-full h-2">
-            <div 
-              className={`h-2 rounded-full bg-gradient-to-r ${colors.hero} transition-all duration-300`}
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Question */}
-        <div className="bg-gray-800 rounded-2xl p-8 mb-6">
-          <p className="text-2xl font-semibold mb-6">{currentQuestion.prompt}</p>
-          
-          <div className="space-y-3">
-            {currentQuestion.options.map((option, idx) => {
-              const isSelected = userAnswer === idx
-              
-              return (
+            {!checked ? (
+              <button
+                onClick={() => setChecked(true)}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg text-lg"
+              >
+                Submit Quiz
+              </button>
+            ) : (
+              <>
                 <button
-                  key={idx}
-                  onClick={() => handleAnswer(currentQuestion.id, idx)}
-                  className={`w-full text-left p-4 rounded-lg border-2 transition ${
-                    isSelected
-                      ? 'bg-indigo-600 border-indigo-500 text-white'
-                      : 'bg-gray-700 border-gray-600 hover:border-gray-500 hover:bg-gray-650'
-                  }`}
+                  onClick={() => { setPicked({}); setChecked(false) }}
+                  className="border border-emerald-600 text-emerald-400 font-bold py-3 px-6 rounded-lg bg-gray-800 hover:bg-gray-700"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                      isSelected ? 'border-white bg-white' : 'border-gray-400'
-                    }`}>
-                      {isSelected && <div className="w-3 h-3 rounded-full bg-indigo-600" />}
-                    </div>
-                    <span>{option}</span>
-                  </div>
+                  Try Again
                 </button>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <div className="flex items-center justify-between gap-4">
-          <button
-            onClick={handlePrevious}
-            disabled={quiz.currentIndex === 0}
-            className="px-6 py-3 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500 text-white font-semibold rounded-lg transition"
-          >
-            ← Previous
-          </button>
-
-          <div className="text-center text-sm text-gray-400">
-            {Object.keys(quiz.answers).length} of {totalQuestions} answered
-          </div>
-
-          {isLastQuestion ? (
-            <button
-              onClick={handleSubmit}
-              className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition"
-            >
-              Submit Quiz ✓
-            </button>
-          ) : (
-            <button
-              onClick={handleNext}
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition"
-            >
-              Next →
-            </button>
-          )}
-        </div>
-
-        {/* Answer Status Grid */}
-        <div className="mt-8 p-6 bg-gray-800 rounded-xl">
-          <p className="text-sm text-gray-400 mb-3">Question Status:</p>
-          <div className="grid grid-cols-10 gap-2">
-            {quiz.questions.map((q, idx) => {
-              const isAnswered = quiz.answers[q.id] !== undefined
-              const isCurrent = idx === quiz.currentIndex
-              
-              return (
-                <button
-                  key={q.id}
-                  onClick={() => setQuiz(prev => prev ? { ...prev, currentIndex: idx } : null)}
-                  className={`aspect-square rounded-lg font-semibold text-sm transition ${
-                    isCurrent
-                      ? 'bg-indigo-600 text-white ring-2 ring-indigo-400'
-                      : isAnswered
-                      ? 'bg-green-700 text-white hover:bg-green-600'
-                      : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
-                  }`}
+                <Link
+                  href={`/subjects/${slug}`}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg"
                 >
-                  {idx + 1}
-                </button>
-              )
-            })}
+                  Back to Subject
+                </Link>
+              </>
+            )}
+            {checked && (
+              <div className="ml-auto text-center">
+                <div className="text-2xl font-bold text-emerald-400">{score}%</div>
+                <div className="text-sm text-gray-400">Score: {correct} / {total}</div>
+              </div>
+            )}
           </div>
         </div>
       </div>
