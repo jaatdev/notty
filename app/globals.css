@@ -1,8 +1,96 @@
 @import "tailwindcss";
 
+/* ============================================================================
+   DESIGN TOKENS - World-Class Design System
+   Steps 21-23: CSS Custom Properties from Design Tokens
+   ============================================================================ */
+
 :root {
+  /* Base Colors */
   --background: #ffffff;
   --foreground: #171717;
+  
+  /* Primary Colors */
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-200: #bfdbfe;
+  --primary-300: #93c5fd;
+  --primary-400: #60a5fa;
+  --primary-500: #3b82f6;
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+  --primary-800: #1e40af;
+  --primary-900: #1e3a8a;
+  
+  /* Accent Colors */
+  --accent-blue: #3b82f6;
+  --accent-purple: #a855f7;
+  --accent-pink: #ec4899;
+  --accent-red: #ef4444;
+  --accent-orange: #f97316;
+  --accent-yellow: #eab308;
+  --accent-green: #10b981;
+  --accent-teal: #14b8a6;
+  --accent-cyan: #06b6d4;
+  
+  /* Neutral Colors */
+  --neutral-50: #fafafa;
+  --neutral-100: #f5f5f5;
+  --neutral-200: #e5e5e5;
+  --neutral-300: #d4d4d4;
+  --neutral-400: #a3a3a3;
+  --neutral-500: #737373;
+  --neutral-600: #525252;
+  --neutral-700: #404040;
+  --neutral-800: #262626;
+  --neutral-900: #171717;
+  --neutral-950: #0a0a0a;
+  
+  /* Spacing Scale */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+  --spacing-4xl: 6rem;
+  
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  
+  /* Glow Shadows */
+  --glow-blue: 0 0 20px rgba(59, 130, 246, 0.5);
+  --glow-purple: 0 0 20px rgba(168, 85, 247, 0.5);
+  --glow-pink: 0 0 20px rgba(236, 72, 153, 0.5);
+  
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Z-Index Scale */
+  --z-base: 0;
+  --z-dropdown: 1000;
+  --z-sticky: 1100;
+  --z-fixed: 1200;
+  --z-modal: 1300;
+  --z-popover: 1400;
+  --z-tooltip: 1500;
 }
 
 @theme inline {
@@ -12,10 +100,20 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* ============================================================================
+   DARK MODE - Enhanced Dark Theme
+   Steps 24: Dark Mode Variables
+   ============================================================================ */
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    
+    /* Adjust glow shadows for dark mode */
+    --glow-blue: 0 0 30px rgba(59, 130, 246, 0.7);
+    --glow-purple: 0 0 30px rgba(168, 85, 247, 0.7);
+    --glow-pink: 0 0 30px rgba(236, 72, 153, 0.7);
   }
 }
 
@@ -23,6 +121,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color var(--transition-base), color var(--transition-base);
 }
 
 /* ============================================================================
@@ -81,6 +180,11 @@ body {
 @keyframes shimmer {
   0% { background-position: -1000px 0; }
   100% { background-position: 1000px 0; }
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  100% { left: 200%; }
 }
 
 @keyframes float {
@@ -675,6 +779,237 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================================
+   THEME VARIANTS - World-Class Procedural Theming
+   Steps 25: Theme-Aware Utilities
+   ============================================================================ */
+
+/* Theme Variant Data Attributes */
+[data-theme="cyber-blue"] {
+  --theme-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  --theme-accent: #3b82f6;
+  --theme-glow: rgba(59, 130, 246, 0.5);
+}
+
+[data-theme="purple-dream"] {
+  --theme-gradient: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+  --theme-accent: #a855f7;
+  --theme-glow: rgba(168, 85, 247, 0.5);
+}
+
+[data-theme="neon-pink"] {
+  --theme-gradient: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+  --theme-accent: #ec4899;
+  --theme-glow: rgba(236, 72, 153, 0.5);
+}
+
+[data-theme="emerald-glow"] {
+  --theme-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --theme-accent: #10b981;
+  --theme-glow: rgba(16, 185, 129, 0.5);
+}
+
+[data-theme="sunset-orange"] {
+  --theme-gradient: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  --theme-accent: #f97316;
+  --theme-glow: rgba(249, 115, 22, 0.5);
+}
+
+[data-theme="indigo-wave"] {
+  --theme-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  --theme-accent: #6366f1;
+  --theme-glow: rgba(99, 102, 241, 0.5);
+}
+
+[data-theme="gradient-mix"] {
+  --theme-gradient: linear-gradient(135deg, #3b82f6 0%, #a855f7 50%, #ec4899 100%);
+  --theme-accent: #a855f7;
+  --theme-glow: rgba(168, 85, 247, 0.5);
+}
+
+[data-theme="aurora"] {
+  --theme-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a855f7 100%);
+  --theme-accent: #06b6d4;
+  --theme-glow: rgba(6, 182, 212, 0.5);
+}
+
+[data-theme="matrix"] {
+  --theme-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --theme-accent: #10b981;
+  --theme-glow: rgba(16, 185, 129, 0.5);
+}
+
+[data-theme="crystal"] {
+  --theme-gradient: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+  --theme-accent: #06b6d4;
+  --theme-glow: rgba(6, 182, 212, 0.5);
+}
+
+[data-theme="nebula"] {
+  --theme-gradient: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #ec4899 100%);
+  --theme-accent: #a855f7;
+  --theme-glow: rgba(168, 85, 247, 0.5);
+}
+
+[data-theme="ivory"] {
+  --theme-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --theme-accent: #f59e0b;
+  --theme-glow: rgba(245, 158, 11, 0.5);
+}
+
+/* Theme-Aware Utility Classes */
+.theme-gradient-bg {
+  background: var(--theme-gradient, linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%));
+}
+
+.theme-glow {
+  box-shadow: 0 0 20px var(--theme-glow, rgba(59, 130, 246, 0.5));
+}
+
+.theme-accent-text {
+  color: var(--theme-accent, #3b82f6);
+}
+
+.theme-accent-border {
+  border-color: var(--theme-accent, #3b82f6);
+}
+
+/* Glassmorphism Effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media (prefers-color-scheme: dark) {
+  .glass {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Smooth Hover Transitions */
+.hover-lift {
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Gradient Text Effect */
+.gradient-text {
+  background: linear-gradient(135deg, #3b82f6 0%, #a855f7 50%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animated Gradient Background */
+.animated-gradient {
+  background: linear-gradient(270deg, #3b82f6, #a855f7, #ec4899, #10b981);
+  background-size: 800% 800%;
+  animation: gradientShift 15s ease infinite;
+}
+
+/* Card Shine Effect */
+.card-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.card-shine:hover::before {
+  left: 100%;
+}
+
+/* Neon Glow Effect */
+.neon-glow {
+  text-shadow: 
+    0 0 10px var(--theme-accent, #3b82f6),
+    0 0 20px var(--theme-accent, #3b82f6),
+    0 0 30px var(--theme-accent, #3b82f6);
+  animation: neonPulse 2s ease-in-out infinite;
+}
+
+@keyframes neonPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* Floating Animation */
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse Animation */
+.pulse-animation {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Shimmer Loading Effect */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Modern Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--neutral-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neutral-400);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neutral-500);
+}
+
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-track {
+    background: var(--neutral-900);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--neutral-600);
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--neutral-500);
+  }
+}
+
 
 
 

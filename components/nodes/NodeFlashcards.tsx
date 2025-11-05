@@ -1,11 +1,19 @@
+/**
+ * 💫 ENHANCED FLASHCARDS - World-Class Learning Experience
+ * Steps 36-40: Theme Integration & Advanced Animations
+ * ARIA labels, improved accessibility, theme-aware styling
+ */
+
 'use client'
 import { useMemo, useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import type { FlashcardsNode, Flashcard } from '@/lib/types'
 import BookmarkButton from '../ui/BookmarkButton'
 import MetaBar from '../ui/MetaBar'
 import ReferencesDrawer from '../ui/ReferencesDrawer'
 import { useSwipe, vibrate } from '@/lib/touch'
 import { flashcardMastery } from '@/lib/confetti'
+import { getThemeById } from '@/lib/theme-variants'
 import { 
   getCardProgress, 
   setCardProgress, 
@@ -24,12 +32,13 @@ function shuffle<T>(arr: T[]): T[] {
   return a
 }
 
-function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate }: { 
+function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate, theme }: { 
   card: Flashcard; 
   cardId: string; 
   subjectSlug: string;
   totalCards: number;
   onStatsUpdate?: () => void;
+  theme: ReturnType<typeof getThemeById>;
 }) {
   const [flip, setFlip] = useState(false)
   const [showRating, setShowRating] = useState(false)
@@ -56,10 +65,15 @@ function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate }: {
 
   const handleFlip = () => {
     if (!flip) {
+      // Flip to back (show answer)
       setFlip(true)
       setShowRating(true)
       setSessionStart(Date.now())
       vibrate(10)
+    } else if (flip && !showRating) {
+      // Flip back to front (after rating is done)
+      setFlip(false)
+      vibrate(5)
     }
   }
 
@@ -125,77 +139,173 @@ function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate }: {
       }
     }
     
+    // Reset card state immediately
     setShowRating(false)
+    setFlip(false)
+    setSessionStart(0)
+    
     onStatsUpdate?.()
     window.dispatchEvent(new CustomEvent('notty:statsUpdated'))
-    
-    setTimeout(() => setFlip(false), 1000)
   }
 
   const isMastered = progress && progress.repetitions >= 3
   const isDue = progress && progress.nextReview <= Date.now()
 
   return (
-    <div className="relative modern-card animate-fade-in-up">
+    <div className="relative modern-card animate-fade-in-up" role="article" aria-label="Flashcard">
+      {/* Progress Badge */}
       {progress && progress.repetitions > 0 && (
-        <div className="absolute -top-2 -right-2 z-10 bg-emerald-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg flex items-center gap-1 animate-pulse">
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="absolute -top-2 -right-2 z-10 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
+          style={{
+            background: isMastered ? theme.gradient : theme.accent,
+            boxShadow: `0 0 15px ${theme.glow}`,
+          }}
+        >
           {isMastered && <span>🎓</span>}
           <span>{progress.repetitions} {progress.repetitions === 1 ? 'rep' : 'reps'}</span>
-        </div>
+        </motion.div>
       )}
       {isDue && (
-        <div className="absolute -top-2 -left-2 z-10 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg animate-bounce">
+        <motion.div
+          animate={{ y: [0, -4, 0] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
+          className="absolute -top-2 -left-2 z-10 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg"
+        >
           📅 Due
-        </div>
+        </motion.div>
       )}
 
       <div 
         onClick={handleFlip} 
         className="cursor-pointer perspective touch-none"
         {...swipeHandlers}
+        role="button"
+        tabIndex={0}
+        aria-label={flip ? "Card back - showing answer" : "Card front - tap to reveal answer"}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            handleFlip()
+          }
+        }}
       >
-        <div className={`relative w-full h-full text-center transition-transform duration-500 preserve-3d min-h-40 ${flip ? 'rotate-y-180' : ''}`}>
-          <div className="absolute inset-0 backface-hidden rounded-xl p-4 border-2 border-emerald-700/50 bg-linear-to-br from-gray-800/90 to-gray-900/90 overflow-y-auto flex flex-col justify-center backdrop-blur-sm">
-            <p className="font-bold text-emerald-400 wrap-break-word text-lg">{card.front}</p>
-            {card.hint && <p className="text-xs text-gray-400 mt-2 wrap-break-word">💡 Hint: {card.hint}</p>}
-            {card.mnemonic && <p className="text-xs mt-2 wrap-break-word"><span className="mnemonic-text bg-purple-900/30 px-2 py-1 rounded">✨ {card.mnemonic}</span></p>}
-            <p className="text-gray-500 text-sm mt-3 animate-pulse">👆 Tap or swipe up to flip</p>
+        <motion.div 
+          className="relative w-full h-full text-center preserve-3d min-h-40"
+          animate={{ rotateY: flip ? 180 : 0 }}
+          transition={{ duration: 0.6, type: 'spring', stiffness: 100 }}
+          style={{ transformStyle: 'preserve-3d' }}
+        >
+          {/* Front Side */}
+          <div 
+            className="absolute inset-0 rounded-xl p-4 overflow-y-auto flex flex-col justify-center backdrop-blur-sm"
+            style={{
+              border: `2px solid ${theme.accent}50`,
+              background: `linear-gradient(135deg, ${theme.accent}20, transparent)`,
+              boxShadow: `0 4px 15px ${theme.glow}30`,
+              backfaceVisibility: 'hidden',
+              WebkitBackfaceVisibility: 'hidden',
+            }}
+          >
+            <p className="font-bold wrap-break-word text-lg" style={{ color: theme.accent }}>
+              {card.front}
+            </p>
+            {card.hint && (
+              <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-2 wrap-break-word">
+                💡 Hint: {card.hint}
+              </p>
+            )}
+            {card.mnemonic && (
+              <p className="text-xs mt-2 wrap-break-word">
+                <span 
+                  className="px-2 py-1 rounded font-semibold"
+                  style={{
+                    background: `${theme.secondary}30`,
+                    color: theme.textColor,
+                  }}
+                >
+                  ✨ {card.mnemonic}
+                </span>
+              </p>
+            )}
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm mt-3 animate-pulse">
+              👆 Tap or swipe up to flip
+            </p>
           </div>
-          <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-xl p-4 border-2 border-emerald-600 bg-linear-to-br from-emerald-900/50 to-teal-900/50 overflow-y-auto flex flex-col backdrop-blur-sm">
-            <p className="text-gray-200 mb-4 wrap-break-word shrink-0 text-lg font-medium">{card.back}</p>
+
+          {/* Back Side */}
+          <div 
+            className="absolute inset-0 rounded-xl p-4 overflow-y-auto flex flex-col backdrop-blur-sm"
+            style={{
+              border: `2px solid ${theme.accent}`,
+              background: `linear-gradient(135deg, ${theme.accent}30, ${theme.secondary}30)`,
+              boxShadow: `0 4px 20px ${theme.glow}50`,
+              transform: 'rotateY(180deg)',
+              backfaceVisibility: 'hidden',
+              WebkitBackfaceVisibility: 'hidden',
+            }}
+          >
+            <p className="text-neutral-800 dark:text-neutral-200 mb-4 wrap-break-word shrink-0 text-lg font-medium">
+              {card.back}
+            </p>
             {showRating && (
-              <div className="mt-auto pt-4 border-t border-emerald-700/50 shrink-0" onClick={(e) => e.stopPropagation()}>
-                <p className="text-xs text-gray-400 mb-3 text-center font-semibold">⚡ How well did you know this?</p>
+              <div className="mt-auto pt-4 shrink-0" 
+                style={{ borderTop: `1px solid ${theme.accent}50` }}
+                onClick={(e) => e.stopPropagation()}
+                role="group"
+                aria-label="Rate your recall"
+              >
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-3 text-center font-semibold">
+                  ⚡ How well did you know this?
+                </p>
                 <div className="flex flex-wrap gap-2 justify-center">
-                  <button 
+                  <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => { vibrate(15); handleRating(1); }} 
-                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all transform hover:scale-105 shadow-lg"
+                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-xs font-semibold rounded-lg transition-all shadow-lg"
+                    aria-label="Again - forgot completely"
                   >
                     ❌ Again
-                  </button>
-                  <button 
+                  </motion.button>
+                  <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => { vibrate(15); handleRating(3); }} 
-                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-linear-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all transform hover:scale-105 shadow-lg"
+                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-linear-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 text-white text-xs font-semibold rounded-lg transition-all shadow-lg"
+                    aria-label="Hard - difficult to recall"
                   >
                     🤔 Hard
-                  </button>
-                  <button 
+                  </motion.button>
+                  <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => { vibrate(15); handleRating(4); }} 
-                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all transform hover:scale-105 shadow-lg"
+                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-xs font-semibold rounded-lg transition-all shadow-lg"
+                    aria-label="Good - recalled with some effort"
                   >
                     👍 Good
-                  </button>
-                  <button 
+                  </motion.button>
+                  <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => { vibrate(20); handleRating(5); }} 
-                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-linear-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all transform hover:scale-105 shadow-lg animate-glow"
+                    className="flex-1 min-w-[140px] md:flex-none md:min-w-0 px-4 py-2 md:px-3 md:py-1.5 bg-linear-to-r text-white text-xs font-semibold rounded-lg transition-all shadow-lg"
+                    style={{
+                      background: theme.gradient,
+                      boxShadow: `0 0 20px ${theme.glow}`,
+                    }}
+                    aria-label="Easy - perfect recall"
                   >
                     ⚡ Easy
-                  </button>
+                  </motion.button>
                 </div>
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
         <style jsx>{`
           .perspective { perspective: 1000px; }
           .preserve-3d { transform-style: preserve-3d; }
@@ -218,51 +328,117 @@ export default function NodeFlashcards({
   onStatsUpdate?: () => void;
 }) {
   const [showRefs, setShowRefs] = useState(false)
-  const cards = useMemo(() => node.shuffle ? shuffle(node.cards) : node.cards, [node])
+  const [mounted, setMounted] = useState(false)
+  
+  // Fix hydration: Don't shuffle until client-side
+  const [cards, setCards] = useState(node.cards)
+  
+  useEffect(() => {
+    setMounted(true)
+    if (node.shuffle) {
+      setCards(shuffle(node.cards))
+    }
+  }, [node])
+  
   const slug = subjectSlug || 'default'
   const total = totalCards || cards.length
+  
+  // Get theme for this flashcard set
+  const theme = getThemeById(node.id)
 
   return (
-    <section id={node.id} data-node-id={node.id} className="modern-card gradient-card-emerald animate-fade-in-up p-6 border-t-4 border-emerald-500 shadow-2xl">
-      <div className="flex items-center justify-between gap-3 mb-2">
-        <h3 className="text-xl md:text-2xl font-bold text-emerald-300 animate-slide-in-left">{node.title}</h3>
-        <div className="flex items-center gap-2">
-          <span className="pill-badge bg-emerald-600/30 text-emerald-200 border-emerald-500/50">{cards.length} cards</span>
-          {node.meta?.refs?.length ? (
-            <button onClick={()=>setShowRefs(true)} className="pill-badge bg-emerald-900/50 text-emerald-300 border-emerald-600 hover:bg-emerald-800/60 hover:scale-105 transition-all">
-              📚 References
-            </button>
-          ) : null}
-          <BookmarkButton active={bookmarked} onToggle={onToggleBookmark} />
-        </div>
-      </div>
-      {node.mnemonic && (
-        <p className="mt-1 text-sm animate-fade-in-up delay-100">
-          💡 Mnemonic: <span className="mnemonic-text bg-purple-900/40 px-2 py-1 rounded-lg font-semibold text-purple-200">{node.mnemonic}</span>
-        </p>
-      )}
-      <MetaBar meta={node.meta} />
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-        {cards.map((c, i) => (
-          <div 
-            key={i}
-            className="animate-fade-in-up"
-            style={{ animationDelay: `${i * 100}ms` }}
-          >
-            <FlashCard 
-              card={c} 
-              cardId={`${node.id}-card-${i}`}
-              subjectSlug={slug}
-              totalCards={total}
-              onStatsUpdate={onStatsUpdate}
-            />
-          </div>
-        ))}
-      </div>
+    <section 
+      id={node.id} 
+      data-node-id={node.id} 
+      className="relative overflow-hidden modern-card animate-fade-in-up p-6 rounded-2xl shadow-2xl"
+      style={{
+        background: `linear-gradient(135deg, ${theme.accent}05, transparent)`,
+        borderTop: `4px solid ${theme.accent}`,
+        boxShadow: `0 10px 40px ${theme.glow}20`,
+      }}
+      role="region"
+      aria-label={`Flashcards: ${node.title}`}
+    >
+      {/* Gradient Overlay */}
+      <div 
+        className="absolute inset-0 opacity-5 pointer-events-none"
+        style={{
+          background: theme.gradient,
+        }}
+      />
 
-      {node.meta?.refs?.length ? (
-        <ReferencesDrawer open={showRefs} refs={node.meta.refs} onClose={()=>setShowRefs(false)} />
-      ) : null}
+      <div className="relative z-10">
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <h3 
+            className="text-xl md:text-2xl font-bold animate-slide-in-left"
+            style={{ color: theme.accent }}
+          >
+            {node.title}
+          </h3>
+          <div className="flex items-center gap-2">
+            <span 
+              className="pill-badge text-xs font-bold px-3 py-1 rounded-full"
+              style={{
+                background: `${theme.accent}20`,
+                color: theme.accent,
+                border: `1px solid ${theme.accent}40`,
+              }}
+            >
+              {cards.length} cards
+            </span>
+            {node.meta?.refs?.length ? (
+              <button 
+                onClick={()=>setShowRefs(true)} 
+                className="pill-badge text-xs font-bold px-3 py-1 rounded-full hover:scale-105 transition-all"
+                style={{
+                  background: `${theme.accent}10`,
+                  color: theme.accent,
+                  border: `1px solid ${theme.accent}30`,
+                }}
+                aria-label="View references"
+              >
+                📚 References
+              </button>
+            ) : null}
+            <BookmarkButton active={bookmarked} onToggle={onToggleBookmark} />
+          </div>
+        </div>
+        {node.mnemonic && (
+          <p className="mt-1 text-sm animate-fade-in-up delay-100">
+            💡 Mnemonic: <span 
+              className="px-2 py-1 rounded-lg font-semibold"
+              style={{
+                background: `${theme.secondary}30`,
+                color: theme.textColor,
+              }}
+            >{node.mnemonic}</span>
+          </p>
+        )}
+        <MetaBar meta={node.meta} />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+          {cards.map((c, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1, duration: 0.4 }}
+            >
+              <FlashCard 
+                card={c} 
+                cardId={`${node.id}-card-${i}`}
+                subjectSlug={slug}
+                totalCards={total}
+                onStatsUpdate={onStatsUpdate}
+                theme={theme}
+              />
+            </motion.div>
+          ))}
+        </div>
+
+        {node.meta?.refs?.length ? (
+          <ReferencesDrawer open={showRefs} refs={node.meta.refs} onClose={()=>setShowRefs(false)} />
+        ) : null}
+      </div>
     </section>
   )
 }

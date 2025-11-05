@@ -1,10 +1,32 @@
+/**
+ * 🎯 QUIZ PAGE - World-Class Quiz Interface
+ * Steps 16-20: Integration with Advanced QuizPanel
+ * Steps 46: Lazy loading optimization
+ * Ultra-modern exam-style quiz with theme integration
+ */
+
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getSubjectData, collectAllQuizQuestions, sampleRandom } from '@/lib/data'
 import type { QuizQuestion } from '@/lib/types'
 import { quizComplete } from '@/lib/confetti'
+
+// Lazy load the heavy QuizPanel component
+const QuizPanel = lazy(() => import('@/components/quiz/QuizPanel').then(mod => ({ default: mod.QuizPanel })))
+
+// Loading fallback component
+function QuizLoadingFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-950">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+        <p className="text-lg text-neutral-600 dark:text-neutral-400">Preparing quiz interface...</p>
+      </div>
+    </div>
+  )
+}
 
 export default function QuizPage() {
   const params = useParams()
@@ -12,85 +34,116 @@ export default function QuizPage() {
   const slug = params?.slug as string
 
   const [questions, setQuestions] = useState<QuizQuestion[]>([])
-  const [picked, setPicked] = useState<Record<string, number>>({})
-  const [checked, setChecked] = useState(false)
-  const [celebrated, setCelebrated] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!slug) return
 
-    const subject = getSubjectData(slug)
-    if (!subject) {
-      router.push('/subjects')
-      return
+    try {
+      const subject = getSubjectData(slug)
+      if (!subject) {
+        setError('Subject not found')
+        setLoading(false)
+        return
+      }
+
+      // Collect all questions from the subject
+      const allQuestions = collectAllQuizQuestions(subject)
+
+      if (allQuestions.length === 0) {
+        setError('No questions available')
+        setLoading(false)
+        return
+      }
+
+      // Select 10 random questions (or all if less than 10)
+      const questionCount = Math.min(10, allQuestions.length)
+      const randomQuestions = sampleRandom(allQuestions, questionCount)
+
+      setQuestions(randomQuestions)
+      setLoading(false)
+    } catch (err) {
+      console.error('Error loading quiz:', err)
+      setError('Failed to load quiz')
+      setLoading(false)
     }
-
-    // Collect all questions from the subject
-    const allQuestions = collectAllQuizQuestions(subject)
-
-    // Select 10 random questions
-    const randomQuestions = sampleRandom(allQuestions, 10)
-
-    setQuestions(randomQuestions)
-    setLoading(false)
   }, [slug, router])
 
-  function onPick(qid: string, idx: number) {
-    const next = { ...picked, [qid]: idx }
-    setPicked(next)
+  // Handle quiz completion with confetti
+  const handleQuizComplete = (score: number) => {
+    quizComplete(score)
   }
 
-  const total = questions.length
-  const correct = questions.reduce((acc, q) => acc + (picked[q.id] === q.answerIndex ? 1 : 0), 0)
-  const score = total > 0 ? Math.round((correct / total) * 100) : 0
-
-  // Trigger confetti when quiz is checked and score is calculated
-  useEffect(() => {
-    if (checked && !celebrated && Object.keys(picked).length === total) {
-      quizComplete(score)
-      setCelebrated(true)
-    }
-  }, [checked, score, total, celebrated, picked])
-
-  // Reset celebration flag when quiz is reset
-  useEffect(() => {
-    if (!checked) {
-      setCelebrated(false)
-    }
-  }, [checked])
-
+  // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen p-6 bg-gray-900 text-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-gray-800 rounded-2xl p-8 text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto mb-4"></div>
-            <p className="text-gray-400">Loading quiz questions...</p>
+      <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-950">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-lg text-neutral-600 dark:text-neutral-400">Loading quiz questions...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Error state - Subject not found
+  if (error === 'Subject not found') {
+    return (
+      <div className="min-h-screen p-6 bg-neutral-50 dark:bg-neutral-950">
+        <div className="max-w-2xl mx-auto mt-20">
+          <div className="bg-white dark:bg-neutral-900 rounded-2xl p-8 text-center shadow-xl">
+            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h1 className="text-2xl font-bold mb-2 dark:text-white">Subject Not Found</h1>
+            <p className="text-neutral-600 dark:text-neutral-400 mb-6">
+              The subject you're looking for doesn't exist.
+            </p>
+            <Link
+              href="/"
+              className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
+            >
+              Back to Home
+            </Link>
           </div>
         </div>
       </div>
     )
   }
 
-  if (questions.length === 0) {
+  // Error state - No questions available
+  if (error === 'No questions available' || questions.length === 0) {
     return (
-      <div className="min-h-screen p-6 bg-gray-900 text-white">
-        <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen p-6 bg-neutral-50 dark:bg-neutral-950">
+        <div className="max-w-2xl mx-auto mt-20">
           <div className="mb-6">
-            <Link href={`/subjects/${slug}`} className="text-indigo-400 hover:text-indigo-300">
-              ← Back to Subject
+            <Link 
+              href={`/subjects/${slug}`} 
+              className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Subject
             </Link>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl p-8 text-center">
-            <h1 className="text-3xl font-bold mb-4">No Quiz Questions Available</h1>
-            <p className="text-gray-400 mb-6">
-              This subject doesn't have any quiz questions yet.
+          <div className="bg-white dark:bg-neutral-900 rounded-2xl p-8 text-center shadow-xl">
+            <div className="w-16 h-16 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-yellow-600 dark:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h1 className="text-2xl font-bold mb-2 dark:text-white">No Quiz Questions Available</h1>
+            <p className="text-neutral-600 dark:text-neutral-400 mb-6">
+              This subject doesn't have any quiz questions yet. Check back later!
             </p>
             <Link
               href={`/subjects/${slug}`}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+              className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
             >
               Back to Subject
             </Link>
@@ -100,105 +153,47 @@ export default function QuizPage() {
     )
   }
 
-  return (
-    <div className="min-h-screen p-6 bg-gray-900 text-white">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-6">
-          <Link href={`/subjects/${slug}`} className="text-indigo-400 hover:text-indigo-300">
-            ← Back to Subject
-          </Link>
-        </div>
-
-        <div className="bg-gray-800 rounded-2xl p-8 shadow-xl border-t-4 border-emerald-500">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2">Quiz: {getSubjectData(slug)?.title}</h1>
-            <p className="text-gray-400">Test your knowledge with 10 random questions</p>
-          </div>
-
-          <div className="space-y-6">
-            {questions.map((q, index) => {
-              const user = picked[q.id]
-              const isCorrect = checked && user === q.answerIndex
-              const isWrong = checked && user !== undefined && user !== q.answerIndex
-              return (
-                <div key={q.id} className="p-6 bg-gray-700 rounded-lg shadow-md border-l-4 border-emerald-500">
-                  <p className="font-semibold text-lg text-gray-200 mb-4">
-                    {index + 1}. {q.prompt}
-                  </p>
-                  <div className="space-y-3">
-                    {q.options.map((opt, idx) => (
-                      <label key={idx} className="flex items-center space-x-3 text-gray-300 hover:bg-gray-600 p-3 rounded-md cursor-pointer transition">
-                        <input
-                          type="radio"
-                          name={`q-${q.id}`}
-                          checked={user === idx}
-                          onChange={() => onPick(q.id, idx)}
-                          className="text-emerald-500 h-4 w-4"
-                        />
-                        <span className={`${
-                          checked
-                            ? (idx === q.answerIndex ? 'text-green-400 font-bold' : (user === idx ? 'text-red-400' : ''))
-                            : ''
-                        }`}>
-                          {opt}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                  {checked && (
-                    <div className={`mt-4 p-3 text-sm font-medium rounded ${
-                      isCorrect
-                        ? 'bg-green-900/40 text-green-300 border border-green-700'
-                        : isWrong
-                        ? 'bg-red-900/40 text-red-300 border border-red-700'
-                        : 'bg-emerald-900/40 text-emerald-300 border border-emerald-700'
-                    }`}>
-                      {isCorrect
-                        ? '✅ Correct!'
-                        : isWrong
-                        ? <>❌ Incorrect. Correct: <strong>{q.options[q.answerIndex]}</strong>{q.reason ? <> — {q.reason}</> : null}</>
-                        : 'Select an option'
-                      }
-                    </div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-
-          <div className="flex flex-wrap gap-3 mt-8 justify-center">
-            {!checked ? (
+  // Generic error state
+  if (error) {
+    return (
+      <div className="min-h-screen p-6 bg-neutral-50 dark:bg-neutral-950">
+        <div className="max-w-2xl mx-auto mt-20">
+          <div className="bg-white dark:bg-neutral-900 rounded-2xl p-8 text-center shadow-xl">
+            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </div>
+            <h1 className="text-2xl font-bold mb-2 dark:text-white">Error Loading Quiz</h1>
+            <p className="text-neutral-600 dark:text-neutral-400 mb-6">{error}</p>
+            <div className="flex gap-3 justify-center">
               <button
-                onClick={() => setChecked(true)}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg text-lg"
+                onClick={() => window.location.reload()}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
               >
-                Submit Quiz
+                Try Again
               </button>
-            ) : (
-              <>
-                <button
-                  onClick={() => { setPicked({}); setChecked(false) }}
-                  className="border border-emerald-600 text-emerald-400 font-bold py-3 px-6 rounded-lg bg-gray-800 hover:bg-gray-700"
-                >
-                  Try Again
-                </button>
-                <Link
-                  href={`/subjects/${slug}`}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg"
-                >
-                  Back to Subject
-                </Link>
-              </>
-            )}
-            {checked && (
-              <div className="ml-auto text-center">
-                <div className="text-2xl font-bold text-emerald-400">{score}%</div>
-                <div className="text-sm text-gray-400">Score: {correct} / {total}</div>
-              </div>
-            )}
+              <Link
+                href={`/subjects/${slug}`}
+                className="bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-900 dark:text-neutral-100 font-medium py-2 px-6 rounded-lg transition-colors"
+              >
+                Back to Subject
+              </Link>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    )
+  }
+
+  // Main quiz interface with new QuizPanel (lazy loaded)
+  return (
+    <Suspense fallback={<QuizLoadingFallback />}>
+      <QuizPanel 
+        questions={questions} 
+        topicId={slug}
+        onComplete={handleQuizComplete}
+      />
+    </Suspense>
   )
 }

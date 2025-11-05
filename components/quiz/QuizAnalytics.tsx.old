@@ -1,0 +1,502 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import { useTheme as useNottyTheme } from '@/components/ThemeProvider'
+
+interface QuizAttempt {
+  id: string
+  subjectId: string
+  subjectName: string
+  score: number
+  maxScore: number
+  percentage: number
+  totalQuestions: number
+  correct: number
+  incorrect: number
+  skipped: number
+  timeSpent: number
+  timestamp: number
+  topicBreakdown: {
+    topicId: string
+    topicName: string
+    correct: number
+    total: number
+    percentage: number
+  }[]
+}
+
+interface AnalyticsData {
+  attempts: QuizAttempt[]
+  overallStats: {
+    totalAttempts: number
+    averageScore: number
+    bestScore: number
+    totalTimeSpent: number
+    improvementRate: number
+  }
+  topicStats: {
+    topicId: string
+    topicName: string
+    attempts: number
+    averageAccuracy: number
+    trend: 'improving' | 'declining' | 'stable'
+  }[]
+  recentPerformance: {
+    date: string
+    score: number
+    percentage: number
+  }[]
+}
+
+export function QuizAnalytics({ subjectId }: { subjectId?: string }) {
+  const [mounted, setMounted] = useState(false)
+  const [data, setData] = useState<AnalyticsData | null>(null)
+  const [timeRange, setTimeRange] = useState<'week' | 'month' | 'all'>('week')
+  
+  let theme = null
+  try {
+    // Only use theme if available
+    const themeContext = useNottyTheme()
+    theme = themeContext?.themeStyle
+  } catch {
+    // Theme provider not available during SSR
+  }
+
+  useEffect(() => {
+    setMounted(true)
+    loadAnalytics()
+  }, [subjectId, timeRange])
+
+  const loadAnalytics = () => {
+    // Load from localStorage
+    const key = subjectId ? `quiz-analytics-${subjectId}` : 'quiz-analytics-all'
+    const stored = localStorage.getItem(key)
+    
+    if (stored) {
+      setData(JSON.parse(stored))
+    } else {
+      // Generate mock data for demonstration
+      setData(generateMockData())
+    }
+  }
+
+  const generateMockData = (): AnalyticsData => {
+    const attempts: QuizAttempt[] = Array.from({ length: 10 }, (_, i) => ({
+      id: `attempt-${i}`,
+      subjectId: subjectId || 'general',
+      subjectName: 'Sample Subject',
+      score: 60 + Math.random() * 40,
+      maxScore: 100,
+      percentage: 60 + Math.random() * 40,
+      totalQuestions: 20,
+      correct: 12 + Math.floor(Math.random() * 8),
+      incorrect: Math.floor(Math.random() * 5),
+      skipped: Math.floor(Math.random() * 3),
+      timeSpent: 300 + Math.floor(Math.random() * 600),
+      timestamp: Date.now() - (9 - i) * 86400000,
+      topicBreakdown: [
+        {
+          topicId: 'topic-1',
+          topicName: 'Fundamentals',
+          correct: 4 + Math.floor(Math.random() * 3),
+          total: 7,
+          percentage: 60 + Math.random() * 30,
+        },
+        {
+          topicId: 'topic-2',
+          topicName: 'Advanced Concepts',
+          correct: 3 + Math.floor(Math.random() * 4),
+          total: 7,
+          percentage: 50 + Math.random() * 40,
+        },
+        {
+          topicId: 'topic-3',
+          topicName: 'Applications',
+          correct: 2 + Math.floor(Math.random() * 4),
+          total: 6,
+          percentage: 40 + Math.random() * 50,
+        },
+      ],
+    }))
+
+    const totalScore = attempts.reduce((sum, a) => sum + a.percentage, 0)
+    const averageScore = totalScore / attempts.length
+    const bestScore = Math.max(...attempts.map(a => a.percentage))
+    const totalTime = attempts.reduce((sum, a) => sum + a.timeSpent, 0)
+    
+    // Calculate improvement rate
+    const firstHalf = attempts.slice(0, Math.floor(attempts.length / 2))
+    const secondHalf = attempts.slice(Math.floor(attempts.length / 2))
+    const firstAvg = firstHalf.reduce((sum, a) => sum + a.percentage, 0) / firstHalf.length
+    const secondAvg = secondHalf.reduce((sum, a) => sum + a.percentage, 0) / secondHalf.length
+    const improvementRate = ((secondAvg - firstAvg) / firstAvg) * 100
+
+    return {
+      attempts,
+      overallStats: {
+        totalAttempts: attempts.length,
+        averageScore,
+        bestScore,
+        totalTimeSpent: totalTime,
+        improvementRate,
+      },
+      topicStats: [
+        {
+          topicId: 'topic-1',
+          topicName: 'Fundamentals',
+          attempts: 10,
+          averageAccuracy: 75,
+          trend: 'improving',
+        },
+        {
+          topicId: 'topic-2',
+          topicName: 'Advanced Concepts',
+          attempts: 10,
+          averageAccuracy: 65,
+          trend: 'stable',
+        },
+        {
+          topicId: 'topic-3',
+          topicName: 'Applications',
+          attempts: 10,
+          averageAccuracy: 55,
+          trend: 'declining',
+        },
+      ],
+      recentPerformance: attempts.slice(-7).map(a => ({
+        date: new Date(a.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        score: a.score,
+        percentage: a.percentage,
+      })),
+    }
+  }
+
+  if (!mounted || !data) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary/30 border-t-primary"></div>
+      </div>
+    )
+  }
+
+  const { overallStats, topicStats, recentPerformance } = data
+
+  return (
+    <div className="min-h-screen p-4 md:p-8 bg-white dark:bg-gray-900">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8"
+      >
+        <h1 className="text-4xl font-bold mb-2 bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          Quiz Analytics
+        </h1>
+        <p className="text-lg text-gray-600 dark:text-gray-300">
+          Track your progress and identify areas for improvement
+        </p>
+      </motion.div>
+
+      {/* Time Range Selector */}
+      <div className="flex gap-2 mb-6">
+        {(['week', 'month', 'all'] as const).map((range) => (
+          <button
+            key={range}
+            onClick={() => setTimeRange(range)}
+            className={`px-4 py-2 rounded-lg font-medium transition-all border-2 ${
+              timeRange === range
+                ? 'bg-linear-to-r from-purple-500 to-pink-500 text-white border-purple-500'
+                : 'bg-transparent text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600'
+            }`}
+          >
+            {range === 'week' ? 'Last 7 Days' : range === 'month' ? 'Last 30 Days' : 'All Time'}
+          </button>
+        ))}
+      </div>
+
+      {/* Overall Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <StatCard
+          title="Total Attempts"
+          value={overallStats.totalAttempts}
+          icon="📊"
+          theme={theme}
+        />
+        <StatCard
+          title="Average Score"
+          value={`${overallStats.averageScore.toFixed(1)}%`}
+          icon="🎯"
+          theme={theme}
+        />
+        <StatCard
+          title="Best Score"
+          value={`${overallStats.bestScore.toFixed(1)}%`}
+          icon="🏆"
+          theme={theme}
+        />
+        <StatCard
+          title="Improvement"
+          value={`${overallStats.improvementRate >= 0 ? '+' : ''}${overallStats.improvementRate.toFixed(1)}%`}
+          icon={overallStats.improvementRate >= 0 ? '📈' : '📉'}
+          theme={theme}
+          highlight={overallStats.improvementRate >= 10}
+        />
+      </div>
+
+      {/* Performance Chart */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="mb-8 p-6 rounded-xl backdrop-blur-sm"
+        style={{
+          background: `linear-gradient(135deg, ${theme.accent}10, ${theme.secondary}10)`,
+          border: `2px solid ${theme.accent}30`,
+        }}
+      >
+        <h2 className="text-2xl font-bold mb-4" style={{ color: theme.accent }}>
+          Performance Over Time
+        </h2>
+        <div className="relative h-64">
+          <PerformanceChart data={recentPerformance} theme={theme} />
+        </div>
+      </motion.div>
+
+      {/* Topic Breakdown */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="mb-8"
+      >
+        <h2 className="text-2xl font-bold mb-4" style={{ color: theme.accent }}>
+          Topic Performance
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {topicStats.map((topic, index) => (
+            <TopicCard key={topic.topicId} topic={topic} theme={theme} index={index} />
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Recent Attempts */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
+        <h2 className="text-2xl font-bold mb-4" style={{ color: theme.accent }}>
+          Recent Attempts
+        </h2>
+        <div className="space-y-3">
+          {data.attempts.slice(-5).reverse().map((attempt, index) => (
+            <AttemptRow key={attempt.id} attempt={attempt} theme={theme} index={index} />
+          ))}
+        </div>
+      </motion.div>
+    </div>
+  )
+}
+
+function StatCard({ title, value, icon, theme, highlight }: any) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ scale: 1.05 }}
+      className="p-6 rounded-xl backdrop-blur-sm"
+      style={{
+        background: highlight
+          ? `linear-gradient(135deg, ${theme.accent}30, ${theme.secondary}30)`
+          : `linear-gradient(135deg, ${theme.accent}10, ${theme.secondary}10)`,
+        border: `2px solid ${highlight ? theme.accent : theme.accent + '30'}`,
+        boxShadow: highlight ? `0 8px 30px ${theme.glow}40` : `0 4px 20px ${theme.glow}20`,
+      }}
+    >
+      <div className="text-3xl mb-2">{icon}</div>
+      <div className="text-sm opacity-70 mb-1" style={{ color: theme.textColor }}>{title}</div>
+      <div className="text-3xl font-bold" style={{ color: theme.accent }}>{value}</div>
+    </motion.div>
+  )
+}
+
+function PerformanceChart({ data, theme }: any) {
+  const maxScore = Math.max(...data.map((d: any) => d.percentage))
+  const minScore = Math.min(...data.map((d: any) => d.percentage))
+  const range = maxScore - minScore || 100
+
+  return (
+    <div className="relative w-full h-full flex items-end justify-between gap-2">
+      {data.map((point: any, index: number) => {
+        const height = ((point.percentage - minScore) / range) * 100 || 50
+        
+        return (
+          <div key={index} className="flex-1 flex flex-col items-center gap-2">
+            <motion.div
+              initial={{ height: 0 }}
+              animate={{ height: `${height}%` }}
+              transition={{ delay: index * 0.1, type: 'spring' }}
+              className="w-full rounded-t-lg relative group cursor-pointer"
+              style={{
+                background: `linear-gradient(to top, ${theme.accent}, ${theme.secondary})`,
+                minHeight: '10%',
+              }}
+            >
+              {/* Tooltip */}
+              <div
+                className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"
+                style={{
+                  background: "#0b1220",
+                  border: `2px solid ${theme.accent}`,
+                  color: theme.textColor,
+                }}
+              >
+                <div className="font-bold">{point.percentage.toFixed(1)}%</div>
+                <div className="text-xs opacity-70">{point.date}</div>
+              </div>
+            </motion.div>
+            <div className="text-xs opacity-60" style={{ color: theme.textColor }}>
+              {point.date.split(' ')[1]}
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function TopicCard({ topic, theme, index }: any) {
+  const getTrendIcon = (trend: string) => {
+    switch (trend) {
+      case 'improving': return '📈'
+      case 'declining': return '📉'
+      case 'stable': return '➡️'
+      default: return '➖'
+    }
+  }
+
+  const getTrendColor = (trend: string) => {
+    switch (trend) {
+      case 'improving': return '#10b981'
+      case 'declining': return '#ef4444'
+      case 'stable': return theme.accent
+      default: return theme.text
+    }
+  }
+
+  const isWeak = topic.averageAccuracy < 60
+  const isStrong = topic.averageAccuracy >= 80
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.1 }}
+      className="p-5 rounded-xl backdrop-blur-sm"
+      style={{
+        background: isWeak
+          ? 'linear-gradient(135deg, #ef444420, #f8717120)'
+          : isStrong
+          ? 'linear-gradient(135deg, #10b98120, #34d39920)'
+          : `linear-gradient(135deg, ${theme.accent}10, ${theme.secondary}10)`,
+        border: `2px solid ${isWeak ? '#ef4444' : isStrong ? '#10b981' : theme.accent + '30'}`,
+      }}
+    >
+      <div className="flex items-start justify-between mb-3">
+        <h3 className="font-bold text-lg" style={{ color: theme.textColor }}>
+          {topic.topicName}
+        </h3>
+        <span className="text-2xl">{getTrendIcon(topic.trend)}</span>
+      </div>
+      
+      <div className="space-y-2">
+        <div className="flex justify-between items-center">
+          <span className="text-sm opacity-70" style={{ color: theme.textColor }}>Accuracy</span>
+          <span className="font-bold text-xl" style={{ color: getTrendColor(topic.trend) }}>
+            {topic.averageAccuracy.toFixed(1)}%
+          </span>
+        </div>
+        
+        {/* Progress Bar */}
+        <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "#0b1220" }}>
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${topic.averageAccuracy}%` }}
+            transition={{ delay: index * 0.1 + 0.3, type: 'spring' }}
+            className="h-full rounded-full"
+            style={{
+              background: `linear-gradient(to right, ${getTrendColor(topic.trend)}, ${theme.secondary})`,
+            }}
+          />
+        </div>
+        
+        <div className="text-xs opacity-60" style={{ color: theme.textColor }}>
+          {topic.attempts} attempts • {topic.trend}
+        </div>
+      </div>
+
+      {isWeak && (
+        <div className="mt-3 text-xs px-2 py-1 rounded" style={{ background: '#ef444420', color: '#ef4444' }}>
+          ⚠️ Needs improvement
+        </div>
+      )}
+      {isStrong && (
+        <div className="mt-3 text-xs px-2 py-1 rounded" style={{ background: '#10b98120', color: '#10b981' }}>
+          ✨ Strong performance
+        </div>
+      )}
+    </motion.div>
+  )
+}
+
+function AttemptRow({ attempt, theme, index }: any) {
+  const percentage = attempt.percentage
+  const grade = percentage >= 90 ? 'A+' : percentage >= 80 ? 'A' : percentage >= 70 ? 'B' : percentage >= 60 ? 'C' : 'D'
+  const gradeColor = percentage >= 80 ? '#10b981' : percentage >= 60 ? theme.accent : '#ef4444'
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.05 }}
+      className="p-4 rounded-lg backdrop-blur-sm flex items-center justify-between"
+      style={{
+        background: `linear-gradient(to right, ${theme.accent}10, ${theme.secondary}10)`,
+        border: `1px solid ${theme.accent}20`,
+      }}
+    >
+      <div className="flex-1">
+        <div className="font-medium" style={{ color: theme.textColor }}>
+          {new Date(attempt.timestamp).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </div>
+        <div className="text-sm opacity-70 mt-1" style={{ color: theme.textColor }}>
+          {attempt.correct} correct • {attempt.incorrect} incorrect • {attempt.skipped} skipped
+        </div>
+      </div>
+      
+      <div className="flex items-center gap-4">
+        <div className="text-right">
+          <div className="text-2xl font-bold" style={{ color: gradeColor }}>
+            {percentage.toFixed(1)}%
+          </div>
+          <div className="text-sm opacity-70" style={{ color: theme.textColor }}>
+            {Math.floor(attempt.timeSpent / 60)}m {attempt.timeSpent % 60}s
+          </div>
+        </div>
+        <div
+          className="w-12 h-12 rounded-lg flex items-center justify-center text-xl font-bold"
+          style={{ background: gradeColor + '20', color: gradeColor }}
+        >
+          {grade}
+        </div>
+      </div>
+    </motion.div>
+  )
+}

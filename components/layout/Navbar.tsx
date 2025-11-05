@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import InstallPrompt from '@/components/pwa/InstallPrompt'
 import NavContinuePill from './NavContinuePill'
+import { ThemeSelectorCompact } from '@/components/ThemeSelector'
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -48,6 +49,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-2">
           {link('/', 'Home')}
           <a href="/#subjects" className="px-3 py-2 rounded-lg text-sm font-semibold text-gray-800 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900/20">Explore</a>
+          {link('/analytics', 'Analytics')}
           <a href="/#about" className="px-3 py-2 rounded-lg text-sm font-semibold text-gray-800 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900/20">About</a>
 
           <button
@@ -61,6 +63,8 @@ export default function Navbar() {
           <NavContinuePill />
 
           <InstallPrompt />
+
+          <ThemeSelectorCompact />
 
           <button
             aria-label="Toggle dark mode"
@@ -87,6 +91,7 @@ export default function Navbar() {
           <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-2">
             {link('/', 'Home')}
             <a href="/#subjects" className="px-3 py-2 rounded-lg text-sm font-semibold text-gray-800 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900/20">Explore</a>
+            {link('/analytics', 'Analytics')}
             <a href="/#about" className="px-3 py-2 rounded-lg text-sm font-semibold text-gray-800 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-900/20">About</a>
             <button
               onClick={() => window.dispatchEvent(new Event('notty:openCommand'))}
