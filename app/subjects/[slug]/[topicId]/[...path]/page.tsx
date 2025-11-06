@@ -122,6 +122,7 @@ export default async function SubTopicPage({ params }: { params: Promise<Params>
           <TopicContent 
             content={topic.content} 
             subjectSlug={slug} 
+            topicId={topicId}
             brandColor={subject.brandColor}
           />
         )}
