@@ -18,15 +18,22 @@
               "title": "Preamble Complete Data & Mnemonic Guide (Read Once, Remember Always)",
               "body": {
                 "preamble_text": "WE, THE PEOPLE OF INDIA, having solemnly resolved to constitute India into a SOVEREIGN SOCIALIST SECULAR DEMOCRATIC REPUBLIC and to secure to all its citizens: JUSTICE, social, economic and political; LIBERTY of thought, expression, belief, faith and worship; EQUALITY of status and of opportunity; and to promote among them all FRATERNITY assuring the dignity of the individual and the unity and integrity of the Nation; IN OUR CONSTITUENT ASSEMBLY this twenty-sixth day of November, 1949, do HEREBY ADOPT, ENACT AND GIVE TO OURSELVES THIS CONSTITUTION.",
-                "✨ Source of Authority": {
-                  "authority_phrase": "We, The People of India",
-                  "meaning": "Sovereignty rests with the people; the Constitution derives its authority from the citizens, not from any external power or monarch.",
-                  "significance": "Establishes popular sovereignty as the foundation of the Constitution.",
-                  "mnemonic": "People Power — 'WE, THE PEOPLE OF INDIA' begins the Preamble."
+                "essence": "The Preamble is the philosophical and political essence (soul/identity) of the Constitution. It states the source of authority, the nature of state, the objectives of the Constitution, and the date of adoption.",
+                "foundation_and_history": {
+                  "based_on": "Objectives Resolution (moved by Jawaharlal Nehru on 13 December 1946).",
+                  "adopted_on": "26 November 1949.",
+                  "came_into_effect": "26 January 1950 (Republic Day).",
+                  "enactment_note": "Preamble was enacted after the rest of the Constitution to ensure conformity.",
+                  "amendment_history": "Only amended by the 42nd Amendment (1976) which added the words Socialist, Secular and Integrity (to 'Unity').",
+                  "judicial_history_summary": {
+                    "Berubari Union Case (1960)": "Held that the Preamble is NOT a part of the Constitution (earlier view).",
+                    "Kesavananda Bharati Case (1973)": "Held that the Preamble IS a part of the Constitution and embodies the Basic Structure; marks the modern position.",
+                    "LIC of India Case (1995)": "Reaffirmed that the Preamble is an integral part of the Constitution."
+                  }
                 },
-                "🏛️ Nature of State": {
+                "nature_of_state": {
                   "sequence": ["Sovereign", "Socialist", "Secular", "Democratic", "Republic"],
-                  "mnemonic": "SSCDR → 'Strong Sexy Smart Desi Raja' (Sovereign Socialist Secular Democratic Republic).",
+                  "mnemonic": "SSCDR → 'Strong Sexy Smart Desi Raja' (Sovereign Socialst Secular Democratic Republic).",
                   "definitions": {
                     "Sovereign": "Independent in internal and external affairs; not subordinate to any external power.",
                     "Socialist": "Democratic socialism (added by 42nd Amendment) — aims to reduce socio-economic inequality; mixed economy model.",
@@ -39,10 +46,10 @@
                     "Socialist": "Visual: Equal plates of food for everyone — 'Aadmi Barabar'.",
                     "Secular": "Visual: Different faith symbols on an equal-scale balance — 'Sab Dharam Barabar'.",
                     "Democratic": "Visual: Ballot box with many hands — 'Vote Se Sarkar'.",
-                    "Republic": "Visual: A President's sash passed by election, not inheritance — 'Vansh Anugat Nahi'."
+                    "Republic": "Visual: A President’s sash passed by election, not inheritance — 'Vansh Anugat Nahi'."
                   }
                 },
-                "🎯 Core Objectives": {
+                "objectives": {
                   "list": ["Justice", "Liberty", "Equality", "Fraternity"],
                   "mnemonic": "JLEF → Justice, Liberty, Equality, Fraternity (JLEF).",
                   "details": {
@@ -68,18 +75,6 @@
                     "Liberty": "Mnemonic TEBFW → 'Thali Egg Bag Fan Water' — one cue per liberty type.",
                     "Equality": "SO → 'Suit' (status) & 'Out' (opportunity out/no one out).",
                     "Fraternity": "Visual: People holding hands around a map — 'Dignity + Unity'."
-                  }
-                },
-                "📅 Historical Context": {
-                  "based_on": "Objectives Resolution (moved by Jawaharlal Nehru on 13 December 1946).",
-                  "adopted_on": "26 November 1949.",
-                  "came_into_effect": "26 January 1950 (Republic Day).",
-                  "enactment_note": "Preamble was enacted after the rest of the Constitution to ensure conformity.",
-                  "amendment_history": "Only amended by the 42nd Amendment (1976) which added the words Socialist, Secular and Integrity (to 'Unity').",
-                  "judicial_history_summary": {
-                    "Berubari Union Case (1960)": "Held that the Preamble is NOT a part of the Constitution (earlier view).",
-                    "Kesavananda Bharati Case (1973)": "Held that the Preamble IS a part of the Constitution and embodies the Basic Structure; marks the modern position.",
-                    "LIC of India Case (1995)": "Reaffirmed that the Preamble is an integral part of the Constitution."
                   }
                 },
                 "legal_significance_and_usage": {

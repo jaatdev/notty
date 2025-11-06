@@ -88,8 +88,11 @@ export default async function TopicPage({ params }: { params: Promise<Params> })
         {topic.content && topic.content.length > 0 && (
           <TopicContent 
             content={topic.content} 
-            subjectSlug={slug} 
+            subjectSlug={slug}
+            topicId={topicId}
             brandColor={subject.brandColor}
+            subjectTitle={subject.title}
+            topicTitle={topic.title}
           />
         )}
 

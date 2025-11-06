@@ -5,7 +5,7 @@
  */
 
 'use client'
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { FlashcardsNode, Flashcard } from '@/lib/types'
 import BookmarkButton from '../ui/BookmarkButton'
@@ -32,6 +32,20 @@ function shuffle<T>(arr: T[]): T[] {
   return a
 }
 
+/**
+ * Debounce function to prevent rapid flip actions
+ */
+function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: NodeJS.Timeout | null = null
+  return function(...args: Parameters<T>) {
+    if (timeout) clearTimeout(timeout)
+    timeout = setTimeout(() => func(...args), wait)
+  }
+}
+
 function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate, theme }: { 
   card: Flashcard; 
   cardId: string; 
@@ -44,7 +58,18 @@ function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate, theme
   const [showRating, setShowRating] = useState(false)
   const [progress, setProgress] = useState<CardProgress | null>(null)
   const [sessionStart, setSessionStart] = useState<number>(0)
+  const [isFlipping, setIsFlipping] = useState(false) // NEW: Prevent rapid flips
+  const flipTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const { showToast } = useToast()
+
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (flipTimeoutRef.current) {
+        clearTimeout(flipTimeoutRef.current)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const existing = getCardProgress(subjectSlug, cardId)
@@ -63,19 +88,32 @@ function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate, theme
     }
   }, [cardId, subjectSlug])
 
-  const handleFlip = () => {
-    if (!flip) {
-      // Flip to back (show answer)
-      setFlip(true)
-      setShowRating(true)
-      setSessionStart(Date.now())
-      vibrate(10)
-    } else if (flip && !showRating) {
-      // Flip back to front (after rating is done)
-      setFlip(false)
-      vibrate(5)
-    }
-  }
+  // OPTIMIZED: Use requestAnimationFrame for smooth flip animation
+  const handleFlip = useCallback(() => {
+    if (isFlipping) return // Prevent rapid flips
+    
+    setIsFlipping(true)
+    
+    // Use requestAnimationFrame for smoother animation
+    requestAnimationFrame(() => {
+      if (!flip) {
+        // Flip to back (show answer)
+        setFlip(true)
+        setShowRating(true)
+        setSessionStart(Date.now())
+        vibrate(10)
+      } else if (flip && !showRating) {
+        // Flip back to front (after rating is done)
+        setFlip(false)
+        vibrate(5)
+      }
+      
+      // Reset flipping state after animation duration (600ms)
+      flipTimeoutRef.current = setTimeout(() => {
+        setIsFlipping(false)
+      }, 600)
+    })
+  }, [flip, showRating, isFlipping])
 
   const swipeHandlers = useSwipe({
     onSwipeUp: () => {
@@ -86,8 +124,9 @@ function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate, theme
     threshold: 50,
   })
 
-  const handleRating = (quality: number) => {
-    if (!progress) return
+  // OPTIMIZED: Debounced rating handler to prevent double-clicks
+  const handleRating = useCallback((quality: number) => {
+    if (!progress || isFlipping) return
     
     const studyTimeSeconds = sessionStart > 0 ? Math.round((Date.now() - sessionStart) / 1000) : 5
     
@@ -139,14 +178,17 @@ function FlashCard({ card, cardId, subjectSlug, totalCards, onStatsUpdate, theme
       }
     }
     
-    // Reset card state immediately
-    setShowRating(false)
-    setFlip(false)
-    setSessionStart(0)
+    // Use requestAnimationFrame for smooth state reset
+    requestAnimationFrame(() => {
+      setShowRating(false)
+      setFlip(false)
+      setSessionStart(0)
+      setIsFlipping(false)
+    })
     
     onStatsUpdate?.()
     window.dispatchEvent(new CustomEvent('notty:statsUpdated'))
-  }
+  }, [progress, sessionStart, subjectSlug, cardId, totalCards, onStatsUpdate, showToast, isFlipping])
 
   const isMastered = progress && progress.repetitions >= 3
   const isDue = progress && progress.nextReview <= Date.now()

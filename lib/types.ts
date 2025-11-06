@@ -125,5 +125,100 @@ export type QuizNode = {
 
 export type Node = SectionNode | MarkdownNode | FlashcardsNode | QuizNode
 
+// ============================================================================
+// NOTES SYSTEM TYPES
+// ============================================================================
+
+/**
+ * Individual note with hierarchical context
+ */
+export type Note = {
+  id: string
+  content: string
+  title?: string
+  createdAt: string
+  updatedAt: string
+  tags?: string[]
+  topicId: string
+  subtopicId?: string
+  subjectSlug: string
+}
+
+/**
+ * Path to locate a note in the hierarchy
+ */
+export type NotePath = {
+  subjectSlug: string
+  topicId?: string
+  subtopicId?: string
+}
+
+/**
+ * Subtopic notes container
+ */
+export type SubtopicNotes = {
+  subtopicId: string
+  notes: Note[]
+}
+
+/**
+ * Topic notes container with subtopics
+ */
+export type TopicNotes = {
+  topicId: string
+  notes: Note[]
+  subtopics: { [subtopicId: string]: SubtopicNotes }
+}
+
+/**
+ * Complete subject notes structure
+ */
+export type SubjectNotes = {
+  subjectSlug: string
+  subjectName: string
+  notes: Note[]
+  topics: { [topicId: string]: TopicNotes }
+  createdAt: string
+  updatedAt: string
+}
+
+/**
+ * Notes filter options
+ */
+export type NotesFilter = {
+  tags?: string[]
+  dateFrom?: string
+  dateTo?: string
+  searchQuery?: string
+  sortBy?: 'createdAt' | 'updatedAt' | 'title'
+  sortOrder?: 'asc' | 'desc'
+}
+
+/**
+ * Notes statistics
+ */
+export type NotesStats = {
+  total: number
+  byLevel: {
+    topic: number
+    subtopic: number
+  }
+  recentlyUpdated: number
+  last7Days: number
+  last30Days: number
+  bySubject: { [key: string]: number }
+  topTags: Array<{ tag: string; count: number }>
+  avgNotesPerDay: number
+}
+
+/**
+ * Backup metadata
+ */
+export type BackupInfo = {
+  timestamp: number
+  date: string
+  noteCount: number
+}
+
 // Re-export BrandKey for convenience
 export type { BrandKey } from './brand'
