@@ -49,8 +49,8 @@ export default function AdminLayout({
             <nav className="space-y-1">
               {[
                 { href: '/admin', label: 'Dashboard', icon: '📊' },
+                { href: '/admin/notes', label: 'Manage Notes', icon: '�' },
                 { href: '/admin/subjects', label: 'Subjects', icon: '📚' },
-                { href: '/admin/notes/new', label: 'Create Note', icon: '➕' },
                 { href: '/admin/import', label: 'Import/Export', icon: '📦' },
                 { href: '/admin/settings', label: 'Settings', icon: '⚙️' },
               ].map((item) => (
