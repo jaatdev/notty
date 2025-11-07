@@ -89,13 +89,17 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
     return () => clearInterval(interval);
   }, [isDirty, title, bodyHtml, pointsText, flashText, subjectId, topicId, subtopicId, type]);
 
-  function saveDraft() {
+  async function saveDraft() {
     try {
       const key = DRAFT_KEY(subjectId, topicId, subtopicId, type);
       const payload = { title, bodyHtml, pointsText, flashText, savedAt: Date.now() };
+      
+      // Save to localStorage first (immediate, offline-safe)
       localStorage.setItem(key, JSON.stringify(payload));
       setLastSaved(payload.savedAt);
       setIsDirty(false);
+      
+      // Update history
       const hk = DRAFT_HISTORY_KEY(subjectId, topicId, subtopicId, type);
       const entry = JSON.stringify({ ...payload, ts: payload.savedAt });
       const existing = localStorage.getItem(hk);
@@ -104,6 +108,26 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
       const sliced = arr.slice(0, 5);
       localStorage.setItem(hk, JSON.stringify(sliced));
       setHistory(sliced);
+
+      // Sync to server (best-effort, non-blocking)
+      try {
+        await fetch('/api/drafts/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            noteKey: key,
+            subjectId,
+            topicId,
+            subtopicId,
+            type,
+            userId: null, // TODO: Add actual user ID from auth
+            payload,
+          }),
+        });
+      } catch (serverErr) {
+        console.warn('Server draft save failed (offline or error):', serverErr);
+        // Continue - localStorage still works
+      }
     } catch (err) {
       console.warn('draft save failed', err);
     }
