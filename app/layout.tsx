@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { ThemeProvider } from 'next-themes'
 import { ThemeProvider as NottyThemeProvider } from '@/components/ThemeProvider'
+import { AuthProvider } from '@/components/auth/AuthProvider'
 import { Inter, JetBrains_Mono } from 'next/font/google'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
@@ -50,16 +51,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <WebVitals />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <NottyThemeProvider>
-            <Navbar />
-            <main id="main-content" className="pt-16" role="main">
-              {children}
-            </main>
-            <Footer />
-            <CommandPalette />
-            <EasterEggs />
-            <ToastProvider>
-              <div id="toast" className="toast hidden no-print" role="status" aria-live="polite" aria-atomic="true"></div>
-            </ToastProvider>
+            <AuthProvider>
+              <Navbar />
+              <main id="main-content" className="pt-16" role="main">
+                {children}
+              </main>
+              <Footer />
+              <CommandPalette />
+              <EasterEggs />
+              <ToastProvider>
+                <div id="toast" className="toast hidden no-print" role="status" aria-live="polite" aria-atomic="true"></div>
+              </ToastProvider>
+            </AuthProvider>
           </NottyThemeProvider>
         </ThemeProvider>
       </body>

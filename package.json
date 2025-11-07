@@ -11,6 +11,8 @@
     "build:analyze": "cross-env ANALYZE=true npm run build"
   },
   "dependencies": {
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/supabase-js": "^2.80.0",
     "@tiptap/extension-code-block-lowlight": "^3.10.2",
     "@tiptap/extension-link": "^3.10.2",
     "@tiptap/extension-placeholder": "^3.10.2",

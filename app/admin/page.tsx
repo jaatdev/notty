@@ -3,16 +3,26 @@
 
 import React, { useEffect, useState } from 'react';
 import { createNotesManager, NotesManager } from '@/lib/notesManager';
+import type { Subject } from '@/lib/notesManager';
 import NoteBoxCreator from '@/components/admin/NoteBoxCreator';
 // Import sample data if available
 // import sampleData from '@/data/sample-notes.json';
 
 export default function AdminDashboard() {
   const [manager] = useState<NotesManager>(() => createNotesManager());
-  const [subjects, setSubjects] = useState(() => manager.listSubjects());
-  const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(
-    subjects[0]?.id ?? null
-  );
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [mounted, setMounted] = useState(false);
+  const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null);
+
+  // Load subjects only on client-side to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+    const loadedSubjects = manager.listSubjects();
+    setSubjects(loadedSubjects);
+    if (loadedSubjects.length > 0 && !selectedSubjectId) {
+      setSelectedSubjectId(loadedSubjects[0].id);
+    }
+  }, [manager, selectedSubjectId]);
 
   // Refresh subjects list helper
   const refreshSubjects = () => {
@@ -106,7 +116,11 @@ export default function AdminDashboard() {
           <div className="p-4 border border-slate-100 rounded-xl">
             <h3 className="font-semibold mb-3">Subjects</h3>
             
-            {subjects.length === 0 ? (
+            {!mounted ? (
+              <p className="text-sm text-slate-500 text-center py-4">
+                Loading...
+              </p>
+            ) : subjects.length === 0 ? (
               <p className="text-sm text-slate-500 text-center py-4">
                 No subjects yet. Create your first one!
               </p>
