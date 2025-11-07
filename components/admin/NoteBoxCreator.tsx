@@ -1,365 +1,169 @@
-// components/admin/NoteBoxCreator.tsx
-'use client';
+﻿// components/admin/NoteBoxCreator.tsx
+"use client";
+import React, { useEffect, useMemo, useState } from "react";
+import { createNotesManager } from "@/lib/notesManager";
+import { NoteBoxType, NoteBox } from "@/lib/admin-types";
+import { boxThemes, themeMap } from "@/lib/admin-themes";
+import NoteBoxPreview from "./NoteBoxPreview";
 
-import React, { useState, useEffect } from 'react';
-import { NotesManager } from '@/lib/notesManager';
-import { NoteBoxType, NoteBox } from '@/lib/admin-types';
-import { themeMap } from '@/lib/admin-themes';
-import NoteBoxPreview from '@/components/admin/NoteBoxPreview';
-
-interface Props {
+type CreatorProps = {
   subjectId: string;
-  manager: NotesManager;
-  onNoteCreated?: () => void;
-}
-
-const NOTE_TYPES: Array<{ value: NoteBoxType; label: string; icon: string }> = [
-  { value: 'big-notes', label: 'Big Notes', icon: '📝' },
-  { value: 'small-notes', label: 'Small Notes', icon: '📌' },
-  { value: 'right-wrong', label: 'Right/Wrong', icon: '✅' },
-  { value: 'mnemonic-magic', label: 'Mnemonic Magic', icon: '🧠' },
-  { value: 'mnemonic-card', label: 'Mnemonic Card', icon: '🃏' },
-  { value: 'container-notes', label: 'Container Notes', icon: '📦' },
-  { value: 'quick-reference', label: 'Quick Reference', icon: '⚡' },
-  { value: 'flashcard', label: 'Flashcard', icon: '🎴' },
-];
-
-// Content templates for each note type
-const CONTENT_TEMPLATES: Record<NoteBoxType, any> = {
-  'big-notes': {
-    heading: 'Main Concept',
-    body: 'Detailed explanation here...'
-  },
-  'small-notes': {
-    points: ['Point 1', 'Point 2', 'Point 3']
-  },
-  'right-wrong': {
-    correct: ['Correct item 1'],
-    incorrect: ['Incorrect item 1']
-  },
-  'mnemonic-magic': {
-    mnemonic: 'ACRONYM',
-    breakdown: {
-      A: 'First word',
-      C: 'Second word'
-    }
-  },
-  'mnemonic-card': {
-    title: 'Memory Card',
-    items: ['Item 1', 'Item 2']
-  },
-  'container-notes': {
-    sections: [
-      { title: 'Section 1', content: 'Content here' }
-    ]
-  },
-  'quick-reference': {
-    facts: [
-      { id: '1', label: 'Fact', value: 'Value' }
-    ]
-  },
-  'flashcard': {
-    cards: [
-      { id: '1', question: 'Question?', answer: 'Answer' }
-    ]
-  }
+  topicId: string;
+  subtopicId: string;
+  onCreated?: (note: NoteBox) => void;
 };
 
-export default function NoteBoxCreator({ 
-  subjectId, 
-  manager, 
-  onNoteCreated 
-}: Props) {
-  const [topicId, setTopicId] = useState<string | null>(null);
-  const [subtopicId, setSubtopicId] = useState<string | null>(null);
-  const [noteType, setNoteType] = useState<NoteBoxType>('big-notes');
-  const [themeId, setThemeId] = useState<string>(Object.keys(themeMap)[0]);
-  const [title, setTitle] = useState<string>('');
-  const [contentJson, setContentJson] = useState<string>('');
-  const [jsonError, setJsonError] = useState<string>('');
+const NOTES_MANAGER = createNotesManager();
 
-  const subject = manager.getSubject(subjectId);
-  const topics = subject?.topics ?? [];
-  const selectedTopic = topics.find(t => t.id === topicId);
-  const subtopics = selectedTopic?.subtopics ?? [];
+const BOX_TYPES: { key: NoteBoxType; label: string; hint?: string }[] = [
+  { key: "big-notes", label: "Big Notes", hint: "Long explanation, headings" },
+  { key: "small-notes", label: "Small Notes", hint: "Bullet points / quick facts" },
+  { key: "right-wrong", label: "Right / Wrong", hint: "T/F statements" },
+  { key: "mnemonic-magic", label: "Mnemonic Magic", hint: "Mnemonic breakdown" },
+  { key: "mnemonic-card", label: "Mnemonic Card", hint: "Cards for quick recall" },
+  { key: "container-notes", label: "Container Notes", hint: "Sections / containers" },
+  { key: "quick-reference", label: "Quick Reference", hint: "Short labels & values" },
+  { key: "flashcard", label: "Flashcard", hint: "Q/A pairs" },
+];
 
-  // Initialize with first topic/subtopic
+export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreated }: CreatorProps) {
+  const [type, setType] = useState<NoteBoxType>("big-notes");
+  const [themeId, setThemeId] = useState<string>(() => {
+    const first = Object.keys(themeMap)[0];
+    return first || "";
+  });
+
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [points, setPoints] = useState<string>("");
+  const [flashQA, setFlashQA] = useState<string>("");
+
   useEffect(() => {
-    if (topics.length > 0 && !topicId) {
-      setTopicId(topics[0].id);
-      setSubtopicId(topics[0].subtopics[0]?.id ?? null);
+    const tlist = boxThemes[type] || [];
+    if (tlist.length && !tlist.find(t => t.id === themeId)) {
+      setThemeId(tlist[0].id);
     }
-  }, [topics, topicId]);
+  }, [type, themeId]);
 
-  // Update content template when type changes
-  useEffect(() => {
-    const template = CONTENT_TEMPLATES[noteType];
-    setContentJson(JSON.stringify(template, null, 2));
-    setJsonError('');
-  }, [noteType]);
+  const suggestedThemes = boxThemes[type] || [];
 
-  // Validate JSON
-  const validateJson = (value: string): boolean => {
-    try {
-      JSON.parse(value);
-      setJsonError('');
-      return true;
-    } catch (error) {
-      setJsonError('Invalid JSON format');
-      return false;
+  const contentForType = useMemo(() => {
+    switch (type) {
+      case "big-notes":
+        return { heading: title || "Heading", body: body || "Long-form explanation..." };
+      case "small-notes":
+        return { title: title || "Quick points", points: (points || "Point 1\nPoint 2").split("\n").filter(Boolean) };
+      case "right-wrong":
+        return { title: title || "True / False", statements: [{ id: "r1", statement: body || "Sample statement", isCorrect: true }] };
+      case "mnemonic-magic":
+        return { title: title || "Mnemonic", mnemonic: title || "RRCSP", breakdown: [{ letter: "R", word: "Rule", meaning: "..." }] };
+      case "mnemonic-card":
+        return { title: title || "Cards", items: [{ id: "c1", term: "Term", definition: "Definition" }] };
+      case "container-notes":
+        return { title: title || "Container", sections: [{ id: "s1", heading: "Section", content: body || "..." }] };
+      case "quick-reference":
+        return { title: title || "Ref", facts: [{ id: "q1", label: "Fact", value: "Value" }] };
+      case "flashcard":
+        return {
+          title: title || "Flashcards",
+          cards: (flashQA || "What is X?|X is Y").split("\n").map((line, i) => {
+            const [q, a] = line.split("|").map(s => s?.trim() || "");
+            return { id: `f${i}`, question: q || `Q${i}`, answer: a || `A${i}` };
+          }),
+        };
+      default:
+        return {};
     }
-  };
+  }, [type, title, body, points, flashQA]);
 
-  // Create topic
-  const handleCreateTopic = () => {
-    const topicName = prompt('Topic name:');
-    if (!topicName) return;
-    
-    const newTopic = manager.createTopic(subjectId, topicName);
-    if (!newTopic) return;
-    
-    const newSubtopic = manager.createSubtopic(
-      subjectId, 
-      newTopic.id, 
-      'General'
-    );
-    
-    setTopicId(newTopic.id);
-    setSubtopicId(newSubtopic?.id ?? null);
-  };
-
-  // Create subtopic
-  const handleCreateSubtopic = () => {
-    if (!topicId) return;
-    
-    const subtopicName = prompt('Subtopic name:');
-    if (!subtopicName) return;
-    
-    const newSubtopic = manager.createSubtopic(
-      subjectId, 
-      topicId, 
-      subtopicName
-    );
-    setSubtopicId(newSubtopic?.id ?? null);
-  };
-
-  // Create note
-  const handleCreateNote = () => {
-    if (!topicId || !subtopicId) {
-      alert('Please select or create a topic and subtopic first.');
-      return;
-    }
-
-    if (!validateJson(contentJson)) {
-      alert('Please fix JSON errors before creating the note.');
-      return;
-    }
-
-    const content = JSON.parse(contentJson);
-    const noteTitle = title || `${noteType} - ${new Date().toLocaleString()}`;
-
-    const note = manager.createNoteBox(
-      subjectId,
-      topicId,
-      subtopicId,
-      noteType,
-      content,
-      themeId
-    );
-
-    if (note) {
-      alert(`Note created successfully!\nID: ${note.id}`);
-      
-      // Reset form
-      setTitle('');
-      setContentJson(JSON.stringify(CONTENT_TEMPLATES[noteType], null, 2));
-      
-      // Call callback if provided
-      onNoteCreated?.();
+  async function handleCreate() {
+    const nb = NOTES_MANAGER.createNoteBox(subjectId, topicId, subtopicId, type, contentForType, themeId);
+    if (nb) {
+      if (onCreated) onCreated(nb);
+      setTitle("");
+      setBody("");
+      setPoints("");
+      setFlashQA("");
+      alert("Note created");
     } else {
-      alert('Failed to create note. Check console for details.');
+      alert("Failed to create note. Check IDs");
     }
-  };
-
-  // Generate preview note
-  const previewNote: NoteBox = {
-    id: 'preview',
-    type: noteType,
-    title: title || 'Preview Note',
-    content: (() => {
-      try {
-        return JSON.parse(contentJson);
-      } catch {
-        return CONTENT_TEMPLATES[noteType];
-      }
-    })(),
-    themeId,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  };
+  }
 
   return (
-    <div className="grid grid-cols-12 gap-6">
-      {/* Form Column */}
-      <div className="col-span-12 lg:col-span-6 space-y-4">
-        {/* Topic Selection */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Topic</label>
-          <div className="flex gap-2">
-            <select 
-              value={topicId ?? ''} 
-              onChange={(e) => {
-                setTopicId(e.target.value);
-                const topic = topics.find(t => t.id === e.target.value);
-                setSubtopicId(topic?.subtopics[0]?.id ?? null);
-              }}
-              className="flex-1 px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="">Select topic...</option>
-              {topics.map(topic => (
-                <option key={topic.id} value={topic.id}>
-                  {topic.title}
-                </option>
-              ))}
-            </select>
-            <button 
-              onClick={handleCreateTopic}
-              className="px-3 py-2 border border-slate-200 rounded-md hover:bg-slate-50 transition-colors"
-            >
-              + New
-            </button>
+    <div className="grid grid-cols-3 gap-6">
+      <div className="col-span-1 space-y-4">
+        <div className="p-4 rounded-lg admin-card">
+          <div className="text-sm text-slate-300 mb-2">Box type</div>
+          <div className="grid gap-2">
+            {BOX_TYPES.map(b => (
+              <button
+                key={b.key}
+                onClick={() => setType(b.key)}
+                className={`text-left px-3 py-2 rounded-md border ${type === b.key ? "border-indigo-500 bg-slate-800/30" : "border-slate-700"}`}
+              >
+                <div className="font-medium">{b.label}</div>
+                <div className="text-xs text-slate-400">{b.hint}</div>
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Subtopic Selection */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Subtopic</label>
-          <div className="flex gap-2">
-            <select 
-              value={subtopicId ?? ''} 
-              onChange={(e) => setSubtopicId(e.target.value)}
-              className="flex-1 px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              disabled={!topicId}
-            >
-              <option value="">Select subtopic...</option>
-              {subtopics.map(subtopic => (
-                <option key={subtopic.id} value={subtopic.id}>
-                  {subtopic.title}
-                </option>
-              ))}
-            </select>
-            <button 
-              onClick={handleCreateSubtopic}
-              disabled={!topicId}
-              className="px-3 py-2 border border-slate-200 rounded-md hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              + New
-            </button>
+        <div className="p-4 rounded-lg admin-card">
+          <div className="text-sm text-slate-300 mb-2">Theme</div>
+          <div className="flex flex-wrap gap-2">
+            {suggestedThemes.length ? suggestedThemes.map(t => (
+              <button
+                key={t.id}
+                onClick={() => setThemeId(t.id)}
+                className={`px-2 py-1 rounded-md text-sm ${themeId === t.id ? "ring-2 ring-indigo-500" : "opacity-90"}`}
+              >
+                {t.name}
+              </button>
+            )) : (
+              Object.values(themeMap).slice(0, 6).map(t => (
+                <button key={t.id} onClick={() => setThemeId(t.id)} className={`px-2 py-1 rounded-md text-sm ${themeId === t.id ? "ring-2 ring-indigo-500" : ""}`}>{t.name}</button>
+              ))
+            )}
           </div>
         </div>
 
-        {/* Note Type */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Note Type</label>
-          <select 
-            value={noteType} 
-            onChange={(e) => setNoteType(e.target.value as NoteBoxType)}
-            className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            {NOTE_TYPES.map(type => (
-              <option key={type.value} value={type.value}>
-                {type.icon} {type.label}
-              </option>
-            ))}
-          </select>
+        <div className="p-4 rounded-lg admin-card">
+          <div className="text-sm text-slate-300 mb-2">Content (minimal)</div>
+          <div className="space-y-2">
+            <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Title / Heading" className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700" />
+            <textarea value={body} onChange={e => setBody(e.target.value)} placeholder="Body (long text)" rows={4} className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700" />
+            <textarea value={points} onChange={e => setPoints(e.target.value)} placeholder="Points (newline separated)" rows={3} className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700" />
+            <textarea value={flashQA} onChange={e => setFlashQA(e.target.value)} placeholder="Flashcards Q|A (newline separated)" rows={3} className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700" />
+          </div>
         </div>
 
-        {/* Theme */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Theme</label>
-          <select 
-            value={themeId} 
-            onChange={(e) => setThemeId(e.target.value)}
-            className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            {Object.entries(themeMap).map(([id, theme]) => (
-              <option key={id} value={id}>
-                {theme.name} ({theme.id})
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Title */}
-        <div>
-          <label className="block text-sm font-medium mb-2">
-            Title (optional)
-          </label>
-          <input 
-            type="text"
-            value={title} 
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter a descriptive title..."
-            className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        {/* Content JSON */}
-        <div>
-          <label className="block text-sm font-medium mb-2">
-            Content (JSON)
-          </label>
-          <textarea 
-            value={contentJson} 
-            onChange={(e) => {
-              setContentJson(e.target.value);
-              validateJson(e.target.value);
-            }}
-            className={`
-              w-full h-48 px-3 py-2 font-mono text-sm border rounded-md 
-              focus:outline-none focus:ring-2 focus:ring-indigo-500
-              ${jsonError ? 'border-red-500' : 'border-slate-200'}
-            `}
-            placeholder="Enter JSON content..."
-          />
-          {jsonError && (
-            <p className="mt-1 text-sm text-red-500">{jsonError}</p>
-          )}
-          <p className="mt-1 text-xs text-slate-500">
-            Tip: Content structure depends on the selected note type
-          </p>
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={handleCreateNote}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-          >
-            Create Note
-          </button>
-          <button 
-            onClick={() => {
-              setTitle('');
-              setContentJson(JSON.stringify(CONTENT_TEMPLATES[noteType], null, 2));
-              setJsonError('');
-            }}
-            className="px-4 py-2 border border-slate-200 rounded-md hover:bg-slate-50 transition-colors"
-          >
-            Reset Form
-          </button>
+        <div className="flex gap-2">
+          <button onClick={handleCreate} className="rounded-md px-4 py-2 bg-linear-to-r from-indigo-600 to-cyan-500 text-white">Create Note</button>
+          <button onClick={() => { setTitle(""); setBody(""); setPoints(""); setFlashQA(""); }} className="rounded-md px-4 py-2 border border-slate-700">Reset</button>
         </div>
       </div>
 
-      {/* Preview Column */}
-      <div className="col-span-12 lg:col-span-6">
-        <div className="sticky top-6">
-          <div className="p-4 border border-slate-200 rounded-xl bg-slate-50">
-            <h4 className="font-semibold mb-3">Live Preview</h4>
-            <div className="bg-white rounded-lg p-4">
-              <NoteBoxPreview note={previewNote} />
-            </div>
+      <div className="col-span-2 grid grid-cols-2 gap-4">
+        <div className="p-4 rounded-lg admin-card">
+          <div className="mb-3 text-sm text-slate-300">Editor (live preview source)</div>
+          <div>
+            <div className="text-xs text-slate-400 mb-2">Minimal JSON content (for debugging)</div>
+            <pre className="rounded bg-[#061022] p-3 text-xs overflow-auto">{JSON.stringify(contentForType, null, 2)}</pre>
           </div>
+        </div>
+
+        <div className="p-4 rounded-lg admin-card col-span-1">
+          <div className="mb-3 text-sm text-slate-300">Preview</div>
+          <NoteBoxPreview note={{
+            id: "preview",
+            type,
+            title: title || "Preview Title",
+            content: contentForType as any,
+            themeId,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          }} />
         </div>
       </div>
     </div>
