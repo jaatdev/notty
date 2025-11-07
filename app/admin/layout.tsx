@@ -1,78 +1,74 @@
-// app/admin/layout.tsx
-import React from 'react';
+﻿import React from 'react';
 import Link from 'next/link';
+import "@/styles/admin.css";
 
 export const metadata = {
-  title: 'Admin Dashboard • Notty',
-  description: 'Manage your educational content'
+  title: "Admin - Notty",
 };
 
-export default function AdminLayout({ 
-  children 
-}: { 
-  children: React.ReactNode 
-}) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      {/* Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <header className="flex items-center justify-between py-6">
-          <div className="flex items-center space-x-3">
-            <div className="h-10 w-10 rounded-xl bg-linear-to-tr from-indigo-500 to-cyan-400 flex items-center justify-center text-white font-bold shadow-lg">
-              N
-            </div>
-            <div>
-              <h1 className="text-lg font-semibold">Notty Admin</h1>
-              <p className="text-sm text-slate-500">Content Management System</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-3">
-            <Link 
-              href="/" 
-              className="text-sm px-3 py-2 rounded-md bg-white border border-slate-200 hover:shadow-sm transition-shadow"
-            >
-              View Site
+    <div className="dark min-h-screen bg-slate-900 text-slate-100">
+      <div className="flex min-h-screen">
+        <aside className="w-72 p-4 border-r border-slate-800 bg-[#0b1220]">
+          <div className="mb-6">
+            <Link href="/admin" className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-linear-to-br from-indigo-600 to-cyan-500 flex items-center justify-center text-white font-bold">
+                N
+              </div>
+              <div>
+                <div className="text-lg font-semibold">Notty Admin</div>
+                <div className="text-sm text-slate-400">Control Center</div>
+              </div>
             </Link>
-            <button className="text-sm px-3 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">
-              Publish Changes
-            </button>
           </div>
-        </header>
-      </div>
-
-      {/* Main Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-12 gap-6">
-          {/* Sidebar */}
-          <aside className="col-span-12 lg:col-span-3 xl:col-span-2 bg-white border border-slate-100 rounded-2xl p-4 h-fit">
-            <nav className="space-y-1">
-              {[
-                { href: '/admin', label: 'Dashboard', icon: '📊' },
-                { href: '/admin/notes', label: 'Manage Notes', icon: '�' },
-                { href: '/admin/subjects', label: 'Subjects', icon: '📚' },
-                { href: '/admin/import', label: 'Import/Export', icon: '📦' },
-                { href: '/admin/settings', label: 'Settings', icon: '⚙️' },
-              ].map((item) => (
-                <Link 
-                  key={item.href}
-                  href={item.href} 
-                  className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-slate-50 transition-colors"
-                >
-                  <span>{item.icon}</span>
-                  <span>{item.label}</span>
-                </Link>
-              ))}
-            </nav>
-          </aside>
-
-          {/* Main Content */}
-          <main className="col-span-12 lg:col-span-9 xl:col-span-10">
-            <div className="bg-white border border-slate-100 rounded-2xl p-6">
+          <nav className="space-y-1">
+            <Link href="/admin" className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800/60">
+              Dashboard
+            </Link>
+            <Link href="/admin/notes" className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800/60">
+              Notes
+            </Link>
+            <Link href="/subjects" className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800/60">
+              Subjects
+            </Link>
+            <Link href="/analytics" className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800/60">
+              Analytics
+            </Link>
+          </nav>
+          <div className="mt-6 border-t border-slate-800 pt-4 text-sm text-slate-400">
+            <div className="mb-2">Quick Actions</div>
+            <div className="flex flex-col gap-2">
+              <Link href="/admin" className="rounded px-2 py-1 bg-slate-800/40 hover:bg-slate-800/60">
+                New Subject
+              </Link>
+              <Link href="/admin/notes" className="rounded px-2 py-1 bg-slate-800/40 hover:bg-slate-800/60">
+                Manage Notes
+              </Link>
+            </div>
+          </div>
+        </aside>
+        <main className="flex-1 p-6">
+          <header className="mb-6 flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold">Admin</h1>
+              <p className="text-sm text-slate-400">Manage content, themes, and users</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="rounded-md bg-slate-800/40 px-3 py-1 text-sm">
+                DB: connected
+              </div>
+              <Link href="/" target="_blank" className="rounded-md bg-linear-to-r from-indigo-600 to-cyan-500 px-3 py-1 text-sm font-medium shadow hover:opacity-90">
+                View Site
+              </Link>
+            </div>
+          </header>
+          <section className="space-y-6">
+            <div className="rounded-2xl border border-slate-800 bg-slate-800/20 p-6 shadow-lg">
               {children}
             </div>
-          </main>
-        </div>
+          </section>
+        </main>
       </div>
     </div>
   );

@@ -1,0 +1,85 @@
+/* styles/admin.css */
+
+/* Dark-mode CSS variables for admin area */
+:root {
+  --admin-bg: #0b1220;
+  --admin-surface: #0f1724;
+  --admin-muted: #94a3b8;
+  --admin-accent: linear-gradient(90deg, #6366f1 0%, #06b6d4 100%);
+  --card-glass: rgba(255,255,255,0.03);
+}
+
+body.dark {
+  background: var(--admin-bg);
+  color: #e6eef8;
+  --bg: var(--admin-bg);
+  --surface: var(--admin-surface);
+  --muted: var(--admin-muted);
+  --accent-gradient: var(--admin-accent);
+}
+
+/* small helpers for components that don't use tailwind */
+.admin-card {
+  background: var(--card-glass);
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 6px 20px rgba(2,6,23,0.6);
+  color: inherit;
+}
+
+/* ensure code blocks and markdown use good contrast */
+.dark pre, .dark code {
+  background: #071224;
+  color: #e6eef8;
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+}
+
+/* focus outlines for accessibility */
+.dark :focus {
+  outline: 2px solid rgba(99,102,241,0.25);
+  outline-offset: 2px;
+}
+
+/* Markdown content styling */
+.dark .markdown h1,
+.dark .markdown h2,
+.dark .markdown p,
+.dark .markdown li {
+  color: #e6eef8;
+}
+
+.dark .markdown a {
+  color: #93c5fd; /* light blue */
+}
+
+/* Input fields in dark mode */
+.dark input,
+.dark textarea,
+.dark select {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: #334155;
+  color: #e6eef8;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #64748b;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: #6366f1;
+  outline: 2px solid rgba(99, 102, 241, 0.25);
+}
+
+/* Cards and surfaces */
+.dark .card {
+  background: rgba(15, 23, 42, 0.4);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Buttons */
+.dark button:hover {
+  opacity: 0.9;
+}
