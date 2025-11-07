@@ -1,6 +1,6 @@
 // components/admin/RichTextEditor.tsx
 'use client';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 // ReactQuill requires dynamic import for SSR safe usage
@@ -16,6 +16,7 @@ type Props = {
 };
 
 export default function RichTextEditor({ value, onChange, placeholder, minHeight = 180 }: Props) {
+  const quillRef = useRef<any>(null);
   const [isUploading, setIsUploading] = useState(false);
 
   const handleImage = useCallback(() => {
@@ -29,16 +30,31 @@ export default function RichTextEditor({ value, onChange, placeholder, minHeight
       setIsUploading(true);
       try {
         const reader = new FileReader();
-        reader.onload = () => {
-          const base64 = reader.result as string;
-          // Image will be inserted via default Quill handler
-          setIsUploading(false);
+        reader.onload = async () => {
+          const base64 = reader.result as string; // data URL
+          // upload to server
+          const res = await fetch('/api/upload/image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data: base64, folder: 'notty' }),
+          });
+          const json = await res.json();
+          if (json.url) {
+            const editor = quillRef.current?.getEditor();
+            const range = editor?.getSelection(true);
+            editor?.insertEmbed(range?.index ?? 0, 'image', json.url);
+            editor?.setSelection((range?.index ?? 0) + 1);
+            setIsUploading(false);
+          } else {
+            console.error('upload failed', json);
+            alert('Image upload failed');
+            setIsUploading(false);
+          }
         };
         reader.readAsDataURL(file);
       } catch (err) {
         console.error('image upload failed', err);
-        alert('Image reading failed');
-      } finally {
+        alert('Image upload failed');
         setIsUploading(false);
       }
     };
@@ -63,8 +79,9 @@ export default function RichTextEditor({ value, onChange, placeholder, minHeight
 
   return (
     <div className="rich-text-editor">
-      {/* @ts-ignore - dynamic import */}
       <ReactQuill
+        // @ts-expect-error - ref not in ReactQuillProps typing for React 19
+        ref={quillRef}
         theme="snow"
         value={value}
         onChange={onChange}
@@ -72,7 +89,11 @@ export default function RichTextEditor({ value, onChange, placeholder, minHeight
         modules={modules}
         style={{ minHeight }}
       />
-      {isUploading && <div className="mt-2 text-sm text-slate-400">Inserting image…</div>}
+      {isUploading && (
+        <div className="mt-2 text-sm text-blue-400 animate-pulse">
+          ⏳ Uploading image to cloud storage...
+        </div>
+      )}
     </div>
   );
 }

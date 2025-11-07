@@ -2,6 +2,7 @@
 import React from "react";
 import { NoteBox } from "@/lib/admin-types";
 import { themeMap } from "@/lib/admin-themes";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 type Props = { note: NoteBox; interactive?: boolean };
 
@@ -22,7 +23,7 @@ export default function NoteBoxPreview({ note, interactive = true }: Props) {
         {note.type === "big-notes" && (
           <div>
             <div className="font-medium mb-2">{(note.content as any).heading}</div>
-            <div className="text-sm text-slate-300" dangerouslySetInnerHTML={{ __html: (note.content as any).body || '' }} />
+            <div className="text-sm text-slate-300" dangerouslySetInnerHTML={{ __html: sanitizeHtml((note.content as any).body || '') }} />
           </div>
         )}
 
@@ -37,7 +38,7 @@ export default function NoteBoxPreview({ note, interactive = true }: Props) {
             {((note.content as any).sections || []).map((sec: any) => (
               <div key={sec.id} className="mb-3">
                 <div className="font-medium">{sec.heading}</div>
-                <div className="text-sm text-slate-300" dangerouslySetInnerHTML={{ __html: sec.content || '' }} />
+                <div className="text-sm text-slate-300" dangerouslySetInnerHTML={{ __html: sanitizeHtml(sec.content || '') }} />
               </div>
             ))}
           </div>
