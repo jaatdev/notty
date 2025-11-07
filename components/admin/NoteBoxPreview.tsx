@@ -22,7 +22,7 @@ export default function NoteBoxPreview({ note, interactive = true }: Props) {
         {note.type === "big-notes" && (
           <div>
             <div className="font-medium mb-2">{(note.content as any).heading}</div>
-            <div className="text-sm text-slate-300">{(note.content as any).body}</div>
+            <div className="text-sm text-slate-300" dangerouslySetInnerHTML={{ __html: (note.content as any).body || '' }} />
           </div>
         )}
 
@@ -30,6 +30,17 @@ export default function NoteBoxPreview({ note, interactive = true }: Props) {
           <ul className="list-disc list-inside text-slate-300">
             {((note.content as any).points || []).map((p: string, i: number) => <li key={i}>{p}</li>)}
           </ul>
+        )}
+
+        {note.type === "container-notes" && (
+          <div>
+            {((note.content as any).sections || []).map((sec: any) => (
+              <div key={sec.id} className="mb-3">
+                <div className="font-medium">{sec.heading}</div>
+                <div className="text-sm text-slate-300" dangerouslySetInnerHTML={{ __html: sec.content || '' }} />
+              </div>
+            ))}
+          </div>
         )}
 
         {note.type === "flashcard" && (
@@ -43,7 +54,7 @@ export default function NoteBoxPreview({ note, interactive = true }: Props) {
           </div>
         )}
 
-        {!(note.type === "big-notes" || note.type === "small-notes" || note.type === "flashcard") && (
+        {!(note.type === "big-notes" || note.type === "small-notes" || note.type === "container-notes" || note.type === "flashcard") && (
           <pre className="text-xs text-slate-300">{JSON.stringify(note.content, null, 2)}</pre>
         )}
       </div>
