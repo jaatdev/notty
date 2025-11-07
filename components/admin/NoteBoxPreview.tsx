@@ -3,9 +3,9 @@ import React from "react";
 import { NoteBox } from "@/lib/admin-types";
 import { themeMap } from "@/lib/admin-themes";
 
-type Props = { note: NoteBox };
+type Props = { note: NoteBox; interactive?: boolean };
 
-export default function NoteBoxPreview({ note }: Props) {
+export default function NoteBoxPreview({ note, interactive = true }: Props) {
   const theme = themeMap[note.themeId] || Object.values(themeMap)[0];
 
   return (
