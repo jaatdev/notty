@@ -5,6 +5,7 @@ import { createNotesManager, NotesManager, Subject, NoteTopic, NoteSubtopic } fr
 import Modal from '@/components/ui/Modal';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import reorderArray from '@/utils/drag';
+import NoteInSubtopicModal from '@/components/admin/NoteInSubtopicModal';
 
 const manager: NotesManager = createNotesManager();
 
@@ -20,9 +21,16 @@ export default function SubjectManager() {
   const [editing, setEditing] = useState<EditingState>({ mode: null });
   const [confirm, setConfirm] = useState<{ open: boolean; title: string; onConfirm?: () => void }>({ open: false, title: '' });
 
+  // Note modal state
+  const [noteModal, setNoteModal] = useState<{ open: boolean; subjectId?: string; topicId?: string; subtopicId?: string }>({ open: false });
+
   // form fields reused for create/edit
   const [formTitle, setFormTitle] = useState('');
   const [formSlug, setFormSlug] = useState('');
+
+  // subject-level extra fields
+  const [formDescription, setFormDescription] = useState('');
+  const [formBrandColor, setFormBrandColor] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     setSubjects(manager.listSubjects());
@@ -42,25 +50,40 @@ export default function SubjectManager() {
   function openCreateSubject() {
     setFormTitle('');
     setFormSlug('');
+    setFormDescription('');
+    setFormBrandColor(undefined);
     setEditing({ mode: 'create-subject' });
   }
 
   function openEditSubject(s: Subject) {
     setFormTitle(s.title);
     setFormSlug(s.slug || '');
+    setFormDescription(s.description || '');
+    setFormBrandColor(s.brandColor || undefined);
     setEditing({ mode: 'edit-subject', subject: s });
   }
 
   function submitCreateSubject() {
     if (!formTitle.trim()) return alert('Enter a title');
-    manager.createSubject(formTitle.trim(), formSlug?.trim() || undefined);
+    const created = manager.createSubject(formTitle.trim(), formSlug?.trim() || undefined);
+    if (created) {
+      manager.updateSubject(created.id, { 
+        description: formDescription.trim() || undefined, 
+        brandColor: formBrandColor || undefined 
+      });
+    }
     refresh();
     setEditing({ mode: null });
   }
 
   function submitEditSubject() {
     if (!editing.subject) return;
-    manager.updateSubject(editing.subject.id, { title: formTitle.trim(), slug: formSlug.trim() || undefined });
+    manager.updateSubject(editing.subject.id, { 
+      title: formTitle.trim(), 
+      slug: formSlug.trim() || undefined,
+      description: formDescription.trim() || undefined,
+      brandColor: formBrandColor || undefined
+    });
     refresh();
     setEditing({ mode: null, subject: null });
   }
@@ -305,6 +328,7 @@ export default function SubjectManager() {
                           </div>
 
                           <div className="flex gap-2">
+                            <button onClick={() => setNoteModal({ open: true, subjectId: s.id, topicId: t.id, subtopicId: st.id })} className="px-2 py-1 rounded text-sm bg-indigo-700/30">Add Note</button>
                             <button onClick={() => openEditSubtopic(s, t, st)} className="px-2 py-1 rounded text-sm bg-slate-800/30">Edit</button>
                             <button onClick={() => deleteSubtopic(s, t, st)} className="px-2 py-1 rounded text-sm border border-rose-600 text-rose-300">Delete</button>
                           </div>
@@ -335,6 +359,16 @@ export default function SubjectManager() {
           <label className="block text-sm text-slate-300">Slug (optional)</label>
           <input className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700" value={formSlug} onChange={(e) => setFormSlug(e.target.value)} />
 
+          {editing.mode && (editing.mode === 'create-subject' || editing.mode === 'edit-subject') && (
+            <>
+              <label className="block text-sm text-slate-300 mt-3">Description (optional)</label>
+              <textarea value={formDescription} onChange={(e) => setFormDescription(e.target.value)} rows={3} className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700" />
+
+              <label className="block text-sm text-slate-300 mt-3">Brand Color (optional)</label>
+              <input value={formBrandColor || ''} onChange={(e) => setFormBrandColor(e.target.value || undefined)} placeholder="e.g. indigo, emerald" className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700" />
+            </>
+          )}
+
           <div className="flex gap-2 justify-end mt-2">
             <button onClick={() => setEditing({ mode: null })} className="px-3 py-1 rounded border border-slate-700">Cancel</button>
             {editing.mode === 'create-subject' && <button onClick={submitCreateSubject} className="px-3 py-1 rounded bg-linear-to-r from-indigo-600 to-cyan-500 text-white">Create</button>}
@@ -348,6 +382,17 @@ export default function SubjectManager() {
           </div>
         </div>
       </Modal>
+
+      <NoteInSubtopicModal
+        open={noteModal.open}
+        subjectId={noteModal.subjectId}
+        topicId={noteModal.topicId}
+        subtopicId={noteModal.subtopicId}
+        onClose={() => setNoteModal({ open: false })}
+        onCreated={() => {
+          refresh();
+        }}
+      />
 
       <ConfirmDialog open={confirm.open} title={confirm.title} onCancel={() => setConfirm({ open: false, title: '' })} onConfirm={() => { confirm.onConfirm && confirm.onConfirm(); }} />
     </>

@@ -55,6 +55,8 @@ export interface Subject {
   id: ID;
   title: string;
   slug?: string;
+  description?: string;
+  brandColor?: string;
   topics: NoteTopic[];
   createdAt?: string;
   updatedAt?: string;
