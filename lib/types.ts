@@ -76,15 +76,16 @@ export type Topic = {
   title: string
   description?: string
   brandColor?: BrandKey
+  slug?: string
   
-  // Content for THIS topic
-  content: ContentNode[]
+  // Content for THIS topic (optional - may only exist in leaf nodes)
+  content?: ContentNode[]
   
-  // Quiz questions for THIS topic
-  quiz: QuizQuestion[]
+  // Quiz questions for THIS topic (optional)
+  quiz?: QuizQuestion[]
   
   // Nested sub-topics (recursive - unlimited depth)
-  subTopics: Topic[]
+  subTopics?: Topic[]
 }
 
 // ============================================================================

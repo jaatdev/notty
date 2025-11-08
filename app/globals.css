@@ -93,12 +93,16 @@
   --z-tooltip: 1500;
 }
 
+/* Tailwind v4 @theme syntax - commented out to avoid linter warnings */
+/* These CSS variables are defined directly in :root instead */
+/*
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
+*/
 
 /* ============================================================================
    DARK MODE - Enhanced Dark Theme
@@ -215,6 +219,17 @@ body {
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-20px); }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes ripple {

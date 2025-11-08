@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import NodeRenderer from '@/components/NodeRenderer'
+import NoteBoxRenderer from '@/components/NoteBoxRenderer'
 import NotesModal from '@/components/NotesModal'
 import NotesExportImport from '@/components/NotesExportImport'
 import NotesSearch from '@/components/NotesSearch'
@@ -289,17 +290,24 @@ export default function TopicContent({ content, subjectSlug, topicId, brandColor
 
       {/* Existing Content */}
       <div className="space-y-6 mb-12">
-        {content.map((node: any) => (
-          <NodeRenderer 
-            key={node.id} 
-            node={node} 
-            brand={brandColor}
-            instantQuiz={instantQuiz}
-            bookmarks={bookmarks}
-            onToggleBookmark={toggleBookmark}
-            subjectSlug={subjectSlug}
-          />
-        ))}
+        {content.map((node: any, index: number) => {
+          // Check if this is a NoteBox (has 'type' field instead of 'kind')
+          if (node.type && !node.kind) {
+            return <NoteBoxRenderer key={node.id} note={node} index={index} />
+          }
+          // Otherwise render as regular ContentNode
+          return (
+            <NodeRenderer 
+              key={node.id} 
+              node={node} 
+              brand={brandColor}
+              instantQuiz={instantQuiz}
+              bookmarks={bookmarks}
+              onToggleBookmark={toggleBookmark}
+              subjectSlug={subjectSlug}
+            />
+          )
+        })}
       </div>
     </>
   )

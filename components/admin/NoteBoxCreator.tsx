@@ -1,11 +1,12 @@
 ﻿// components/admin/NoteBoxCreator.tsx
 'use client';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { createNotesManager } from '@/lib/notesManager';
 import { NoteBoxType, NoteBox } from '@/lib/admin-types';
 import { boxThemes, themeMap } from '@/lib/admin-themes';
 import NoteBoxPreview from './NoteBoxPreview';
 import RichTextEditor from './RichTextEditor';
+import { getSupabaseClient } from '@/lib/supabaseClient';
 
 const NOTES_MANAGER = createNotesManager();
 
@@ -26,17 +27,57 @@ const DRAFT_KEY = (subjectId: string, topicId: string, subtopicId: string, type:
 const DRAFT_HISTORY_KEY = (subjectId: string, topicId: string, subtopicId: string, type: string) =>
   `draft-history::${subjectId}::${topicId}::${subtopicId}::${type}`;
 
-const PRESETS: Record<string, { title?: string; content: any }[]> = {
+const PRESETS: Record<string, { title: string; bodyHtml?: string; pointsText?: string; flashText?: string }[]> = {
   'big-notes': [
-    { title: 'Concept Explainer', content: { heading: 'Concept', body: '<p>Explain concept clearly in steps</p>' } },
-    { title: 'Example + Summary', content: { heading: 'Example', body: '<p>Example here</p><p><strong>Summary:</strong> </p>' } },
+    { 
+      title: 'Article 15 - Core Concept', 
+      bodyHtml: '<p><strong>Prohibition of discrimination</strong> on grounds of religion, race, caste, sex or place of birth</p><p>Article 15 is one of the key provisions ensuring equality. It prohibits the State from discriminating against any citizen on grounds only of religion, race, caste, sex, place of birth or any of them.</p>',
+      pointsText: 'No discrimination on grounds of religion, race, caste, sex or place of birth\nSpecial provisions allowed for women and children\nSpecial provisions for advancement of SC/ST/OBC allowed'
+    },
   ],
   'small-notes': [
-    { title: 'Quick Facts', content: { title: 'Quick facts', points: ['Point 1', 'Point 2', 'Point 3'] } },
+    { 
+      title: 'Key Points', 
+      pointsText: 'Point 1: First important fact\nPoint 2: Second important fact\nPoint 3: Third important fact' 
+    },
+  ],
+  'mnemonic-magic': [
+    {
+      title: 'RRCSP',
+      pointsText: 'R - Religion - Cannot discriminate based on religious beliefs\nR - Race - Cannot discriminate based on race\nC - Caste - No discrimination on grounds of caste\nS - Sex - No gender-based discrimination\nP - Place of Birth - Cannot discriminate based on birthplace'
+    }
+  ],
+  'mnemonic-card': [
+    {
+      title: 'JLEF',
+      pointsText: 'J - Justice - Social, Economic, Political justice\nL - Liberty - Freedom of thought, expression, belief\nE - Equality - Equal status and opportunity\nF - Fraternity - Unity and dignity of the nation'
+    }
+  ],
+  'right-wrong': [
+    {
+      title: 'True or False',
+      pointsText: '✓ Article 15 prohibits discrimination\n✗ Article 15 allows discrimination on all grounds\n✓ Special provisions can be made for women and children'
+    }
+  ],
+  'quick-reference': [
+    {
+      title: 'Quick Facts',
+      pointsText: 'Article Number | 15\nType | Fundamental Right\nPart | Part III\nYear Enacted | 1950\nScope | Equality Rights'
+    }
   ],
   'flashcard': [
-    { title: 'Basic Q/A', content: { title: 'Flashcards', cards: [{ id: 'f1', question: 'Q1', answer: 'A1' }] } },
+    { 
+      title: 'Q&A Cards', 
+      flashText: 'What is Article 15? | Prohibition of discrimination on grounds of religion, race, caste, sex, or place of birth\nWhen was it enacted? | 1950, as part of the original Constitution\nCan special provisions be made? | Yes, for women, children, and SC/ST/OBC' 
+    },
   ],
+  'container-notes': [
+    {
+      title: 'Container Overview',
+      bodyHtml: '<p>This is a comprehensive container note that can hold detailed information with rich formatting.</p>',
+      pointsText: 'Key highlight 1\nKey highlight 2\nKey highlight 3'
+    }
+  ]
 };
 
 type Props = {
@@ -47,6 +88,26 @@ type Props = {
 };
 
 export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreated }: Props) {
+  // Editor identity (stable per browser tab)
+  const [editorId] = useState(() => {
+    if (typeof window === 'undefined') return 'anonymous';
+    let id = localStorage.getItem('notty_editor_id');
+    if (!id) {
+      id = 'editor_' + Math.random().toString(36).slice(2, 9);
+      localStorage.setItem('notty_editor_id', id);
+    }
+    return id;
+  });
+
+  // Optional display name
+  const [displayName] = useState(() => {
+    return (typeof window !== 'undefined' && localStorage.getItem('notty_editor_display')) || null;
+  });
+
+  const supabase = typeof window !== 'undefined' ? getSupabaseClient() : null;
+  const channelRef = useRef<any>(null);
+  const heartbeatRef = useRef<number | null>(null);
+
   const [type, setType] = useState<NoteBoxType>('big-notes');
   const [themeId, setThemeId] = useState<string>(() => Object.keys(themeMap)[0] || '');
 
@@ -58,6 +119,11 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
   const [lastSaved, setLastSaved] = useState<number | null>(null);
   const [isDirty, setIsDirty] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
+
+  // Realtime collaboration state
+  const [activeUsers, setActiveUsers] = useState<{ user_id: string; display_name?: string; last_active?: string }[]>([]);
+  const [remoteDraft, setRemoteDraft] = useState<any | null>(null);
+  const [remoteChangedAt, setRemoteChangedAt] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -120,7 +186,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
             topicId,
             subtopicId,
             type,
-            userId: null, // TODO: Add actual user ID from auth
+            userId: editorId, // Use editorId for collaboration tracking
             payload,
           }),
         });
@@ -169,6 +235,154 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
     setIsDirty(true);
   }, [title, bodyHtml, pointsText, flashText, type]);
 
+  // Realtime presence subscription + heartbeat
+  useEffect(() => {
+    if (!supabase) return;
+
+    const noteDraftKey = DRAFT_KEY(subjectId, topicId, subtopicId, type);
+    console.log('🔔 Setting up realtime for noteKey:', noteDraftKey, 'editorId:', editorId);
+
+    // Helper function to fetch and update active users
+    const fetchActiveUsers = async () => {
+      try {
+        const { data } = await supabase
+          .from('note_edit_presence')
+          .select('*')
+          .eq('note_key', noteDraftKey);
+        console.log('👥 Fetched active users:', data);
+        if (data) {
+          setActiveUsers(
+            data.map((r: any) => ({
+              user_id: r.user_id,
+              display_name: r.display_name,
+              last_active: r.last_active,
+            }))
+          );
+        }
+      } catch (err) {
+        console.warn('presence fetch error', err);
+      }
+    };
+
+    // Subscribe to presence and drafts for this noteKey
+    const channel = supabase
+      .channel(`notty-note-${noteDraftKey}`)
+      // Listen to presence table changes
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'note_edit_presence', filter: `note_key=eq.${noteDraftKey}` },
+        async () => {
+          console.log('👥 Presence change detected for', noteDraftKey);
+          await fetchActiveUsers();
+        }
+      )
+      // Listen to note_drafts changes to pick up remote saves
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'note_drafts', filter: `note_key=eq.${noteDraftKey}` },
+        (payload) => {
+          console.log('📝 Draft change detected:', payload);
+          try {
+            const rec = (payload as any).record;
+            if (!rec) return;
+            // If the saving user is not this editor, set remoteDraft notification
+            if (rec.user_id && rec.user_id !== editorId) {
+              console.log('📝 Remote draft from user:', rec.user_id);
+              setRemoteDraft(rec.payload || rec);
+              setRemoteChangedAt(rec.updated_at || new Date().toISOString());
+            }
+          } catch (err) {
+            console.warn('draft payload parse', err);
+          }
+        }
+      )
+      .subscribe((status) => {
+        console.log('📡 Subscription status:', status);
+      });
+
+    channelRef.current = channel;
+
+    // Init presence heartbeat loop (POST to our server)
+    const heartbeat = async () => {
+      try {
+        console.log('💓 Sending heartbeat for', noteDraftKey);
+        const response = await fetch('/api/presence/heartbeat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ noteKey: noteDraftKey, userId: editorId, displayName }),
+        });
+        const result = await response.json();
+        console.log('💓 Heartbeat response:', result);
+        
+        // After successful heartbeat, fetch the updated user list
+        await fetchActiveUsers();
+      } catch (err) {
+        console.warn('heartbeat failed', err);
+      }
+    };
+
+    // Run heartbeat now (which will also fetch users) and then every 10s
+    void heartbeat();
+    heartbeatRef.current = window.setInterval(heartbeat, 10000);
+
+    const leaveHandler = async () => {
+      try {
+        await fetch('/api/presence/leave', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ noteKey: noteDraftKey, userId: editorId }),
+        });
+      } catch (err) {
+        // ignore
+      }
+    };
+
+    window.addEventListener('beforeunload', leaveHandler);
+
+    return () => {
+      // Cleanup
+      if (heartbeatRef.current) clearInterval(heartbeatRef.current);
+      window.removeEventListener('beforeunload', leaveHandler);
+      
+      // Call leave once
+      (async () => {
+        try {
+          await fetch('/api/presence/leave', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ noteKey: noteDraftKey, userId: editorId }),
+          });
+        } catch (e) {}
+      })();
+      
+      // Unsubscribe channel
+      try {
+        if (channelRef.current) {
+          supabase.removeChannel(channelRef.current);
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+  }, [supabase, subjectId, topicId, subtopicId, type, editorId, displayName]);
+
+  // Apply remote draft helper
+  function applyRemoteDraft() {
+    if (!remoteDraft) return;
+    try {
+      setTitle(remoteDraft.title || '');
+      setBodyHtml(remoteDraft.bodyHtml || '');
+      setPointsText(remoteDraft.pointsText || '');
+      setFlashText(remoteDraft.flashText || '');
+      setRemoteDraft(null);
+      setRemoteChangedAt(null);
+      setIsDirty(true);
+      alert('Remote draft applied to your editor');
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
   useEffect(() => {
     const tlist = (boxThemes as any)[type] || [];
     if (tlist.length && !tlist.find((t: any) => t.id === themeId)) {
@@ -180,28 +394,145 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
 
   const contentForType = useMemo(() => {
     switch (type) {
-      case 'big-notes':
-        return { heading: title || 'Heading', body: bodyHtml || '<p>Long-form explanation...</p>' };
-      case 'small-notes':
-        return { title: title || 'Quick points', points: (pointsText || 'Point 1\nPoint 2').split('\n').filter(Boolean) };
-      case 'right-wrong':
-        return { title: title || 'True / False', statements: [{ id: 'r1', statement: bodyHtml || 'Sample statement', isCorrect: true }] };
-      case 'mnemonic-magic':
-        return { title: title || 'Mnemonic', mnemonic: title || 'RRCSP', breakdown: [{ letter: 'R', word: 'Rule', meaning: '...' }] };
-      case 'mnemonic-card':
-        return { title: title || 'Cards', items: [{ id: 'c1', term: 'Term', definition: 'Definition' }] };
-      case 'container-notes':
-        return { title: title || 'Container', sections: [{ id: 's1', heading: title || 'Section', content: bodyHtml || '<p>...</p>' }] };
-      case 'quick-reference':
-        return { title: title || 'Ref', facts: [{ id: 'q1', label: 'Fact', value: 'Value' }] };
-      case 'flashcard':
+      case 'big-notes': {
+        const highlights = pointsText ? pointsText.split('\n').filter(Boolean) : [];
+        return { 
+          heading: title || 'Heading', 
+          body: bodyHtml || '<p>Long-form explanation...</p>',
+          highlights: highlights.length > 0 ? highlights : undefined
+        };
+      }
+      case 'small-notes': {
+        const points = pointsText ? pointsText.split('\n').filter(Boolean) : ['Point 1', 'Point 2'];
+        return { 
+          title: title || 'Quick points', 
+          points 
+        };
+      }
+      case 'right-wrong': {
+        const lines = pointsText ? pointsText.split('\n').filter(Boolean) : [];
+        const statements = lines.map((line, i) => {
+          // Format: ✓ OR true: OR correct: = correct statement
+          // Format: ✗ OR false: OR wrong: OR incorrect: = incorrect statement
+          const trimmedLine = line.trim();
+          let isCorrect = true; // default
+          let statement = trimmedLine;
+          
+          // Check for symbols or text prefixes
+          if (trimmedLine.startsWith('✓')) {
+            isCorrect = true;
+            statement = trimmedLine.replace(/^✓\s*/, '').trim();
+          } else if (trimmedLine.startsWith('✗')) {
+            isCorrect = false;
+            statement = trimmedLine.replace(/^✗\s*/, '').trim();
+          } else if (/^(true|correct):/i.test(trimmedLine)) {
+            isCorrect = true;
+            statement = trimmedLine.replace(/^(true|correct):\s*/i, '').trim();
+          } else if (/^(false|wrong|incorrect):/i.test(trimmedLine)) {
+            isCorrect = false;
+            statement = trimmedLine.replace(/^(false|wrong|incorrect):\s*/i, '').trim();
+          }
+          
+          return {
+            id: `stmt_${i}`,
+            statement: statement || 'Sample statement',
+            isCorrect,
+            explanation: '' // Optional, can be added with || separator
+          };
+        });
+        return { 
+          title: title || 'True / False', 
+          statements: statements.length > 0 ? statements : [
+            { id: 'stmt_0', statement: 'Sample correct statement', isCorrect: true, explanation: '' }
+          ]
+        };
+      }
+      case 'mnemonic-magic': {
+        const mnemonic = title || 'SAMPLE';
+        const lines = pointsText ? pointsText.split('\n').filter(Boolean) : [];
+        const breakdown = lines.map((line, i) => {
+          // Format: Letter - Word - Meaning OR Letter: Word: Meaning
+          const parts = line.split(/[-:]/).map(s => s.trim());
+          return {
+            letter: parts[0] || mnemonic[i] || 'X',
+            word: parts[1] || 'Word',
+            meaning: parts[2] || 'Meaning'
+          };
+        });
+        return { 
+          title: title || 'Mnemonic', 
+          mnemonic,
+          breakdown: breakdown.length > 0 ? breakdown : mnemonic.split('').map((letter, i) => ({
+            letter,
+            word: `Word ${i + 1}`,
+            meaning: `Meaning ${i + 1}`
+          }))
+        };
+      }
+      case 'mnemonic-card': {
+        const mnemonic = title || 'SAMPLE';
+        const lines = pointsText ? pointsText.split('\n').filter(Boolean) : [];
+        const breakdown = lines.map((line, i) => {
+          const parts = line.split(/[-:]/).map(s => s.trim());
+          return {
+            letter: parts[0] || mnemonic[i] || 'X',
+            word: parts[1] || 'Word',
+            meaning: parts[2] || 'Meaning'
+          };
+        });
+        return { 
+          mnemonic,
+          breakdown: breakdown.length > 0 ? breakdown : mnemonic.split('').map((letter, i) => ({
+            letter,
+            word: `Word ${i + 1}`,
+            meaning: `Meaning ${i + 1}`
+          }))
+        };
+      }
+      case 'container-notes': {
+        const highlights = pointsText ? pointsText.split('\n').filter(Boolean) : [];
+        return { 
+          heading: title || 'Container', 
+          body: bodyHtml || '<p>Container content...</p>',
+          highlights: highlights.length > 0 ? highlights : undefined
+        };
+      }
+      case 'quick-reference': {
+        const lines = pointsText ? pointsText.split('\n').filter(Boolean) : [];
+        const facts = lines.map((line, i) => {
+          // Format: Label | Value OR Label: Value
+          const parts = line.split(/[|:]/).map(s => s.trim());
+          return {
+            id: `fact_${i}`,
+            label: parts[0] || `Label ${i + 1}`,
+            value: parts[1] || `Value ${i + 1}`
+          };
+        });
+        return { 
+          title: title || 'Quick Reference', 
+          facts: facts.length > 0 ? facts : [
+            { id: 'fact_0', label: 'Label 1', value: 'Value 1' }
+          ]
+        };
+      }
+      case 'flashcard': {
+        const lines = flashText ? flashText.split('\n').filter(Boolean) : [];
+        const cards = lines.map((line, i) => {
+          // Format: Question | Answer
+          const [q, a] = line.split('|').map(s => s?.trim() || '');
+          return { 
+            id: `flash_${i}`, 
+            question: q || `Question ${i + 1}`, 
+            answer: a || `Answer ${i + 1}` 
+          };
+        });
         return {
           title: title || 'Flashcards',
-          cards: (flashText || 'What is X?|X is Y').split('\n').map((line, i) => {
-            const [q, a] = line.split('|').map((s: any) => (s?.trim() || ''));
-            return { id: `f$i`, question: q || `Q$i`, answer: a || `A$i` };
-          }),
+          cards: cards.length > 0 ? cards : [
+            { id: 'flash_0', question: 'What is X?', answer: 'X is Y' }
+          ]
         };
+      }
       default:
         return {};
     }
@@ -210,11 +541,9 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
   function applyPreset(preset: any) {
     if (!preset) return;
     if (preset.title) setTitle(preset.title);
-    if (preset.content) {
-      if (preset.content.body) setBodyHtml(preset.content.body);
-      if (preset.content.points) setPointsText((preset.content.points || []).join('\n'));
-      if (preset.content.cards) setFlashText((preset.content.cards || []).map((c: any) => `${c.question}|${c.answer}`).join('\n'));
-    }
+    if (preset.bodyHtml) setBodyHtml(preset.bodyHtml);
+    if (preset.pointsText) setPointsText(preset.pointsText);
+    if (preset.flashText) setFlashText(preset.flashText);
     setIsDirty(true);
   }
 
@@ -223,12 +552,41 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
       alert('Missing target IDs');
       return;
     }
+    
+    console.log('🚀 Creating note with:', { subjectId, topicId, subtopicId, type });
+    
+    // Verify the IDs exist
+    const subject = NOTES_MANAGER.getSubject(subjectId);
+    if (!subject) {
+      alert(`❌ Subject not found: ${subjectId}\n\nPlease make sure the subject exists in notesManager.`);
+      return;
+    }
+    
+    const topic = subject.topics.find(t => t.id === topicId);
+    if (!topic) {
+      alert(`❌ Topic not found: ${topicId}\n\nPlease make sure the topic exists in the selected subject.`);
+      return;
+    }
+    
+    const subtopic = topic.subtopics.find(st => st.id === subtopicId);
+    if (!subtopic) {
+      alert(`❌ Subtopic not found: ${subtopicId}\n\nPlease make sure the subtopic exists in the selected topic.`);
+      return;
+    }
+    
     const nb = NOTES_MANAGER.createNoteBox(subjectId, topicId, subtopicId, type, contentForType, themeId);
     if (nb) {
       saveDraft();
       clearDraft();
       if (onCreated) onCreated(nb);
-      alert('Created note');
+      
+      // Get the count of existing notes in this subtopic
+      const updatedSubject = NOTES_MANAGER.getSubject(subjectId);
+      const updatedTopic = updatedSubject?.topics.find(t => t.id === topicId);
+      const updatedSubtopic = updatedTopic?.subtopics.find(st => st.id === subtopicId);
+      const noteCount = updatedSubtopic?.notes.length || 0;
+      
+      alert(`✅ Note created successfully!\n\nThis subtopic now has ${noteCount} note${noteCount !== 1 ? 's' : ''}.\nYour new note was added to the end of the list.`);
     } else {
       alert('Failed to create note. Check IDs');
     }
@@ -309,8 +667,47 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
           </div>
         </div>
 
+        {/* Collaboration Status - Always Visible for Debugging */}
+        <div className="p-3 rounded-lg admin-card">
+          <div className="text-sm text-slate-300 mb-2">👥 Collaboration</div>
+          <div className="text-xs text-slate-400 mb-2">
+            My ID: {editorId.slice(0, 8)} | Total users: {activeUsers.length}
+          </div>
+          <div className="text-xs text-slate-500 mb-2 font-mono break-all">
+            NoteKey: {DRAFT_KEY(subjectId, topicId, subtopicId, type).slice(0, 40)}...
+          </div>
+          
+          {activeUsers.filter(u => u.user_id !== editorId).length > 0 ? (
+            <div className="mb-3">
+              <div className="text-xs text-slate-400 mb-1">Active editors ({activeUsers.filter(u => u.user_id !== editorId).length})</div>
+              <div className="flex flex-wrap gap-2">
+                {activeUsers.filter(u => u.user_id !== editorId).map(u => (
+                  <div key={u.user_id} className="flex items-center gap-1 px-2 py-1 rounded bg-slate-800/30 text-xs">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                    <span>{u.display_name || u.user_id.slice(0, 8)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="text-xs text-slate-500 mb-2">No other editors online</div>
+          )}
+
+          {remoteDraft && (
+            <div className="p-2 rounded border border-yellow-600 bg-yellow-900/10">
+              <div className="text-xs font-medium text-yellow-300 mb-1">🔔 Remote changes</div>
+              <button 
+                onClick={applyRemoteDraft} 
+                className="px-2 py-1 rounded bg-yellow-600 text-white text-xs hover:bg-yellow-700 w-full"
+              >
+                Apply changes
+              </button>
+            </div>
+          )}
+        </div>
+
         <div className="flex gap-2">
-          <button onClick={handleCreate} className="rounded-md px-4 py-2 bg-gradient-to-r from-indigo-600 to-cyan-500 text-white">Create Note</button>
+          <button onClick={handleCreate} className="rounded-md px-4 py-2 bg-linear-to-r from-indigo-600 to-cyan-500 text-white">Create Note</button>
           <button onClick={() => { setTitle(''); setBodyHtml(''); setPointsText(''); setFlashText(''); }} className="rounded-md px-4 py-2 border border-slate-700">Reset</button>
         </div>
       </div>
@@ -318,30 +715,150 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
       <div className="col-span-2 grid grid-cols-2 gap-4">
         <div className="p-4 rounded-lg admin-card col-span-1">
           <div className="mb-3 flex items-center justify-between">
-            <div className="text-sm text-slate-300">Editor</div>
-            <div className="text-xs text-slate-400">Type: {type}</div>
+            <div className="text-sm text-slate-300">✏️ Editor</div>
+            <div className="text-xs text-slate-400 px-2 py-1 rounded bg-slate-800/30">{type}</div>
           </div>
 
-          <div>
-            <div className="mb-3">
-              <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Note title" className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700 mb-2" />
+          <div className="space-y-3">
+            {/* Title Field - Universal */}
+            <div>
+              <label className="block text-xs text-slate-400 mb-1">
+                {type === 'mnemonic-magic' || type === 'mnemonic-card' ? '🎯 Mnemonic (e.g., RRCSP)' : '📝 Title'}
+              </label>
+              <input 
+                value={title} 
+                onChange={(e) => { setTitle(e.target.value); setIsDirty(true); }} 
+                placeholder={
+                  type === 'mnemonic-magic' || type === 'mnemonic-card' 
+                    ? 'Enter mnemonic (e.g., RRCSP, JLEF)' 
+                    : 'Enter note title'
+                } 
+                className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none transition-colors"
+              />
             </div>
 
-            {(type === 'big-notes' || type === 'container-notes') ? (
-              <RichTextEditor value={bodyHtml} onChange={setBodyHtml} placeholder="Write full content here (supports images)" />
-            ) : (type === 'small-notes') ? (
-              <textarea value={pointsText} onChange={(e) => setPointsText(e.target.value)} placeholder="Points, newline separated" rows={8} className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700" />
-            ) : (type === 'flashcard') ? (
-              <textarea value={flashText} onChange={(e) => setFlashText(e.target.value)} placeholder="Flashcards: Q|A (newline per card)" rows={8} className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700" />
-            ) : (
-              <textarea value={bodyHtml} onChange={(e) => setBodyHtml(e.target.value)} placeholder="Content (HTML or JSON preview)" rows={8} className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700" />
+            {/* Body Field - Rich Text for big-notes and container-notes */}
+            {(type === 'big-notes' || type === 'container-notes') && (
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">📄 Content (Rich Text)</label>
+                <RichTextEditor 
+                  value={bodyHtml} 
+                  onChange={(val) => { setBodyHtml(val); setIsDirty(true); }} 
+                  placeholder="Write detailed explanation here... (supports bold, lists, images, etc.)" 
+                />
+              </div>
+            )}
+
+            {/* Points Field - For various types */}
+            {(type === 'small-notes' || type === 'big-notes' || type === 'container-notes' || 
+              type === 'mnemonic-magic' || type === 'mnemonic-card' || 
+              type === 'right-wrong' || type === 'quick-reference') && (
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">
+                  {type === 'small-notes' && '📋 Points (one per line)'}
+                  {(type === 'big-notes' || type === 'container-notes') && '✨ Key Highlights (one per line, optional)'}
+                  {(type === 'mnemonic-magic' || type === 'mnemonic-card') && '🔤 Breakdown (Format: Letter - Word - Meaning)'}
+                  {type === 'right-wrong' && '✓✗ Statements (Use ✓/✗ symbols OR true:/false: text)'}
+                  {type === 'quick-reference' && '📌 Facts (Format: Label | Value OR Label: Value)'}
+                </label>
+                
+                {/* Symbol helper buttons for right-wrong */}
+                {type === 'right-wrong' && (
+                  <div className="flex gap-2 mb-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const textarea = document.querySelector('textarea[placeholder*="correct"]') as HTMLTextAreaElement;
+                        if (textarea) {
+                          const start = textarea.selectionStart;
+                          const end = textarea.selectionEnd;
+                          const text = textarea.value;
+                          const newText = text.substring(0, start) + '✓ ' + text.substring(end);
+                          setPointsText(newText);
+                          setIsDirty(true);
+                          setTimeout(() => {
+                            textarea.focus();
+                            textarea.setSelectionRange(start + 2, start + 2);
+                          }, 0);
+                        }
+                      }}
+                      className="px-3 py-1 rounded bg-green-600/20 border border-green-600/40 text-green-400 text-xs hover:bg-green-600/30 transition-colors flex items-center gap-1"
+                    >
+                      <span className="text-base">✓</span> Insert Correct
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const textarea = document.querySelector('textarea[placeholder*="correct"]') as HTMLTextAreaElement;
+                        if (textarea) {
+                          const start = textarea.selectionStart;
+                          const end = textarea.selectionEnd;
+                          const text = textarea.value;
+                          const newText = text.substring(0, start) + '✗ ' + text.substring(end);
+                          setPointsText(newText);
+                          setIsDirty(true);
+                          setTimeout(() => {
+                            textarea.focus();
+                            textarea.setSelectionRange(start + 2, start + 2);
+                          }, 0);
+                        }
+                      }}
+                      className="px-3 py-1 rounded bg-red-600/20 border border-red-600/40 text-red-400 text-xs hover:bg-red-600/30 transition-colors flex items-center gap-1"
+                    >
+                      <span className="text-base">✗</span> Insert Incorrect
+                    </button>
+                  </div>
+                )}
+                
+                <textarea 
+                  value={pointsText} 
+                  onChange={(e) => { setPointsText(e.target.value); setIsDirty(true); }} 
+                  placeholder={
+                    type === 'small-notes' ? 'Point 1\nPoint 2\nPoint 3' :
+                    (type === 'big-notes' || type === 'container-notes') ? 'Highlight 1\nHighlight 2 (optional)' :
+                    (type === 'mnemonic-magic' || type === 'mnemonic-card') ? 'R - Religion - Cannot discriminate based on religion\nR - Race - Cannot discriminate based on race\nC - Caste - No caste discrimination' :
+                    type === 'right-wrong' ? '✓ This statement is correct\ntrue: You can also use text format\n✗ This statement is wrong\nfalse: Or use false: for incorrect' :
+                    type === 'quick-reference' ? 'Article Number | 15\nType | Fundamental Right\nYear Enacted: 1950' :
+                    'Enter content'
+                  } 
+                  rows={type === 'big-notes' || type === 'container-notes' ? 4 : 8}
+                  className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none transition-colors font-mono text-sm"
+                />
+                <div className="mt-1 text-xs text-slate-500">
+                  {type === 'small-notes' && '💡 Each line becomes a bullet point'}
+                  {(type === 'big-notes' || type === 'container-notes') && '💡 Optional: Add key highlights to display as badges'}
+                  {(type === 'mnemonic-magic' || type === 'mnemonic-card') && '💡 Use "-" or ":" as separators. Each line = one letter breakdown'}
+                  {type === 'right-wrong' && '💡 Use ✓/✗ symbols (click buttons above) OR type "true:"/"false:" OR "correct:"/"wrong:"'}
+                  {type === 'quick-reference' && '💡 Use "|" or ":" to separate label from value'}
+                </div>
+              </div>
+            )}
+
+            {/* Flashcard Field */}
+            {type === 'flashcard' && (
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">🎴 Flashcards (Format: Question | Answer)</label>
+                <textarea 
+                  value={flashText} 
+                  onChange={(e) => { setFlashText(e.target.value); setIsDirty(true); }} 
+                  placeholder="What is Article 15? | Prohibition of discrimination on grounds of religion, race, caste, sex, or place of birth\nWho can make laws? | Parliament and State Legislatures\nWhat is a fundamental right? | Basic human rights guaranteed by the Constitution"
+                  rows={8}
+                  className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none transition-colors font-mono text-sm"
+                />
+                <div className="mt-1 text-xs text-slate-500">
+                  💡 Each line is one flashcard. Use "|" to separate question from answer
+                </div>
+              </div>
             )}
           </div>
 
-          <div className="mt-4">
-            <div className="text-xs text-slate-400 mb-2">Preview JSON (editable raw)</div>
-            <pre className="rounded bg-[#061022] p-3 text-xs overflow-auto">{JSON.stringify(contentForType, null, 2)}</pre>
-          </div>
+          {/* JSON Preview - Collapsible */}
+          <details className="mt-4">
+            <summary className="text-xs text-slate-400 cursor-pointer hover:text-slate-300 transition-colors">
+              🔍 Advanced: View/Edit Raw JSON
+            </summary>
+            <pre className="mt-2 rounded bg-[#061022] p-3 text-xs overflow-auto max-h-64 border border-slate-800">{JSON.stringify(contentForType, null, 2)}</pre>
+          </details>
         </div>
 
         <div className="p-4 rounded-lg admin-card">

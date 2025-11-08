@@ -4,20 +4,17 @@
       "id": "sub_polity",
       "title": "Indian Polity",
       "slug": "polity",
-      "description": "Master Indian Constitution, Governance, and Political System",
-      "emoji": "🏛️",
-      "brandColor": "indigo",
       "topics": [
         {
           "id": "top_fundamental_rights",
           "title": "Fundamental Rights",
           "slug": "fundamental-rights",
-          "subTopics": [
+          "subtopics": [
             {
               "id": "subt_article_15",
               "title": "Article 15 - Prohibition of Discrimination",
               "slug": "article-15",
-              "content": [
+              "notes": [
                 {
                   "id": "note_demo_1",
                   "type": "big-notes",
@@ -175,20 +172,17 @@
       "id": "sub_history",
       "title": "Indian History",
       "slug": "history",
-      "description": "Ancient, Medieval & Modern Indian History",
-      "emoji": "📜",
-      "brandColor": "amber",
       "topics": [
         {
           "id": "top_freedom_struggle",
           "title": "Freedom Struggle",
           "slug": "freedom-struggle",
-          "subTopics": [
+          "subtopics": [
             {
               "id": "subt_quit_india",
               "title": "Quit India Movement (1942)",
               "slug": "quit-india",
-              "content": [
+              "notes": [
                 {
                   "id": "note_demo_4",
                   "type": "quick-reference",
@@ -244,15 +238,12 @@
       "id": "sub_3e4nwy9",
       "title": "sdfg",
       "slug": "sdfg",
-      "description": "Custom subject",
-      "emoji": "📚",
-      "brandColor": "blue",
       "topics": [
         {
           "id": "top_g5bzq8y",
           "title": "df",
           "slug": "df",
-          "subTopics": [],
+          "subtopics": [],
           "createdAt": "2025-11-07T03:36:17.486Z",
           "updatedAt": "2025-11-07T03:36:17.486Z"
         }

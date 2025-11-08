@@ -1,68 +1,26 @@
 ﻿// components/admin/NoteBoxPreview.tsx
 import React from "react";
 import { NoteBox } from "@/lib/admin-types";
-import { themeMap } from "@/lib/admin-themes";
-import { sanitizeHtml } from "@/lib/sanitize";
+import NoteBoxRenderer from "@/components/NoteBoxRenderer";
 
 type Props = { note: NoteBox; interactive?: boolean };
 
 export default function NoteBoxPreview({ note, interactive = true }: Props) {
-  const theme = themeMap[note.themeId] || Object.values(themeMap)[0];
-
   return (
-    <div className="rounded-lg p-4" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))", border: "1px solid rgba(255,255,255,0.04)" }}>
-      <div className="flex items-center justify-between mb-3">
-        <div>
-          <div className="text-sm text-slate-400">{note.type}</div>
-          <div className="text-lg font-semibold">{note.title}</div>
+    <div className="rounded-lg overflow-hidden" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))", border: "1px solid rgba(255,255,255,0.04)" }}>
+      <div className="px-4 py-3 border-b border-slate-800/50">
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-slate-400 font-medium">
+            🔍 Live Preview
+          </div>
+          <div className="text-xs text-slate-500">
+            Type: {note.type}
+          </div>
         </div>
-        <div className="text-xs text-slate-400">{new Date(note.updatedAt || "").toLocaleString()}</div>
       </div>
-
-      <div className="text-sm text-slate-200">
-        {note.type === "big-notes" && (
-          <div>
-            <div className="font-medium mb-2">{(note.content as any).heading}</div>
-            <div className="text-sm text-slate-300" dangerouslySetInnerHTML={{ __html: sanitizeHtml((note.content as any).body || '') }} />
-          </div>
-        )}
-
-        {note.type === "small-notes" && (
-          <ul className="list-disc list-inside text-slate-300">
-            {((note.content as any).points || []).map((p: string, i: number) => <li key={i}>{p}</li>)}
-          </ul>
-        )}
-
-        {note.type === "container-notes" && (
-          <div>
-            {((note.content as any).sections || []).map((sec: any) => (
-              <div key={sec.id} className="mb-3">
-                <div className="font-medium">{sec.heading}</div>
-                <div className="text-sm text-slate-300" dangerouslySetInnerHTML={{ __html: sanitizeHtml(sec.content || '') }} />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {note.type === "flashcard" && (
-          <div>
-            {((note.content as any).cards || []).slice(0, 2).map((c: any) => (
-              <div key={c.id} className="mb-2">
-                <div className="text-slate-100 font-medium">{c.question}</div>
-                <div className="text-slate-400 text-sm">Ans: {c.answer}</div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {!(note.type === "big-notes" || note.type === "small-notes" || note.type === "container-notes" || note.type === "flashcard") && (
-          <pre className="text-xs text-slate-300">{JSON.stringify(note.content, null, 2)}</pre>
-        )}
-      </div>
-
-      <div className="mt-4 flex gap-2">
-        <div className="text-xs px-2 py-1 rounded" style={{ background: "rgba(255,255,255,0.03)" }}>{theme?.name}</div>
-        <div className="text-xs px-2 py-1 rounded text-slate-400">Theme id: {note.themeId}</div>
+      
+      <div className="p-4 max-h-[600px] overflow-y-auto">
+        <NoteBoxRenderer note={note} index={0} />
       </div>
     </div>
   );
