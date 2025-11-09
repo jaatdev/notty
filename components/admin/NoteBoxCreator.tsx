@@ -337,6 +337,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
         await fetch('/api/presence/leave', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', // Include cookies (required for Clerk auth)
           body: JSON.stringify({ noteKey: noteDraftKey, userId: editorId }),
         });
       } catch (err) {
@@ -357,6 +358,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
           await fetch('/api/presence/leave', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include', // Include cookies (required for Clerk auth)
             body: JSON.stringify({ noteKey: noteDraftKey, userId: editorId }),
           });
         } catch (e) {}

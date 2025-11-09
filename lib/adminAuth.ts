@@ -7,26 +7,38 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
 
 export async function requireAdminFromCookies() {
-  const session = await auth(); // reads session from cookies
-  const userId = session.userId;
-  if (!userId) return { ok: false, status: 401, message: 'Not signed in' };
-
-  // Optional email allow-list
-  const allowList = (process.env.ADMIN_USERS || '')
-    .split(',')
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
-
-  if (allowList.length > 0) {
-    const user = await currentUser();
-    const email =
-      (user as any)?.primaryEmailAddress?.emailAddress ||
-      (user as any)?.emailAddresses?.[0]?.emailAddress ||
-      '';
-    if (!email || !allowList.includes(email.toLowerCase())) {
-      return { ok: false, status: 403, message: 'Not an admin user' };
+  try {
+    const session = await auth(); // reads session from cookies
+    const userId = session.userId;
+    if (!userId) {
+      // In development, if Clerk session is unavailable but we're in admin context,
+      // check for fallback user identification from request context
+      console.warn('[Auth] No Clerk session found in cookies');
+      return { ok: false, status: 401, message: 'Not signed in' };
     }
-  }
 
-  return { ok: true, userId, sessionId: session.sessionId };
+    // Optional email allow-list
+    const allowList = (process.env.ADMIN_USERS || '')
+      .split(',')
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean);
+
+    if (allowList.length > 0) {
+      const user = await currentUser();
+      const email =
+        (user as any)?.primaryEmailAddress?.emailAddress ||
+        (user as any)?.emailAddresses?.[0]?.emailAddress ||
+        '';
+      if (!email || !allowList.includes(email.toLowerCase())) {
+        return { ok: false, status: 403, message: 'Not an admin user' };
+      }
+    }
+
+    return { ok: true, userId, sessionId: session.sessionId };
+  } catch (err: any) {
+    console.error('[Auth] Error in requireAdminFromCookies:', err?.message);
+    // If there's an error (like clock skew), still return 401
+    return { ok: false, status: 401, message: 'Authentication error' };
+  }
 }
+

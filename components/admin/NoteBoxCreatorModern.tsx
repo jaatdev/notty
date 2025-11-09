@@ -10,6 +10,8 @@ import RichTextEditor from './RichTextEditor';
 import HamburgerSidebar from './HamburgerSidebar';
 import AdminNavSidebar from './AdminNavSidebar';
 import ModernDropdown from './ModernDropdown';
+import PresenceBadge from '@/components/ui/PresenceBadge';
+import RemoteDraftAlert from '@/components/ui/RemoteDraftAlert';
 import { getSupabaseClient } from '@/lib/supabaseClient';
 
 const NOTES_MANAGER = createNotesManager();
@@ -151,7 +153,7 @@ export default function NoteBoxCreatorModern({
   const [flashText, setFlashText] = useState('');
 
   // Collaboration & drafts
-  const [activeUsers, setActiveUsers] = useState<Array<{ user_id: string; display_name?: string; last_active: string }>>([]);
+  const [activeUsers, setActiveUsers] = useState<Array<{ user_id: string; display_name?: string; last_active: string; cursor?: any }>>([]);
   const [remoteDraft, setRemoteDraft] = useState<any>(null);
   const [remoteChangedAt, setRemoteChangedAt] = useState<string | null>(null);
   const [lastSaved, setLastSaved] = useState<number | null>(null);
@@ -258,20 +260,40 @@ export default function NoteBoxCreatorModern({
     
     const fetchActiveUsers = async () => {
       try {
-        const { data } = await supabase
-          .from('note_edit_presence')
-          .select('*')
-          .eq('note_key', noteDraftKey);
-        if (data) {
+        // Use /api/presence/list endpoint for initial snapshot
+        const response = await fetch(`/api/presence/list?noteKey=${encodeURIComponent(noteDraftKey)}`, {
+          credentials: 'include', // Include cookies (required for Clerk auth)
+        });
+        if (response.ok) {
+          const { presence } = await response.json();
           setActiveUsers(
-            data.map((r: any) => ({
+            (presence || []).map((r: any) => ({
               user_id: r.user_id,
               display_name: r.display_name,
               last_active: r.last_active,
+              cursor: r.cursor || null,
             }))
           );
         }
-      } catch {}
+      } catch (err) {
+        // Fallback to direct supabase query if endpoint fails
+        try {
+          const { data } = await supabase
+            .from('note_edit_presence')
+            .select('*')
+            .eq('note_key', noteDraftKey);
+          if (data) {
+            setActiveUsers(
+              data.map((r: any) => ({
+                user_id: r.user_id,
+                display_name: r.display_name,
+                last_active: r.last_active,
+                cursor: r.cursor || null,
+              }))
+            );
+          }
+        } catch {}
+      }
     };
 
     const channel = supabase
@@ -312,7 +334,13 @@ export default function NoteBoxCreatorModern({
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ noteKey: noteDraftKey, userId: editorId, displayName: editorId.slice(0, 8) }),
+          credentials: 'include', // Include cookies (required for Clerk auth)
+          body: JSON.stringify({ 
+            noteKey: noteDraftKey, 
+            userId: editorId, 
+            displayName: editorId.slice(0, 8),
+            cursor: { pos: 0, selectionLength: 0 } // Optional: can be updated with actual editor position
+          }),
         });
       } catch (err) {
         // ignore heartbeat errors client-side
@@ -633,80 +661,82 @@ export default function NoteBoxCreatorModern({
       <div className="flex flex-col min-h-screen">
         {/* Top Toolbar */}
         <div className="sticky top-0 h-16 bg-slate-900/95 backdrop-blur-xl border-b border-white/10 z-30">
-          <div className="flex items-center gap-4 px-6 h-full">
-            {/* Admin Nav Button (NEW) */}
-            <button
-              onClick={() => setAdminNavOpen(true)}
-              className="w-10 h-10 rounded-lg bg-linear-to-br from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 flex items-center justify-center text-white font-bold transition-all duration-200 hover:scale-105 shadow-lg"
-              title="Admin Navigation (Ctrl+B)"
-            >
-              N
-            </button>
+          <div className="flex items-center gap-4 px-6 h-full justify-between">
+            <div className="flex items-center gap-4">
+              {/* Admin Nav Button (NEW) */}
+              <button
+                onClick={() => setAdminNavOpen(true)}
+                className="w-10 h-10 rounded-lg bg-linear-to-br from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 flex items-center justify-center text-white font-bold transition-all duration-200 hover:scale-105 shadow-lg"
+                title="Admin Navigation (Ctrl+B)"
+              >
+                N
+              </button>
 
-            {/* Note Types Hamburger Button */}
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="w-10 h-10 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 flex items-center justify-center text-slate-300 hover:text-white transition-all duration-200 hover:scale-105"
-              title="Note Types (Ctrl+\)"
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
+              {/* Note Types Hamburger Button */}
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="w-10 h-10 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 flex items-center justify-center text-slate-300 hover:text-white transition-all duration-200 hover:scale-105"
+                title="Note Types (Ctrl+\)"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
 
-            {/* Box Type Dropdown */}
-            <ModernDropdown
-              value={type}
-              items={boxTypeItems}
-              onChange={(val) => setType(val as NoteBoxType)}
-              placeholder="Select box type..."
-              icon="📦"
-              className="w-56"
-            />
-
-            {/* Theme Dropdown */}
-            <ModernDropdown
-              value={themeId}
-              items={themeItems}
-              onChange={setThemeId}
-              placeholder="Select theme..."
-              icon="🎨"
-              className="w-48"
-            />
-
-            {/* Presets Dropdown */}
-            {presetItems.length > 0 && (
+              {/* Box Type Dropdown */}
               <ModernDropdown
-                value=""
-                items={presetItems}
-                onChange={(val) => {
-                  const idx = parseInt(val.split('_')[1]);
-                  if (!isNaN(idx) && (PRESETS as any)[type]?.[idx]) {
-                    applyPreset((PRESETS as any)[type][idx]);
-                  }
-                }}
-                placeholder="Load preset..."
-                icon="⚡"
+                value={type}
+                items={boxTypeItems}
+                onChange={(val) => setType(val as NoteBoxType)}
+                placeholder="Select box type..."
+                icon="📦"
+                className="w-56"
+              />
+
+              {/* Theme Dropdown */}
+              <ModernDropdown
+                value={themeId}
+                items={themeItems}
+                onChange={setThemeId}
+                placeholder="Select theme..."
+                icon="🎨"
                 className="w-48"
               />
-            )}
 
-            {/* Drafts Dropdown */}
-            {draftItems.length > 0 && (
-              <ModernDropdown
-                value=""
-                items={draftItems}
-                onChange={(val) => {
-                  const idx = parseInt(val.split('_')[1]);
-                  if (!isNaN(idx)) {
-                    restoreHistoryItem(idx);
-                  }
-                }}
-                placeholder="Load draft..."
-                icon="💾"
-                className="w-48"
-              />
-            )}
+              {/* Presets Dropdown */}
+              {presetItems.length > 0 && (
+                <ModernDropdown
+                  value=""
+                  items={presetItems}
+                  onChange={(val) => {
+                    const idx = parseInt(val.split('_')[1]);
+                    if (!isNaN(idx) && (PRESETS as any)[type]?.[idx]) {
+                      applyPreset((PRESETS as any)[type][idx]);
+                    }
+                  }}
+                  placeholder="Load preset..."
+                  icon="⚡"
+                  className="w-48"
+                />
+              )}
+
+              {/* Drafts Dropdown */}
+              {draftItems.length > 0 && (
+                <ModernDropdown
+                  value=""
+                  items={draftItems}
+                  onChange={(val) => {
+                    const idx = parseInt(val.split('_')[1]);
+                    if (!isNaN(idx)) {
+                      restoreHistoryItem(idx);
+                    }
+                  }}
+                  placeholder="Load draft..."
+                  icon="💾"
+                  className="w-48"
+                />
+              )}
+            </div>
 
             <div className="flex-1" />
 
@@ -720,28 +750,18 @@ export default function NoteBoxCreatorModern({
               </div>
             )}
 
-            {/* Collaboration Widget */}
-            {activeUsers.length > 1 && (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800/30 border border-slate-700/50">
-                <div className="flex -space-x-2">
-                  {activeUsers
-                    .filter(u => u.user_id !== editorId)
-                    .slice(0, 3)
-                    .map(u => (
-                      <div
-                        key={u.user_id}
-                        className="w-8 h-8 rounded-full bg-linear-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-white text-xs font-bold border-2 border-slate-900"
-                        title={u.display_name || u.user_id}
-                      >
-                        {(u.display_name || u.user_id).charAt(0).toUpperCase()}
-                      </div>
-                    ))}
-                </div>
-                {activeUsers.filter(u => u.user_id !== editorId).length > 3 && (
-                  <span className="text-xs text-slate-400">
-                    +{activeUsers.filter(u => u.user_id !== editorId).length - 3}
-                  </span>
-                )}
+            {/* Collaboration Widget - using PresenceBadge */}
+            {activeUsers.length > 0 && (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-slate-500">Active:</span>
+                <PresenceBadge 
+                  members={activeUsers.map(u => ({
+                    userId: u.user_id,
+                    displayName: u.display_name,
+                    lastActive: u.last_active,
+                    cursor: u.cursor,
+                  }))}
+                />
               </div>
             )}
 
@@ -757,6 +777,21 @@ export default function NoteBoxCreatorModern({
             )}
           </div>
         </div>
+
+        {/* Remote Draft Alert */}
+        {remoteDraft && remoteChangedAt && (
+          <div className="px-6 py-3 bg-blue-950/50 border-b border-blue-800/30">
+            <RemoteDraftAlert
+              remoteUser={remoteDraft.user_id || 'Another user'}
+              remoteTimestamp={remoteChangedAt}
+              onAccept={applyRemoteDraft}
+              onDismiss={() => {
+                setRemoteDraft(null);
+                setRemoteChangedAt(null);
+              }}
+            />
+          </div>
+        )}
 
         {/* Context Selection Panel */}
         {subjects.length > 0 && (
