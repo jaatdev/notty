@@ -12,6 +12,7 @@ import AdminNavSidebar from './AdminNavSidebar';
 import ModernDropdown from './ModernDropdown';
 import PresenceBadge from '@/components/ui/PresenceBadge';
 import RemoteDraftAlert from '@/components/ui/RemoteDraftAlert';
+import MergeConflictAlert from '@/components/ui/MergeConflictAlert';
 import { getSupabaseClient } from '@/lib/supabaseClient';
 
 const NOTES_MANAGER = createNotesManager();
@@ -159,6 +160,10 @@ export default function NoteBoxCreatorModern({
   const [lastSaved, setLastSaved] = useState<number | null>(null);
   const [history, setHistory] = useState<string[]>([]);
   const [isDirty, setIsDirty] = useState(false);
+  
+  // LWW Merge Strategy (Step 5)
+  const [conflictServerMeta, setConflictServerMeta] = useState<any>(null);
+  const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
   
   // Admin Navigation Sidebar State
   const [adminNavOpen, setAdminNavOpen] = useState(false);
@@ -360,7 +365,9 @@ export default function NoteBoxCreatorModern({
 
   const saveDraft = () => {
     const dk = DRAFT_KEY(subjectId, topicId, subtopicId, type);
-    const draft = { title, bodyHtml, pointsText, flashText, ts: Date.now() };
+    const now = Date.now();
+    const isoNow = new Date(now).toISOString();
+    const draft = { title, bodyHtml, pointsText, flashText, ts: now };
     localStorage.setItem(dk, JSON.stringify(draft));
     
     const historyKey = DRAFT_HISTORY_KEY(subjectId, topicId, subtopicId, type);
@@ -368,8 +375,53 @@ export default function NoteBoxCreatorModern({
     setHistory(newHist);
     localStorage.setItem(historyKey, JSON.stringify(newHist));
     
-    setLastSaved(draft.ts);
+    setLastSaved(now);
     setIsDirty(false);
+    
+    // Sync to server with LWW conflict detection (Step 5)
+    const noteDraftKey = DRAFT_KEY(subjectId, topicId, subtopicId, type);
+    const payload = { title, bodyHtml, pointsText, flashText };
+    const clientUpdatedAt = lastSavedAt || isoNow; // Use previous save timestamp or current time
+    
+    (async () => {
+      try {
+        const res = await fetch('/api/drafts/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            noteKey: noteDraftKey,
+            subjectId,
+            topicId,
+            subtopicId,
+            type,
+            userId: editorId,
+            payload,
+            clientUpdatedAt, // ← Include for LWW comparison
+          }),
+        });
+
+        if (res.status === 409) {
+          // Conflict detected! Server is newer
+          const body = await res.json();
+          setConflictServerMeta(body.serverMeta);
+          console.warn('Merge conflict detected:', body.serverMeta);
+          return;
+        }
+
+        if (res.ok) {
+          const body = await res.json();
+          // Update lastSavedAt to current timestamp for next comparison
+          setLastSavedAt(isoNow);
+          console.log('Draft synced to server');
+        } else {
+          console.warn('Draft sync failed:', res.status, res.statusText);
+        }
+      } catch (err) {
+        console.warn('Server draft sync error (offline or error):', err);
+        // Continue - localStorage still works
+      }
+    })();
   };
 
   const clearDraft = () => {
@@ -409,6 +461,103 @@ export default function NoteBoxCreatorModern({
       setRemoteDraft(null);
       setIsDirty(true);
     } catch {}
+  };
+
+  // LWW Merge Handlers (Step 5)
+  const handleApplyServer = async () => {
+    if (!conflictServerMeta) return;
+    try {
+      const res = await fetch('/api/drafts/merge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          noteKey: DRAFT_KEY(subjectId, topicId, subtopicId, type),
+          strategy: 'accept_server',
+        }),
+      });
+
+      if (res.ok) {
+        const body = await res.json();
+        // Apply server payload to editor
+        const payload = conflictServerMeta.payload;
+        setTitle(payload.title || '');
+        setBodyHtml(payload.bodyHtml || '');
+        setPointsText(payload.pointsText || '');
+        setFlashText(payload.flashText || '');
+        setLastSavedAt(conflictServerMeta.updatedAt);
+        setConflictServerMeta(null);
+        setIsDirty(false);
+        console.log('✅ Applied server version');
+      } else {
+        console.error('Merge failed:', res.statusText);
+      }
+    } catch (err) {
+      console.error('Apply server error:', err);
+    }
+  };
+
+  const handleApplyClient = async () => {
+    if (!conflictServerMeta) return;
+    try {
+      const res = await fetch('/api/drafts/merge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          noteKey: DRAFT_KEY(subjectId, topicId, subtopicId, type),
+          strategy: 'accept_client',
+          clientPayload: { title, bodyHtml, pointsText, flashText },
+        }),
+      });
+
+      if (res.ok) {
+        const body = await res.json();
+        // Update lastSavedAt to current timestamp
+        setLastSavedAt(new Date().toISOString());
+        setConflictServerMeta(null);
+        setIsDirty(false);
+        console.log('✅ Overwrote server with local version');
+      } else {
+        console.error('Merge failed:', res.statusText);
+      }
+    } catch (err) {
+      console.error('Apply client error:', err);
+    }
+  };
+
+  const handleAttemptMerge = async () => {
+    if (!conflictServerMeta) return;
+    try {
+      const res = await fetch('/api/drafts/merge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          noteKey: DRAFT_KEY(subjectId, topicId, subtopicId, type),
+          strategy: 'auto_merge',
+          clientPayload: { title, bodyHtml, pointsText, flashText },
+        }),
+      });
+
+      if (res.ok) {
+        const body = await res.json();
+        // For now, auto_merge falls back to server (safe default)
+        const mergedPayload = body.payload || conflictServerMeta.payload;
+        setTitle(mergedPayload.title || '');
+        setBodyHtml(mergedPayload.bodyHtml || '');
+        setPointsText(mergedPayload.pointsText || '');
+        setFlashText(mergedPayload.flashText || '');
+        setLastSavedAt(new Date().toISOString());
+        setConflictServerMeta(null);
+        setIsDirty(false);
+        console.log('✅ Auto-merge applied');
+      } else {
+        console.error('Merge failed:', res.statusText);
+      }
+    } catch (err) {
+      console.error('Auto-merge error:', err);
+    }
   };
 
   // Smart content parsing
@@ -777,6 +926,18 @@ export default function NoteBoxCreatorModern({
             )}
           </div>
         </div>
+
+        {/* LWW Merge Conflict Alert (Step 5) */}
+        {conflictServerMeta && (
+          <div className="px-6 py-3 bg-yellow-950/40 border-b border-yellow-700/40">
+            <MergeConflictAlert
+              serverMeta={conflictServerMeta}
+              onApplyServer={handleApplyServer}
+              onApplyClient={handleApplyClient}
+              onAttemptMerge={handleAttemptMerge}
+            />
+          </div>
+        )}
 
         {/* Remote Draft Alert */}
         {remoteDraft && remoteChangedAt && (
