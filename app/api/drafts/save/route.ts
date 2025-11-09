@@ -22,8 +22,8 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    // Expect body: { noteKey, subjectId, topicId, subtopicId, type, userId?, payload }
-    const { noteKey, subjectId, topicId, subtopicId, type, userId, payload } = body as any;
+    // Expect body: { noteKey, subjectId, topicId, subtopicId, type, userId?, payload, clientUpdatedAt? }
+    const { noteKey, subjectId, topicId, subtopicId, type, userId, payload, clientUpdatedAt } = body as any;
     
     if (!noteKey || !payload) {
       return NextResponse.json({ error: 'missing noteKey or payload' }, { status: 400 });
@@ -38,6 +38,39 @@ export async function POST(req: Request) {
         { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.retryAfterMs / 1000)) } }
       );
     }
+
+    // ========== CONFLICT DETECTION (LWW Strategy) ==========
+    // If client provides clientUpdatedAt, check if server has a newer version
+    const clientUpdatedAtIso = clientUpdatedAt;
+    const clientUpdatedAtMs = clientUpdatedAtIso ? new Date(clientUpdatedAtIso).getTime() : null;
+
+    // fetch existing server draft
+    const { data: existingDraft, error: fetchErr } = await supa
+      .from('note_drafts')
+      .select('updated_at, payload, user_id')
+      .eq('note_key', noteKey)
+      .single();
+
+    if (fetchErr && fetchErr.code && fetchErr.code !== 'PGRST116') {
+      console.error('fetch existing draft err', fetchErr);
+      return NextResponse.json({ error: fetchErr.message || 'DB error' }, { status: 500 });
+    }
+
+    if (existingDraft && clientUpdatedAtMs) {
+      const serverUpdatedAtMs = new Date(existingDraft.updated_at).getTime();
+      // if server is newer than client -> conflict
+      if (serverUpdatedAtMs > clientUpdatedAtMs) {
+        return NextResponse.json({
+          error: 'conflict',
+          serverMeta: {
+            updatedAt: existingDraft.updated_at,
+            userId: existingDraft.user_id,
+            payload: existingDraft.payload,
+          },
+        }, { status: 409 });
+      }
+    }
+    // ======================================================
 
     // Payload stored as-is (HTML sanitization happens on render in NoteBoxPreview)
     const safePayload = { ...payload };
