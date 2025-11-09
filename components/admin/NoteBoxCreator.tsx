@@ -1,6 +1,7 @@
 ﻿// components/admin/NoteBoxCreator.tsx
 'use client';
 import React, { useEffect, useMemo, useState, useRef } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { createNotesManager } from '@/lib/notesManager';
 import { NoteBoxType, NoteBox } from '@/lib/admin-types';
 import { boxThemes, themeMap } from '@/lib/admin-themes';
@@ -88,6 +89,9 @@ type Props = {
 };
 
 export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreated }: Props) {
+  // Clerk auth state (client-side)
+  const { isSignedIn, isLoaded } = useAuth();
+
   // Editor identity (stable per browser tab)
   const [editorId] = useState(() => {
     if (typeof window === 'undefined') return 'anonymous';
@@ -305,6 +309,9 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
     // Init presence heartbeat loop (POST to our server)
     const heartbeat = async () => {
       try {
+        // Only send heartbeat if the user is signed in
+        if (!isSignedIn) return;
+
         console.log('💓 Sending heartbeat for', noteDraftKey);
         const response = await fetch('/api/presence/heartbeat', {
           method: 'POST',
@@ -364,7 +371,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
         // ignore
       }
     };
-  }, [supabase, subjectId, topicId, subtopicId, type, editorId, displayName]);
+  }, [supabase, subjectId, topicId, subtopicId, type, editorId, displayName, isSignedIn]);
 
   // Apply remote draft helper
   function applyRemoteDraft() {

@@ -1,6 +1,7 @@
 // app/admin/notes/new/page.tsx
 'use client';
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import NoteBoxCreatorModern from '@/components/admin/NoteBoxCreatorModern';
 import type { NoteBox } from '@/lib/admin-types';
 import { createNotesManager } from '@/lib/notesManager';
@@ -9,6 +10,7 @@ import { getAllSubjects } from '@/lib/data';
 const NOTES_MANAGER = createNotesManager();
 
 export default function NewNotePage() {
+  const { isLoaded, isSignedIn } = useAuth();
   const [ids, setIds] = useState({ subjectId: '', topicId: '', subtopicId: '' });
   const [subjects, setSubjects] = useState<any[]>([]);
   const [topics, setTopics] = useState<any[]>([]);
@@ -413,6 +415,20 @@ export default function NewNotePage() {
       }
     }
   };
+
+  // Auth guard: show login message if not authenticated
+  if (!isLoaded) {
+    return <div className="p-6 text-slate-400 text-center">🔄 Loading Clerk auth...</div>;
+  }
+
+  if (!isSignedIn) {
+    return (
+      <div className="p-6 text-slate-400 text-center max-w-md mx-auto">
+        <div className="text-2xl mb-4">🔐 Access Denied</div>
+        <p>You must be signed in to access the admin panel. Please sign in via the login button.</p>
+      </div>
+    );
+  }
 
   if (!ids.subjectId) return <div className="p-4 text-slate-400">Loading subjects...</div>;
 

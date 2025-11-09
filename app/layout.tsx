@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next'
+import { ClerkProvider } from '@clerk/nextjs'
 import './globals.css'
 import { ThemeProvider } from 'next-themes'
 import { ThemeProvider as NottyThemeProvider } from '@/components/ThemeProvider'
@@ -41,31 +42,33 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html suppressHydrationWarning lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <head>
-        {/* Preconnect to improve performance */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-      </head>
-      <body className={inter.className}>
-        <WebVitals />
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <NottyThemeProvider>
-            <AuthProvider>
-              <Navbar />
-              <main id="main-content" className="pt-16" role="main">
-                {children}
-              </main>
-              <Footer />
-              <CommandPalette />
-              <EasterEggs />
-              <ToastProvider>
-                <div id="toast" className="toast hidden no-print" role="status" aria-live="polite" aria-atomic="true"></div>
-              </ToastProvider>
-            </AuthProvider>
-          </NottyThemeProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html suppressHydrationWarning lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+        <head>
+          {/* Preconnect to improve performance */}
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        </head>
+        <body className={inter.className}>
+          <WebVitals />
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+            <NottyThemeProvider>
+              <AuthProvider>
+                <Navbar />
+                <main id="main-content" className="pt-16" role="main">
+                  {children}
+                </main>
+                <Footer />
+                <CommandPalette />
+                <EasterEggs />
+                <ToastProvider>
+                  <div id="toast" className="toast hidden no-print" role="status" aria-live="polite" aria-atomic="true"></div>
+                </ToastProvider>
+              </AuthProvider>
+            </NottyThemeProvider>
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

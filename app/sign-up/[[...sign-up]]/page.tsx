@@ -1,0 +1,22 @@
+// app/sign-up/[[...sign-up]]/page.tsx
+import { SignUp } from '@clerk/nextjs'
+
+export default function SignUpPage() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 to-gray-100 dark:from-[#0b1220] dark:to-gray-900 py-12 px-4">
+      <div className="w-full max-w-md">
+        <SignUp 
+          appearance={{
+            baseTheme: undefined, // Let Clerk handle theming
+            elements: {
+              rootBox: 'w-full',
+              card: 'bg-white dark:bg-[#1a2332] rounded-xl shadow-xl',
+            }
+          }}
+          redirectUrl="/admin/notes"
+          signInUrl="/sign-in"
+        />
+      </div>
+    </div>
+  )
+}

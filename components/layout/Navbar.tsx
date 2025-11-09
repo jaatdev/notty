@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import InstallPrompt from '@/components/pwa/InstallPrompt'
 import NavContinuePill from './NavContinuePill'
 import { ThemeSelectorCompact } from '@/components/ThemeSelector'
@@ -74,6 +75,19 @@ export default function Navbar() {
           >
             {current === 'dark' ? '☀️' : '🌙'}
           </button>
+
+          {/* Clerk Auth */}
+          <SignedOut>
+            <a 
+              href="/sign-in" 
+              className="ml-2 px-4 py-2 rounded-lg text-sm font-semibold bg-emerald-600 text-white hover:bg-emerald-700"
+            >
+              Sign In
+            </a>
+          </SignedOut>
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" />
+          </SignedIn>
         </div>
 
         <button
@@ -108,6 +122,20 @@ export default function Navbar() {
             >
               {current === 'dark' ? '☀️ Light' : '🌙 Dark'}
             </button>
+            {/* Clerk Auth Mobile */}
+            <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+              <SignedOut>
+                <a 
+                  href="/sign-in" 
+                  className="block w-full px-4 py-2 rounded-lg text-sm font-semibold bg-emerald-600 text-white hover:bg-emerald-700 text-center"
+                >
+                  Sign In
+                </a>
+              </SignedOut>
+              <SignedIn>
+                <UserButton afterSignOutUrl="/" />
+              </SignedIn>
+            </div>
           </div>
         </div>
       )}

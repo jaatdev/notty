@@ -11,6 +11,8 @@
     "build:analyze": "cross-env ANALYZE=true npm run build"
   },
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^4.13.23",
+    "@clerk/nextjs": "^6.34.5",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.80.0",
     "@tiptap/extension-code-block-lowlight": "^3.10.2",

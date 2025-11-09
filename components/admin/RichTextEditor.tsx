@@ -1,6 +1,7 @@
 // components/admin/RichTextEditor.tsx
 'use client';
 import React, { useCallback, useState } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
@@ -16,6 +17,7 @@ type Props = {
 };
 
 export default function RichTextEditor({ value, onChange, placeholder, minHeight = 180 }: Props) {
+  const { getToken } = useAuth();
   const [isUploading, setIsUploading] = useState(false);
 
   const editor = useEditor({
@@ -64,9 +66,13 @@ export default function RichTextEditor({ value, onChange, placeholder, minHeight
           const base64 = reader.result as string;
           
           // Upload to Cloudinary
+          const token = await getToken();
           const res = await fetch('/api/upload/image', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
             body: JSON.stringify({ data: base64, folder: 'notty' }),
           });
           

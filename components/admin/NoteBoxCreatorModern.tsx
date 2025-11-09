@@ -1,6 +1,7 @@
 // components/admin/NoteBoxCreatorModern.tsx
 'use client';
 import React, { useEffect, useMemo, useState, useRef } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { createNotesManager } from '@/lib/notesManager';
 import { NoteBoxType, NoteBox } from '@/lib/admin-types';
 import { boxThemes, themeMap } from '@/lib/admin-themes';
@@ -165,6 +166,8 @@ export default function NoteBoxCreatorModern({
   const autosaveRef = useRef<any>(null);
   
   const supabase = getSupabaseClient();
+  // Clerk auth state (client-side)
+  const { isLoaded, isSignedIn } = useAuth();
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -247,7 +250,9 @@ export default function NoteBoxCreatorModern({
 
   // Realtime presence + collaboration
   useEffect(() => {
+    // Wait for Supabase client and Clerk to initialize before starting presence logic
     if (!supabase) return;
+    if (!isLoaded) return;
 
     const noteDraftKey = DRAFT_KEY(subjectId, topicId, subtopicId, type);
     
@@ -298,25 +303,32 @@ export default function NoteBoxCreatorModern({
 
     const sendHeartbeat = async () => {
       try {
-        await supabase.from('note_edit_presence').upsert({
-          note_key: noteDraftKey,
-          user_id: editorId,
-          display_name: editorId.slice(0, 8),
-          last_active: new Date().toISOString(),
+        // Only send heartbeat if the user is signed in
+        if (!isSignedIn) return;
+
+        // Use the protected server endpoint which performs the upsert with the service role
+        await fetch('/api/presence/heartbeat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ noteKey: noteDraftKey, userId: editorId, displayName: editorId.slice(0, 8) }),
         });
-      } catch {}
+      } catch (err) {
+        // ignore heartbeat errors client-side
+      }
     };
 
+    // Run initial heartbeat and then start polling
     sendHeartbeat();
     fetchActiveUsers();
-    
     heartbeatRef.current = setInterval(sendHeartbeat, 10000);
 
     return () => {
       if (channelRef.current) channelRef.current.unsubscribe();
       if (heartbeatRef.current) clearInterval(heartbeatRef.current);
     };
-  }, [subjectId, topicId, subtopicId, type, editorId, supabase]);
+  }, [subjectId, topicId, subtopicId, type, editorId, supabase, isLoaded, isSignedIn]);
 
   const saveDraft = () => {
     const dk = DRAFT_KEY(subjectId, topicId, subtopicId, type);
