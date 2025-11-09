@@ -4,8 +4,6 @@ import React, { useCallback, useState } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Link from '@tiptap/extension-link';
-import Underline from '@tiptap/extension-underline';
 import Image from '@tiptap/extension-image';
 import './RichTextEditor.css';
 
@@ -23,14 +21,18 @@ export default function RichTextEditor({ value, onChange, placeholder, minHeight
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
-      StarterKit,
-      Link.configure({
-        openOnClick: false,
-        HTMLAttributes: {
-          class: 'text-blue-400 underline',
+      // StarterKit includes: Document, Paragraph, Text, Bold, Italic, Strike, History, HardBreak, Heading, ListItem, BulletList, OrderedList, CodeBlock, Code, Blockquote
+      StarterKit.configure({
+        // Override Link config from StarterKit
+        link: {
+          openOnClick: false,
+          HTMLAttributes: {
+            class: 'text-blue-400 underline',
+          },
         },
       }),
-      Underline,
+      // Don't double-register Link or Underline - StarterKit already includes them
+      // Just configure them above if needed
       Image.configure({
         HTMLAttributes: {
           class: 'max-w-full h-auto',

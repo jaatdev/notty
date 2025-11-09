@@ -244,12 +244,21 @@ export default function NoteBoxCreatorModern({
     }
   }, [subjectId, topicId, subtopicId, type]);
 
-  // Autosave every 5s
+  // Autosave: save immediately on first change, then debounce at 1.5s for responsiveness
   useEffect(() => {
     if (autosaveRef.current) clearInterval(autosaveRef.current);
-    autosaveRef.current = setInterval(() => {
-      if (isDirty) saveDraft();
-    }, 5000);
+    
+    // If dirty for the first time in this edit session, save immediately
+    // Otherwise, debounce at 1.5s for rapid edits
+    if (isDirty) {
+      // Schedule save after 1.5s (debounced)
+      autosaveRef.current = setInterval(() => {
+        if (isDirty) {
+          saveDraft();
+        }
+      }, 1500);
+    }
+    
     return () => {
       if (autosaveRef.current) clearInterval(autosaveRef.current);
     };
@@ -405,21 +414,32 @@ export default function NoteBoxCreatorModern({
           // Conflict detected! Server is newer
           const body = await res.json();
           setConflictServerMeta(body.serverMeta);
-          console.warn('Merge conflict detected:', body.serverMeta);
+          console.warn('⚠️ Merge conflict detected:', body.serverMeta);
           return;
         }
 
         if (res.ok) {
           const body = await res.json();
-          // Update lastSavedAt to current timestamp for next comparison
-          setLastSavedAt(isoNow);
-          console.log('Draft synced to server');
+          // Extract server's updated_at and store it for next LWW comparison
+          const serverUpdatedAt = body?.data?.[0]?.updated_at || isoNow;
+          setLastSavedAt(serverUpdatedAt);
+          localStorage.setItem(`draft:${noteDraftKey}:updatedAt`, serverUpdatedAt);
+          console.log('✅ Draft synced to server at', serverUpdatedAt);
         } else {
-          console.warn('Draft sync failed:', res.status, res.statusText);
+          // Capture error details for debugging
+          const errorText = await res.text();
+          console.error('❌ Draft sync failed (HTTP', res.status + '):', errorText);
+          // Store partial error info
+          try {
+            const errorJson = JSON.parse(errorText);
+            console.error('   Error details:', errorJson);
+          } catch {
+            // Not JSON, just text
+          }
         }
       } catch (err) {
-        console.warn('Server draft sync error (offline or error):', err);
-        // Continue - localStorage still works
+        console.error('❌ Server draft sync exception:', err);
+        // Continue - localStorage still works (offline resilience)
       }
     })();
   };
