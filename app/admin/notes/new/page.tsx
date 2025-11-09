@@ -423,9 +423,16 @@ export default function NewNotePage() {
 
   if (!isSignedIn) {
     return (
-      <div className="p-6 text-slate-400 text-center max-w-md mx-auto">
-        <div className="text-2xl mb-4">🔐 Access Denied</div>
-        <p>You must be signed in to access the admin panel. Please sign in via the login button.</p>
+      <div className="p-6 text-slate-400 text-center max-w-md mx-auto mt-20">
+        <div className="text-6xl mb-6">🔐</div>
+        <div className="text-2xl mb-4 text-white font-semibold">Access Denied</div>
+        <p className="mb-6">You must be signed in to access the admin panel.</p>
+        <a 
+          href="/sign-in" 
+          className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+        >
+          Sign In →
+        </a>
       </div>
     );
   }

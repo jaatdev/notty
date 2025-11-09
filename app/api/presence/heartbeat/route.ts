@@ -60,18 +60,68 @@ export async function POST(req: Request) {
       cursor: cursor || null,
     };
 
-    // Upsert using the unique index on (note_key, user_id)
-    const { data, error } = await supa
-      .from('note_edit_presence')
-      .upsert(payload, { onConflict: 'note_key,user_id' })
-      .select()
-      .limit(1);
+    // Some dev DBs might lack the unique composite index on (note_key, user_id).
+    // Use a select -> update/insert fallback instead of relying on upsert
+    // with onConflict so we don't get a hard 500 from Postgres.
+    try {
+      const { data: existing, error: fetchErr } = await supa
+        .from('note_edit_presence')
+        .select('*')
+        .eq('note_key', noteKey)
+        .eq('user_id', userId)
+        .limit(1)
+        .maybeSingle();
 
-    if (error) throw error;
+      if (fetchErr && fetchErr.code && fetchErr.code !== 'PGRST116') {
+        console.error('[Presence] fetch existing presence err', fetchErr);
+        return NextResponse.json({ error: fetchErr.message || 'DB error' }, { status: 500 });
+      }
 
-    return NextResponse.json({ ok: true, data }, { status: 200 });
+      if (existing) {
+        const { data: updated, error: updateErr } = await supa
+          .from('note_edit_presence')
+          .update(payload)
+          .eq('note_key', noteKey)
+          .eq('user_id', userId)
+          .select('*')
+          .limit(1);
+
+        if (updateErr) {
+          console.error('[Presence] update err', updateErr);
+          return NextResponse.json({ error: updateErr.message || 'DB update error' }, { status: 500 });
+        }
+
+        return NextResponse.json({ ok: true, data: updated }, { status: 200 });
+      }
+
+      // insert new
+      const { data: inserted, error: insertErr } = await supa
+        .from('note_edit_presence')
+        .insert(payload)
+        .select('*')
+        .limit(1);
+
+      if (insertErr) {
+        console.error('[Presence] insert err', insertErr);
+        return NextResponse.json({ error: insertErr.message || 'DB insert error' }, { status: 500 });
+      }
+
+      return NextResponse.json({ ok: true, data: inserted }, { status: 200 });
+    } catch (upsertErr: any) {
+      console.error('[Presence] Heartbeat upsert fallback error:', upsertErr);
+      return NextResponse.json({ error: upsertErr?.message || String(upsertErr) }, { status: 500 });
+    }
   } catch (err: any) {
-    console.error('presence heartbeat error', err);
-    return NextResponse.json({ error: err?.message || String(err) }, { status: 500 });
+    console.error('[Presence] Heartbeat error:', {
+      message: err?.message || String(err),
+      details: err?.details,
+      hint: err?.hint,
+      code: err?.code,
+    });
+    return NextResponse.json({ 
+      error: err?.message || String(err),
+      hint: err?.hint || '',
+      code: err?.code || ''
+    }, { status: 500 });
   }
 }

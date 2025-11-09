@@ -51,6 +51,13 @@ export default function RichTextEditor({ value, onChange, placeholder, minHeight
     },
   });
 
+  // Update editor content when value prop changes (for loading drafts)
+  React.useEffect(() => {
+    if (editor && value !== editor.getHTML()) {
+      editor.commands.setContent(value);
+    }
+  }, [value, editor]);
+
   const handleImageUpload = useCallback(async () => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');

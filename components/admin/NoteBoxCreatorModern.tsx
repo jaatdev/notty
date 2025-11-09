@@ -160,6 +160,7 @@ export default function NoteBoxCreatorModern({
   const [lastSaved, setLastSaved] = useState<number | null>(null);
   const [history, setHistory] = useState<string[]>([]);
   const [isDirty, setIsDirty] = useState(false);
+  const [editorLoadKey, setEditorLoadKey] = useState(0); // Stable key for editor remount on content load
   
   // LWW Merge Strategy (Step 5)
   const [conflictServerMeta, setConflictServerMeta] = useState<any>(null);
@@ -221,20 +222,11 @@ export default function NoteBoxCreatorModern({
     return ids.map(id => themeMap[id]).filter(Boolean);
   }, [type]);
 
-  // Load draft on mount
+  // Load draft on mount (prefer server version if available, fallback to localStorage)
   useEffect(() => {
     const dk = DRAFT_KEY(subjectId, topicId, subtopicId, type);
-    const saved = localStorage.getItem(dk);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setTitle(parsed.title || '');
-        setBodyHtml(parsed.bodyHtml || '');
-        setPointsText(parsed.pointsText || '');
-        setFlashText(parsed.flashText || '');
-        setLastSaved(parsed.ts || null);
-      } catch {}
-    }
+    
+    // Load history from localStorage
     const historyKey = DRAFT_HISTORY_KEY(subjectId, topicId, subtopicId, type);
     const historyData = localStorage.getItem(historyKey);
     if (historyData) {
@@ -242,18 +234,105 @@ export default function NoteBoxCreatorModern({
         setHistory(JSON.parse(historyData));
       } catch {}
     }
+
+    // Try loading from server first (handles multi-device/browser sync)
+    (async () => {
+      try {
+        const res = await fetch('/api/drafts/list', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ noteKey: dk, limit: 1 }),
+        });
+        
+        if (res.ok) {
+          const { data } = await res.json();
+          if (data && data.length > 0) {
+            const serverDraft = data[0];
+            const serverPayload = serverDraft.payload || {};
+            const serverUpdatedAt = serverDraft.updated_at;
+            
+            // Check if server version is newer than localStorage
+            const localSaved = localStorage.getItem(dk);
+            let useServer = true;
+            if (localSaved) {
+              try {
+                const localParsed = JSON.parse(localSaved);
+                const localTs = localParsed.ts || 0;
+                const serverTs = new Date(serverUpdatedAt).getTime();
+                if (localTs > serverTs) {
+                  useServer = false; // Local is newer
+                }
+              } catch {}
+            }
+            
+            if (useServer) {
+              // Server is authoritative or no local draft
+              const loadedTitle = serverPayload.title || '';
+              const loadedBody = serverPayload.bodyHtml || '';
+              const loadedPoints = serverPayload.pointsText || '';
+              const loadedFlash = serverPayload.flashText || '';
+              
+              setTitle(loadedTitle);
+              setBodyHtml(loadedBody);
+              setPointsText(loadedPoints);
+              setFlashText(loadedFlash);
+              setLastSaved(new Date(serverUpdatedAt).getTime());
+              setLastSavedAt(serverUpdatedAt);
+              setEditorLoadKey(prev => prev + 1); // Increment to force editor remount
+              
+              // Also sync to localStorage so it's available for next load
+              const localDraft = { 
+                title: loadedTitle, 
+                bodyHtml: loadedBody, 
+                pointsText: loadedPoints, 
+                flashText: loadedFlash, 
+                ts: new Date(serverUpdatedAt).getTime() 
+              };
+              localStorage.setItem(dk, JSON.stringify(localDraft));
+              
+              console.log('✅ Loaded draft from server:', serverUpdatedAt);
+              return;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('⚠️ Failed to load draft from server, using localStorage fallback:', err);
+      }
+      
+      // Fallback: load from localStorage if server fetch failed or local is newer
+      const saved = localStorage.getItem(dk);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setTitle(parsed.title || '');
+          setBodyHtml(parsed.bodyHtml || '');
+          setPointsText(parsed.pointsText || '');
+          setFlashText(parsed.flashText || '');
+          setLastSaved(parsed.ts || null);
+          setEditorLoadKey(prev => prev + 1); // Increment to force editor remount
+          console.log('📦 Loaded draft from localStorage');
+        } catch {}
+      }
+    })();
   }, [subjectId, topicId, subtopicId, type]);
 
   // Autosave: save immediately on first change, then debounce at 1.5s for responsiveness
+  // Only autosave when Clerk is loaded and user is signed in (prevents 401 errors)
   useEffect(() => {
     if (autosaveRef.current) clearInterval(autosaveRef.current);
+    
+    // Skip autosave if Clerk not ready or user not signed in
+    if (!isLoaded || !isSignedIn) {
+      return;
+    }
     
     // If dirty for the first time in this edit session, save immediately
     // Otherwise, debounce at 1.5s for rapid edits
     if (isDirty) {
       // Schedule save after 1.5s (debounced)
       autosaveRef.current = setInterval(() => {
-        if (isDirty) {
+        if (isDirty && isSignedIn) {
           saveDraft();
         }
       }, 1500);
@@ -262,7 +341,7 @@ export default function NoteBoxCreatorModern({
     return () => {
       if (autosaveRef.current) clearInterval(autosaveRef.current);
     };
-  }, [isDirty, title, bodyHtml, pointsText, flashText, type, subjectId, topicId, subtopicId]);
+  }, [isDirty, title, bodyHtml, pointsText, flashText, type, subjectId, topicId, subtopicId, isLoaded, isSignedIn]);
 
   // Realtime presence + collaboration
   useEffect(() => {
@@ -373,6 +452,12 @@ export default function NoteBoxCreatorModern({
   }, [subjectId, topicId, subtopicId, type, editorId, supabase, isLoaded, isSignedIn]);
 
   const saveDraft = () => {
+    // Guard: only save if Clerk auth is ready and user is signed in
+    if (!isLoaded || !isSignedIn) {
+      console.warn('⏸️ Autosave paused (Clerk not ready or not signed in)');
+      return;
+    }
+
     const dk = DRAFT_KEY(subjectId, topicId, subtopicId, type);
     const now = Date.now();
     const isoNow = new Date(now).toISOString();
@@ -1194,12 +1279,14 @@ export default function NoteBoxCreatorModern({
                       📄 Content (Rich Text)
                     </label>
                     <RichTextEditor
+                      key={`editor-${subjectId}-${topicId}-${subtopicId}-${type}-${editorLoadKey}`}
                       value={bodyHtml}
-                      onChange={(val) => {
-                        setBodyHtml(val);
+                      onChange={(html: string) => {
+                        setBodyHtml(html);
                         setIsDirty(true);
                       }}
                       placeholder="Write detailed explanation here..."
+                      minHeight={300}
                     />
                   </div>
                 )}

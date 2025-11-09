@@ -75,8 +75,13 @@ export async function POST(req: Request) {
     // Payload stored as-is (HTML sanitization happens on render in NoteBoxPreview)
     const safePayload = { ...payload };
 
-    // Upsert by note_key
-    const upsert = {
+    // Upsert by note_key.
+    // Some dev DBs may not have a UNIQUE constraint on note_key, which makes
+    // `ON CONFLICT` upserts fail with: "there is no unique or exclusion
+    // constraint matching the ON CONFLICT specification". To be robust we
+    // implement a select -> update-or-insert fallback instead of relying on
+    // onConflict.
+    const payloadRow = {
       note_key: noteKey,
       subject_id: subjectId || null,
       topic_id: topicId || null,
@@ -87,15 +92,36 @@ export async function POST(req: Request) {
       updated_at: new Date().toISOString(),
     };
 
-    const { data, error } = await supa
-      .from('note_drafts')
-      .upsert(upsert, { onConflict: 'note_key' })
-      .select('*')
-      .limit(1);
+    if (existingDraft) {
+      // update
+      const { data: updated, error: updateErr } = await supa
+        .from('note_drafts')
+        .update(payloadRow)
+        .eq('note_key', noteKey)
+        .select('*')
+        .limit(1);
 
-    if (error) throw error;
+      if (updateErr) {
+        console.error('[Drafts] Update error', updateErr);
+        return NextResponse.json({ error: updateErr.message || 'DB update error' }, { status: 500 });
+      }
 
-    return NextResponse.json({ ok: true, data }, { status: 200 });
+      return NextResponse.json({ ok: true, data: updated }, { status: 200 });
+    } else {
+      // insert
+      const { data: inserted, error: insertErr } = await supa
+        .from('note_drafts')
+        .insert(payloadRow)
+        .select('*')
+        .limit(1);
+
+      if (insertErr) {
+        console.error('[Drafts] Insert error', insertErr);
+        return NextResponse.json({ error: insertErr.message || 'DB insert error' }, { status: 500 });
+      }
+
+      return NextResponse.json({ ok: true, data: inserted }, { status: 200 });
+    }
   } catch (err: any) {
     console.error('save draft error', err);
     return NextResponse.json({ error: err?.message || String(err) }, { status: 500 });
