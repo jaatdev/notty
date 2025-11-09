@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { requireAdminFromCookies } from '@/lib/adminAuth';
+import rateLimit from '@/lib/rateLimiter';
 
 const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPA_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -20,6 +21,16 @@ export async function POST(req: Request) {
     
     if (!noteKey) {
       return NextResponse.json({ error: 'missing noteKey' }, { status: 400 });
+    }
+
+    // Rate limit: 20 deletes per minute per user (deletes should be rare)
+    const rlKey = `delete:${auth.userId}`;
+    const rl = rateLimit.inMemory(rlKey, 20, 60 * 1000, 1);
+    if (!rl.ok) {
+      return NextResponse.json(
+        { error: 'Delete rate limit exceeded' },
+        { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.retryAfterMs / 1000)) } }
+      );
     }
 
     const { error } = await supa
