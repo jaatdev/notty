@@ -86,7 +86,7 @@ export function MergeConflictAlert({
 
         <details className="mt-2 text-xs text-gray-700">
           <summary className="cursor-pointer">View server payload summary</summary>
-          <pre data-testid="payload-summary" className="whitespace-pre-wrap break-words mt-2 text-xs text-gray-600">{payloadSummary}</pre>
+          <pre data-testid="payload-summary" className="whitespace-pre-wrap wrap-break-word mt-2 text-xs text-gray-600">{payloadSummary}</pre>
         </details>
       </div>
     </div>
