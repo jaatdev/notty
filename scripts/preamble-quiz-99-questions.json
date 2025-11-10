@@ -1,0 +1,205 @@
+{
+  "title": "Indian Constitution Preamble: Complete MCQ Bank (99 Questions)",
+  "description": "Comprehensive exam-focused MCQ questions covering Preamble with answers and explanations",
+  "totalQuestions": 99,
+  "subjects": "Polity, Indian Constitution",
+  "difficulty": "Advanced",
+  "coverageAreas": [
+    "Preamble Constitutional basis",
+    "SSCDR nature of state",
+    "JLEF objectives",
+    "42nd Amendment",
+    "Judicial interpretation",
+    "Basic Structure doctrine",
+    "Application in constitutional interpretation"
+  ],
+  "mnemonics": {
+    "SSCDR": {
+      "fullForm": "Sovereign, Socialist, Secular, Democratic, Republic",
+      "memory": "Strong Sexy Smart Desi Raja"
+    },
+    "JLEF": {
+      "fullForm": "Justice, Liberty, Equality, Fraternity",
+      "memory": "J-L-E-F"
+    },
+    "TEBFW": {
+      "fullForm": "Thought, Expression, Belief, Faith, Worship",
+      "memory": "Thali, Egg, Bag, Fan, Water"
+    },
+    "SEP": {
+      "fullForm": "Social, Economic, Political (Justice types)",
+      "memory": "SEP = 3 types of Justice"
+    }
+  },
+  "sampleQuestions": [
+    {
+      "id": "q-preamble-001",
+      "question": "The Preamble is based on which resolution?",
+      "options": [
+        "Government of India Act 1935",
+        "Objectives Resolution",
+        "Nehru Report",
+        "US Constitution"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The Preamble is based on the Objectives Resolution moved by Jawaharlal Nehru on 13 Dec 1946."
+    },
+    {
+      "id": "q-preamble-002",
+      "question": "When was the Preamble adopted?",
+      "options": [
+        "26th January 1950",
+        "26th November 1949",
+        "15th August 1947",
+        "13th December 1946"
+      ],
+      "correctAnswer": 1,
+      "explanation": "It was adopted by the Constituent Assembly on 26 November 1949."
+    },
+    {
+      "id": "q-preamble-003",
+      "question": "When did the Constitution come into effect?",
+      "options": [
+        "26th November 1949",
+        "15th August 1947",
+        "26th January 1950",
+        "26th January 1949"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Constitution came into force on 26 January 1950 (Republic Day)."
+    },
+    {
+      "id": "q-preamble-004",
+      "question": "Which Amendment added the words 'Socialist' and 'Secular' to the Preamble?",
+      "options": [
+        "24th Amendment, 1971",
+        "42nd Amendment, 1976",
+        "44th Amendment, 1978",
+        "61st Amendment, 1989"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The 42nd Amendment (1976) added 'Socialist', 'Secular' and 'Integrity'."
+    },
+    {
+      "id": "q-preamble-005",
+      "question": "Which of the following is NOT one of the words describing the nature of the Indian State in the Preamble?",
+      "options": [
+        "Sovereign",
+        "Federal",
+        "Secular",
+        "Republic"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Preamble says Sovereign, Socialist, Secular, Democratic, Republic — not 'Federal'."
+    },
+    {
+      "id": "q-preamble-010",
+      "question": "Which case declared the Preamble to be part of the Constitution and part of Basic Structure?",
+      "options": [
+        "Kesavananda Bharati Case",
+        "Berubari Union Case",
+        "A.K. Gopalan Case",
+        "Sajjan Singh Case"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Kesavananda Bharati (1973) held Preamble is part of the Constitution and forms part of Basic Structure."
+    },
+    {
+      "id": "q-preamble-026",
+      "question": "Which of the following is an appropriate short mnemonic for the Preamble's objectives?",
+      "options": [
+        "TEB-FW",
+        "SSCDR",
+        "JLEF",
+        "PCI"
+      ],
+      "correctAnswer": 2,
+      "explanation": "JLEF stands for Justice, Liberty, Equality, Fraternity — the Preamble objectives."
+    },
+    {
+      "id": "q-preamble-034",
+      "question": "In mnemonic terms, what does SSCDR stand for?",
+      "options": [
+        "Security, Strength, Community, Democracy, Rule",
+        "Sovereign, Socialist, Secular, Democratic, Republic",
+        "State, System, Constitution, Democracy, Rights",
+        "Society, State, Culture, Democracy, Rights"
+      ],
+      "correctAnswer": 1,
+      "explanation": "SSCDR is short for Sovereign, Socialist, Secular, Democratic, Republic."
+    },
+    {
+      "id": "q-preamble-053",
+      "question": "Which one of these is the best short mnemonic to remember the Preamble's nature (SSCDR)?",
+      "options": [
+        "Strong Sexy Smart Desi Raja",
+        "Small Square Circle Dense Rectangle",
+        "Some Sweet Candy Deliciously Round",
+        "Silly Students Can't Do Research"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The mnemonic 'Strong Sexy Smart Desi Raja' is used to remember SSCDR."
+    },
+    {
+      "id": "q-preamble-064",
+      "question": "Which famous jurist called the Preamble the 'Identity Card' of the Constitution?",
+      "options": [
+        "N.A. Palkiwala",
+        "K.M. Munshi",
+        "B.R. Ambedkar",
+        "M.N. Roy"
+      ],
+      "correctAnswer": 0,
+      "explanation": "N. A. Palkiwala called the Preamble the Identity Card of the Constitution."
+    }
+  ],
+  "keyTopics": {
+    "constitutionalBasis": [
+      "Based on Objectives Resolution (13 Dec 1946)",
+      "Adopted: 26 November 1949",
+      "Effective: 26 January 1950",
+      "Only amended once: 42nd Amendment 1976"
+    ],
+    "natureOfState": [
+      "Sovereign - Independent in internal and external affairs",
+      "Socialist - Aims at reducing socio-economic inequality",
+      "Secular - No official religion, equal respect to all",
+      "Democratic - Government by people, for people",
+      "Republic - Elected head of state, not hereditary"
+    ],
+    "fourObjectives": [
+      "Justice: Social, Economic, Political",
+      "Liberty: Thought, Expression, Belief, Faith, Worship",
+      "Equality: Status and Opportunity",
+      "Fraternity: Dignity and National Unity"
+    ],
+    "judicialInterpretation": [
+      "Berubari Union Case (1960): Preamble NOT part of Constitution (old view)",
+      "Kesavananda Bharati (1973): Preamble IS part and embodies Basic Structure",
+      "LIC of India (1995): Reaffirmed Preamble's integral status"
+    ],
+    "42ndAmendment1976": [
+      "Added word 'Socialist'",
+      "Added word 'Secular'",
+      "Added word 'Integrity' (to 'Unity')"
+    ]
+  },
+  "studyTips": [
+    "Remember SSCDR = Strong Sexy Smart Desi Raja",
+    "Remember JLEF = Justice, Liberty, Equality, Fraternity",
+    "Remember TEBFW = Thali, Egg, Bag, Fan, Water (for five liberties)",
+    "Remember SEP = Social, Economic, Political (three justice types)",
+    "Preamble dates: Adopted 26-11-1949, Effective 26-01-1950",
+    "42nd Amendment is ONLY amendment to Preamble",
+    "Kesavananda case changed Preamble's constitutional status",
+    "Preamble is not directly enforceable but used for interpretation"
+  ],
+  "examFocus": [
+    "Frequently tested in UPSC Civil Services",
+    "State level competitive exams",
+    "Law entrance exams (CLAT, AILET)",
+    "General knowledge quizzes",
+    "Constitutional law case studies"
+  ],
+  "note": "Full 99-question bank available in seed script and data/notes.json. This file contains sample questions for reference. Use this alongside the published_notes table in Supabase for complete preamble MCQ preparation."
+}
