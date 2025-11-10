@@ -123,6 +123,8 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
   const [lastSaved, setLastSaved] = useState<number | null>(null);
   const [isDirty, setIsDirty] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [lastCreatedNote, setLastCreatedNote] = useState<NoteBox | null>(null);
 
   // Realtime collaboration state
   const [activeUsers, setActiveUsers] = useState<{ user_id: string; display_name?: string; last_active?: string }[]>([]);
@@ -587,6 +589,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
     if (nb) {
       saveDraft();
       clearDraft();
+      setLastCreatedNote(nb);
       if (onCreated) onCreated(nb);
       
       // Get the count of existing notes in this subtopic
@@ -598,6 +601,48 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
       alert(`✅ Note created successfully!\n\nThis subtopic now has ${noteCount} note${noteCount !== 1 ? 's' : ''}.\nYour new note was added to the end of the list.`);
     } else {
       alert('Failed to create note. Check IDs');
+    }
+  }
+
+  async function handlePublish() {
+    if (!lastCreatedNote) {
+      alert('No note to publish. Please create a note first.');
+      return;
+    }
+
+    setIsPublishing(true);
+    try {
+      const response = await fetch('/api/published/publish', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          noteKey: `${subjectId}-${topicId}-${subtopicId}`,
+          noteBoxId: lastCreatedNote.id,
+          subjectSlug: subjectId,
+          topicId,
+          subtopicId,
+          title: lastCreatedNote.content?.title || title,
+          bodyHtml: lastCreatedNote.content?.body || bodyHtml,
+          payload: lastCreatedNote.content,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        alert(`❌ Failed to publish: ${error.message}`);
+        return;
+      }
+
+      const result = await response.json();
+      alert(`✅ Note published successfully!\n\nPublic URL: /notes/${result.noteKey}\n\nStudents can now see this note in the published section.`);
+      setLastCreatedNote(null);
+    } catch (error) {
+      console.error('Publish error:', error);
+      alert(`❌ Error publishing note: ${(error as Error).message}`);
+    } finally {
+      setIsPublishing(false);
     }
   }
 
@@ -715,9 +760,34 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
           )}
         </div>
 
-        <div className="flex gap-2">
-          <button onClick={handleCreate} className="rounded-md px-4 py-2 bg-linear-to-r from-indigo-600 to-cyan-500 text-white">Create Note</button>
-          <button onClick={() => { setTitle(''); setBodyHtml(''); setPointsText(''); setFlashText(''); }} className="rounded-md px-4 py-2 border border-slate-700">Reset</button>
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            <button onClick={handleCreate} className="rounded-md px-4 py-2 bg-linear-to-r from-indigo-600 to-cyan-500 text-white">Create Note</button>
+            <button onClick={() => { setTitle(''); setBodyHtml(''); setPointsText(''); setFlashText(''); }} className="rounded-md px-4 py-2 border border-slate-700">Reset</button>
+          </div>
+          
+          {lastCreatedNote && (
+            <button 
+              onClick={handlePublish}
+              disabled={isPublishing}
+              className={`rounded-md px-4 py-2 flex items-center gap-2 justify-center text-white transition-all ${
+                isPublishing 
+                  ? 'bg-slate-700 cursor-not-allowed opacity-50' 
+                  : 'bg-linear-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600'
+              }`}
+            >
+              {isPublishing ? (
+                <>
+                  <span className="inline-block animate-spin">⏳</span>
+                  Publishing...
+                </>
+              ) : (
+                <>
+                  📤 Publish to Student View
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
 
