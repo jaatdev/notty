@@ -128,12 +128,20 @@ export default function NoteBoxRenderer({ note, index = 0 }: NoteBoxRendererProp
           <h3 className="text-xl font-bold mb-4 opacity-90">{content.title}</h3>
         )}
         <div className="mnemonic-hero">
-          <div className="text-sm uppercase tracking-widest opacity-75 mb-3">Remember This</div>
-          <h1>{content.mnemonic}</h1>
-          <div className="mnemonic-breakdown">
-            {content.mnemonic.split('').map((letter, i) => (
-              <span key={i}>{letter}</span>
-            ))}
+          <div className="text-sm uppercase tracking-widest opacity-75 mb-3">Key Mnemonic</div>
+          <div className="bg-linear-to-r from-blue-500/20 to-purple-500/20 border-2 border-blue-500/50 rounded-xl p-6 mb-8">
+            <h1 className="text-2xl font-bold leading-relaxed text-center mb-4">{content.mnemonic}</h1>
+            {content.breakdown && content.breakdown.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {content.breakdown.map((item, i) => (
+                  <div key={i} className="bg-white/5 rounded-lg p-3 hover:bg-white/10 transition-all">
+                    <div className="text-sm uppercase opacity-60 mb-1">Step {i + 1}</div>
+                    <div className="font-bold text-lg">{item.letter}</div>
+                    <div className="text-sm opacity-75">{item.word}</div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         <div className="sscdr-grid">
@@ -151,13 +159,13 @@ export default function NoteBoxRenderer({ note, index = 0 }: NoteBoxRendererProp
                 <div className="visual-hint">
                   <span className="font-semibold">💡 Remember:</span> {item.letter} = {item.word}
                 </div>
-                <span className="badge-42">Letter {i + 1}</span>
+                <span className="badge-42">Point {i + 1}</span>
               </div>
             )
           })}
         </div>
         <div className="mnemonic-tag">
-          🎯 Use "{content.mnemonic}" to remember all {content.breakdown?.length || 0} points
+          🎯 Key Pattern: {content.breakdown?.map(b => b.letter).join(' → ').substring(0, 50)}...
         </div>
       </div>
     )
@@ -273,9 +281,22 @@ export default function NoteBoxRenderer({ note, index = 0 }: NoteBoxRendererProp
     )
   }
 
-  // MNEMONIC CARD - Compact Mnemonic Style
+  // MNEMONIC CARD - Flashcards for exam questions
   if (note.type === 'mnemonic-card') {
-    const content = note.content as MnemonicMagicContent
+    const content = note.content as any
+    const flashcards = content.flashcards || []
+    const [flipped, setFlipped] = React.useState<Set<string>>(new Set())
+
+    const toggleFlip = (id: string) => {
+      const newFlipped = new Set(flipped)
+      if (newFlipped.has(id)) {
+        newFlipped.delete(id)
+      } else {
+        newFlipped.add(id)
+      }
+      setFlipped(newFlipped)
+    }
+
     return (
       <div 
         className="animate-fade-in-up prose prose-invert max-w-none"
@@ -284,27 +305,29 @@ export default function NoteBoxRenderer({ note, index = 0 }: NoteBoxRendererProp
         <h2 className={`text-3xl font-black mb-6 ${selectedGradient} bg-clip-text text-transparent`}>
           {note.title}
         </h2>
-        <div className="summary-card">
-          <div className="text-center mb-6">
-            <div className="text-sm uppercase tracking-widest opacity-75 mb-2">Mnemonic</div>
-            <div className={`text-5xl font-black tracking-wider ${selectedGradient} bg-clip-text text-transparent`}>
-              {content.mnemonic}
-            </div>
-          </div>
-          <div className="space-y-3">
-            {content.breakdown?.map((item, i) => (
-              <div key={i} className="flex items-center gap-4 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-all">
-                <div className="w-10 h-10 flex items-center justify-center bg-linear-to-br from-purple-500 to-pink-500 rounded-full text-xl font-black">
-                  {item.letter}
-                </div>
-                <div className="flex-1">
-                  <span className="font-bold text-lg">{item.word}</span>
-                  <span className="mx-2 opacity-50">•</span>
-                  <span className="opacity-90">{item.meaning}</span>
-                </div>
+        <p className="text-sm opacity-75 mb-4 text-center">Click cards to flip • {flashcards.length} questions</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {flashcards.map((card: any) => (
+            <div
+              key={card.id}
+              onClick={() => toggleFlip(card.id)}
+              className={`h-48 cursor-pointer rounded-xl p-6 flex flex-col items-center justify-center text-center transition-all duration-300 transform hover:scale-105 ${
+                flipped.has(card.id)
+                  ? `bg-linear-to-br from-green-500/20 to-emerald-500/20 border-2 border-green-500/50`
+                  : `bg-linear-to-br from-blue-500/20 to-purple-500/20 border-2 border-blue-500/50 hover:border-blue-400/75`
+              }`}
+            >
+              <div className="text-xs uppercase tracking-widest opacity-60 mb-3">
+                {flipped.has(card.id) ? 'Answer' : 'Question'}
               </div>
-            ))}
-          </div>
+              <div className={`text-lg font-semibold leading-relaxed ${
+                flipped.has(card.id) ? 'text-green-300' : 'text-blue-300'
+              }`}>
+                {flipped.has(card.id) ? card.back : card.front}
+              </div>
+              <div className="mt-4 text-xs opacity-50">Click to flip</div>
+            </div>
+          ))}
         </div>
       </div>
     )

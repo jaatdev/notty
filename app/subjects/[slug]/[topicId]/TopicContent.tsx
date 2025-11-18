@@ -9,6 +9,8 @@ import NotesSearch from '@/components/NotesSearch'
 import NotesAnalytics from '@/components/NotesAnalytics'
 import PerformanceMonitor from '@/components/PerformanceMonitor'
 import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp'
+import ToolsMenu from '@/components/admin/ToolsMenu'
+import { useFullscreen } from '@/lib/fullscreen-context'
 import { addNote, getNotesForTopic } from '@/lib/notes-hierarchical'
 import { measurePerformance, checkStorageHealth } from '@/lib/notes-performance'
 import type { ContentNode } from '@/lib/types'
@@ -16,13 +18,7 @@ import type { Note } from '@/lib/notes-hierarchical'
 import type { BrandKey } from '@/lib/brand'
 import { useToast } from '@/components/feedback/ToastProvider'
 
-// Icons
-const NotesIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-const BackupIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-const SearchIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-const AnalyticsIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/></svg>
-const PerformanceIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-const HelpIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+// Icons (no longer needed with ToolsMenu, but kept for reference)
 
 type TopicContentProps = {
   content: ContentNode[]
@@ -44,11 +40,29 @@ export default function TopicContent({ content, subjectSlug, topicId, brandColor
   const [isHelpOpen, setIsHelpOpen] = useState(false)
   const [notes, setNotes] = useState<Note[]>([])
   const { showToast } = useToast()
+  const { isFullscreen, toggleFullscreen } = useFullscreen()
 
   // Load topic notes on mount
   useEffect(() => {
     loadNotes()
   }, [subjectSlug, topicId])
+
+  // Keyboard shortcuts for fullscreen mode
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // ESC to exit fullscreen
+      if (e.key === 'Escape' && isFullscreen) {
+        toggleFullscreen()
+      }
+      // F to enter fullscreen
+      if (e.key === 'f' && !isFullscreen) {
+        toggleFullscreen()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [isFullscreen, toggleFullscreen])
 
   // Check storage health on mount
   useEffect(() => {
@@ -167,85 +181,43 @@ export default function TopicContent({ content, subjectSlug, topicId, brandColor
 
   return (
     <>
-      {/* Floating Action Buttons */}
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col gap-3">
-        {/* Help Button */}
+      {/* Fullscreen Exit Button */}
+      {isFullscreen && (
         <button
-          onClick={() => setIsHelpOpen(true)}
-          className="px-5 py-3 bg-linear-to-r from-pink-500 to-rose-500 text-white font-semibold rounded-full shadow-2xl hover:scale-110 transition-all flex items-center gap-2"
-          style={{ boxShadow: '0 0 30px rgba(236, 72, 153, 0.5)' }}
-          aria-label="Show keyboard shortcuts"
-          title="Keyboard Shortcuts (?)"
+          onClick={toggleFullscreen}
+          className="fullscreen-exit-btn"
+          title="Exit fullscreen mode (Esc)"
+          aria-label="Exit fullscreen mode"
         >
-          <HelpIcon />
-          <span className="hidden md:inline">Help</span>
+          ✕ Exit Focus Mode
         </button>
+      )}
 
-        {/* Performance Monitor Button */}
+      {/* Fullscreen Button (only show when not in fullscreen) */}
+      {!isFullscreen && (
         <button
-          onClick={() => setIsPerformanceOpen(true)}
-          className="px-5 py-3 bg-linear-to-r from-yellow-500 to-orange-500 text-white font-semibold rounded-full shadow-2xl hover:scale-110 transition-all flex items-center gap-2"
-          style={{ boxShadow: '0 0 30px rgba(251, 191, 36, 0.5)' }}
-          aria-label="View performance"
-          title="Performance Monitor"
+          onClick={toggleFullscreen}
+          className="fullscreen-btn"
+          title="Enter fullscreen mode for distraction-free studying"
+          aria-label="Enter fullscreen mode"
         >
-          <PerformanceIcon />
-          <span className="hidden md:inline">Performance</span>
+          ⛶ Focus Mode
         </button>
+      )}
 
-        {/* Analytics Button */}
-        <button
-          onClick={() => setIsAnalyticsOpen(true)}
-          className="px-5 py-3 bg-linear-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full shadow-2xl hover:scale-110 transition-all flex items-center gap-2"
-          style={{ boxShadow: '0 0 30px rgba(99, 102, 241, 0.5)' }}
-          aria-label="View analytics"
-          title="View Analytics"
-        >
-          <AnalyticsIcon />
-          <span className="hidden md:inline">Analytics</span>
-        </button>
-
-        {/* Search Button */}
-        <button
-          onClick={() => setIsSearchOpen(true)}
-          className="px-5 py-3 bg-linear-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-full shadow-2xl hover:scale-110 transition-all flex items-center gap-2"
-          style={{ boxShadow: '0 0 30px rgba(59, 130, 246, 0.5)' }}
-          aria-label="Search notes"
-          title="Search Notes (Ctrl+F)"
-        >
-          <SearchIcon />
-          <span className="hidden md:inline">Search</span>
-        </button>
-
-        {/* Backup/Export Button */}
-        <button
-          onClick={() => setIsExportImportOpen(true)}
-          className="px-5 py-3 bg-linear-to-r from-green-500 to-emerald-500 text-white font-semibold rounded-full shadow-2xl hover:scale-110 transition-all flex items-center gap-2"
-          style={{ boxShadow: '0 0 30px rgba(16, 185, 129, 0.5)' }}
-          aria-label="Backup and export notes"
-          title="Backup & Export"
-        >
-          <BackupIcon />
-          <span className="hidden md:inline">Backup</span>
-        </button>
-
-        {/* Quick Notes Button */}
-        <button
-          onClick={() => setIsNotesModalOpen(true)}
-          className="px-5 py-3 bg-linear-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-full shadow-2xl hover:scale-110 transition-all flex items-center gap-2"
-          style={{ boxShadow: '0 0 30px rgba(168, 85, 247, 0.5)' }}
-          aria-label="Create new note"
-          title="Create Note (Ctrl+N)"
-        >
-          <NotesIcon />
-          <span className="hidden md:inline">Quick Note</span>
-          {notes.length > 0 && (
-            <span className="px-2 py-0.5 bg-white/20 rounded-full text-xs">
-              {notes.length}
-            </span>
-          )}
-        </button>
-      </div>
+      {/* Tools Menu */}
+      {!isFullscreen && (
+        <div className="fixed top-24 right-6 z-40">
+          <ToolsMenu
+            onHelpClick={() => setIsHelpOpen(true)}
+            onPerformanceClick={() => setIsPerformanceOpen(true)}
+            onAnalyticsClick={() => setIsAnalyticsOpen(true)}
+            onSearchClick={() => setIsSearchOpen(true)}
+            onBackupClick={() => setIsExportImportOpen(true)}
+            onQuickNoteClick={() => setIsNotesModalOpen(true)}
+          />
+        </div>
+      )}
 
       {/* Keyboard Shortcuts Help */}
       <KeyboardShortcutsHelp

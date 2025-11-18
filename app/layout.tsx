@@ -4,12 +4,14 @@ import './globals.css'
 import { ThemeProvider } from 'next-themes'
 import { ThemeProvider as NottyThemeProvider } from '@/components/ThemeProvider'
 import { AuthProvider } from '@/components/auth/AuthProvider'
+import { FullscreenProvider } from '@/lib/fullscreen-context'
 import { Inter, JetBrains_Mono } from 'next/font/google'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { CommandPalette, EasterEggs } from '@/components/DynamicComponents'
 import ToastProvider from '@/components/feedback/ToastProvider'
 import { WebVitals } from './web-vitals'
+import LayoutWrapper from '@/components/layout/LayoutWrapper'
 import 'highlight.js/styles/github.min.css'
 
 // Optimize font loading with next/font
@@ -54,11 +56,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
             <NottyThemeProvider>
               <AuthProvider>
-                <Navbar />
-                <main id="main-content" className="pt-16" role="main">
-                  {children}
-                </main>
-                <Footer />
+                <FullscreenProvider>
+                  <LayoutWrapper>
+                    <Navbar />
+                    <main id="main-content" className="pt-16" role="main">
+                      {children}
+                    </main>
+                    <Footer />
+                  </LayoutWrapper>
+                </FullscreenProvider>
                 <CommandPalette />
                 <EasterEggs />
                 <ToastProvider>

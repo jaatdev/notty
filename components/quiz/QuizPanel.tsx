@@ -12,6 +12,7 @@ import { useQuiz } from '@/lib/quiz-state';
 import { EnhancedQuizQuestion, QuestionStatus } from '@/lib/quiz-types';
 import { QuizQuestion } from '@/lib/types';
 import { getThemeById } from '@/lib/theme-variants';
+import { QuizReview } from './QuizReview';
 
 // Convert QuizQuestion to EnhancedQuizQuestion
 function enhanceQuestions(questions: QuizQuestion[]): EnhancedQuizQuestion[] {
@@ -115,9 +116,39 @@ export function QuizPanel({ questions, topicId, onComplete }: QuizPanelProps) {
     );
   }
 
-  // Results view
-  if (showResults && quiz.session.score) {
-    return <QuizResults score={quiz.session.score} theme={theme} onRestart={quiz.startQuiz} />;
+  // Results view - Show detailed review
+  if (showResults && quiz.session.score && quiz.session.questions) {
+    // Convert quiz attempts to review format
+    const attempts = quiz.session.questions.map((q) => {
+      // Find the index of the selected option
+      const selectedIndex = q.selectedOptionId
+        ? q.question.options.indexOf(q.selectedOptionId)
+        : -1;
+      
+      // Find the index of the correct option
+      const correctIndex = q.question.answerIndex;
+
+      return {
+        questionId: q.question.id,
+        prompt: q.question.prompt,
+        options: q.question.options,
+        selectedOptionId: selectedIndex >= 0 ? selectedIndex.toString() : null,
+        correctOptionId: correctIndex.toString(),
+        isCorrect: selectedIndex === correctIndex && q.status !== 'skipped' && q.selectedOptionId !== null,
+        reason: q.question.reason,
+        status: q.status,
+        timeSpent: q.timeSpent,
+      };
+    });
+
+    return (
+      <QuizReview
+        attempts={attempts}
+        score={quiz.session.score}
+        topicId={topicId}
+        onClose={() => setShowResults(false)}
+      />
+    );
   }
 
   const currentAttempt = quiz.currentQuestion;

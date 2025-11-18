@@ -27,45 +27,32 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { noteKey } = body;
+    const { 
+      noteKey, 
+      subjectSlug, 
+      topicId, 
+      subtopicId, 
+      title, 
+      bodyHtml,
+      payload 
+    } = body;
 
-    if (!noteKey) {
-      return NextResponse.json({ error: 'noteKey required' }, { status: 400 });
+    if (!noteKey || !title) {
+      return NextResponse.json({ error: 'noteKey and title required' }, { status: 400 });
     }
 
-    // Fetch draft from note_drafts
-    const { data: draft, error: fetchErr } = await supa
-      .from('note_drafts')
-      .select('payload, note_key, subject_slug, topic_id, subtopic_id')
-      .eq('note_key', noteKey)
-      .single();
-
-    if (fetchErr && fetchErr.code && fetchErr.code !== 'PGRST116') {
-      console.error('publish: fetch draft err', fetchErr);
-      return NextResponse.json({ error: fetchErr.message || 'DB error' }, { status: 500 });
-    }
-
-    if (!draft) {
-      return NextResponse.json({ error: 'draft not found' }, { status: 404 });
-    }
-
-    const payload = draft.payload ?? {};
     // Sanitize HTML content if present
-    const bodyHtml = payload.bodyHtml
-      ? sanitizeHtml(payload.bodyHtml)
-      : payload.sections
-        ? payload.sections.map((s: any) => s.content || '').join('\n')
-        : '';
+    const sanitizedBodyHtml = bodyHtml ? sanitizeHtml(bodyHtml) : '';
 
     const upsertData = {
       note_key: noteKey,
-      subject_slug: draft.subject_slug || payload.subject_slug || null,
-      topic_id: draft.topic_id || payload.topic_id || null,
-      subtopic_id: draft.subtopic_id || payload.subtopic_id || null,
-      title: payload.title || 'Untitled',
-      description: payload.excerpt || '',
-      body_html: bodyHtml,
-      payload,
+      subject_slug: subjectSlug || null,
+      topic_id: topicId || null,
+      subtopic_id: subtopicId || null,
+      title: title || 'Untitled',
+      description: payload?.excerpt || '',
+      body_html: sanitizedBodyHtml,
+      payload: payload || {},
       published_by: auth.userId || null,
       published_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -82,7 +69,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: upErr.message || 'DB upsert error' }, { status: 500 });
     }
 
-    return NextResponse.json({ ok: true, published: pub?.[0] ?? null });
+    return NextResponse.json({ ok: true, noteKey, published: pub?.[0] ?? null });
   } catch (err: any) {
     console.error('publish route err', err);
     return NextResponse.json({ error: err?.message || 'Server error' }, { status: 500 });

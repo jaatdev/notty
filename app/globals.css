@@ -1170,6 +1170,116 @@ body {
   -webkit-transform: translateZ(0);
 }
 
+/* ============================================================================
+   FULLSCREEN/EXAM MODE - Immersive Note & Quiz Viewing
+   Hide all UI elements except content for focused studying
+   ============================================================================ */
+
+/* Fullscreen mode - hide navbar, footer, and other UI */
+html.fullscreen-mode,
+body.fullscreen-mode {
+  overflow: hidden;
+  background: white !important;
+}
+
+html.fullscreen-mode.dark,
+body.fullscreen-mode.dark {
+  background: #0a0a0a !important;
+}
+
+/* Ensure all containers are visible in fullscreen */
+html.fullscreen-mode *,
+body.fullscreen-mode * {
+  visibility: visible !important;
+}
+
+/* Main content in fullscreen */
+html.fullscreen-mode main#main-content,
+body.fullscreen-mode main#main-content {
+  padding-top: 2rem !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+  padding-bottom: 2rem !important;
+  height: 100vh !important;
+  width: 100vw !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  background: white !important;
+  display: block !important;
+  position: relative !important;
+}
+
+html.fullscreen-mode.dark main#main-content,
+body.fullscreen-mode.dark main#main-content {
+  background: #0a0a0a !important;
+}
+
+/* Hide navbar and footer in fullscreen mode */
+html.fullscreen-mode nav,
+body.fullscreen-mode nav,
+html.fullscreen-mode footer,
+body.fullscreen-mode footer {
+  display: none !important;
+}
+
+/* Hide command palette, easter eggs, toast in fullscreen */
+html.fullscreen-mode [role="dialog"],
+body.fullscreen-mode [role="dialog"],
+html.fullscreen-mode #toast,
+body.fullscreen-mode #toast {
+  display: none !important;
+}
+
+/* Exit button positioning in fullscreen */
+.fullscreen-exit-btn {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s;
+}
+
+.fullscreen-exit-btn:hover {
+  background: rgba(0, 0, 0, 0.95);
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Fullscreen button */
+.fullscreen-btn {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 40;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.875rem 1.75rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s;
+}
+
+.fullscreen-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 12px 24px rgba(102, 126, 234, 0.5);
+}
+
+
 
 
 
