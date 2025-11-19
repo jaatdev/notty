@@ -1,14 +1,26 @@
-﻿import React from 'react';
-import "@/styles/admin.css";
+﻿import { ReactNode } from 'react'
+import { AdminSidebar } from '@/components/admin/AdminSidebar'
 
 export const metadata = {
-  title: "Admin - Notty",
-};
+  title: 'Admin - Notty',
+}
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: ReactNode
+}) {
   return (
-    <div className="dark min-h-screen bg-slate-950 text-slate-100">
-      {children}
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar */}
+      <AdminSidebar />
+
+      {/* Main Content */}
+      <main className="flex-1 overflow-y-auto">
+        <div className="container mx-auto px-8 py-8">
+          {children}
+        </div>
+      </main>
     </div>
-  );
+  )
 }

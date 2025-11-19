@@ -49,8 +49,8 @@ export function QuizReview({ attempts, score, topicId, onClose }: QuizReviewProp
   const skippedCount = attempts.filter(a => a.status === 'skipped').length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-950 dark:to-neutral-900 p-4 md:p-6">
-      {/* Header */}
+    <div className="min-h-screen bg-linear-to-br from-neutral-50 to-neutral-100 dark:from-neutral-950 dark:to-neutral-900 p-4 md:p-6">
+      {/* Header */
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -288,10 +288,10 @@ export function QuizReview({ attempts, score, topicId, onClose }: QuizReviewProp
                                       : isSelectedOption
                                         ? 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-800'
                                         : 'bg-neutral-50 dark:bg-neutral-800/50 border-neutral-200 dark:border-neutral-700'
-                                  }`}
+                                >`}
                                 >
                                   <div className="flex items-start gap-2">
-                                    <span className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                    <span className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                                       isCorrectOption
                                         ? 'bg-green-500 text-white'
                                         : isSelectedOption

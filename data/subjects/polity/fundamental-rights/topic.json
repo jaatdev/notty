@@ -1,0 +1,14 @@
+{
+  "id": "top_fundamental_rights",
+  "title": "Fundamental Rights",
+  "slug": "fundamental-rights",
+  "createdAt": "2025-11-06T00:00:00.000Z",
+  "updatedAt": "2025-11-06T00:00:00.000Z",
+  "subTopics": [
+    {
+      "id": "subt_article_15",
+      "slug": "article-15",
+      "title": "Article 15 - Prohibition of Discrimination"
+    }
+  ]
+}

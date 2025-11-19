@@ -2,12 +2,12 @@
 import { getAllSubjects } from '@/lib/data'
 
 export default function Footer() {
-  const subjects = getAllSubjects()
-  const quick = subjects.slice(0, 6)
+  const subjects = getAllSubjects() || []
+  const quick = (subjects || []).slice(0, 6)
   const allTags = Array.from(
     new Set(
-      subjects.flatMap(s =>
-        s.topics.flatMap(topic => collectTopicTags(topic))
+      (subjects || []).flatMap((s: any) =>
+        (s.topics ?? []).flatMap((topic: any) => collectTopicTags(topic) ?? [])
       )
     )
   ).slice(0, 12)

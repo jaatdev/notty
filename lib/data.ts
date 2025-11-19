@@ -3,7 +3,7 @@
 // Functions to load and traverse the hierarchical subject data structure
 // ============================================================================
 
-import notes from '@/data/notes.json'
+import notesStatic from '@/data/notes-static.json'
 import type { Subject, Topic, QuizQuestion } from './types'
 import { allSubjectsConfig, type SubjectConfig } from './subjects.config'
 
@@ -15,12 +15,10 @@ export function getAllSubjectConfigs(): SubjectConfig[] {
 }
 
 /**
- * Load all subjects data from notes.json
+ * Load all subjects data from static JSON (built from folder structure)
  */
 export function getAllSubjectsData(): Subject[] {
-  // TODO: Migrate notes.json to match new type structure
-  // Currently using 'as any' to bypass type check for legacy data format
-  return (notes.subjects as any) || []
+  return (notesStatic.subjects as any) || []
 }
 
 /**
