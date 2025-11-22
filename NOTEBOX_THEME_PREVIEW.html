@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoteBox Theme Preview - 25 Professional Themes</title>
+    <link rel="stylesheet" href="app/notebox-themes.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #ededed;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #3b82f6, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 3rem;
+        }
+        
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .theme-card {
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 2px solid rgba(100, 116, 139, 0.3);
+        }
+        
+        .theme-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: capitalize;
+        }
+        
+        .notebox {
+            margin-top: 1rem;
+        }
+        
+        .toggle-mode {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(59, 130, 246, 0.2);
+            border: 2px solid rgba(59, 130, 246, 0.4);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .toggle-mode:hover {
+            background: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .light-mode {
+            background: #ffffff;
+            color: #171717;
+        }
+        
+        .light-mode .theme-card {
+            background: rgba(241, 245, 249, 0.8);
+            border-color: rgba(203, 213, 225, 0.5);
+        }
+        
+        .light-mode .subtitle {
+            color: #64748b;
+        }
+        
+        @media (max-width: 768px) {
+            .theme-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            .toggle-mode {
+                top: 1rem;
+                right: 1rem;
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle-mode" onclick="toggleMode()">🌙 Toggle Light/Dark</button>
+    
+    <div class="container">
+        <h1>📦 NoteBox Theme Preview</h1>
+        <p class="subtitle">25 Professional Color Themes for World-Class Notes</p>
+        
+        <div class="theme-grid">
+            <!-- Theme 1: Emerald -->
+            <div class="theme-card">
+                <div class="theme-name">🟢 Emerald</div>
+                <div class="notebox notebox-emerald">
+                    <div class="notebox-title">Emerald Theme</div>
+                    <div class="notebox-content">
+                        Perfect for success, growth, and nature-related content. 
+                        Calming green tones with professional appearance.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 2: Sapphire -->
+            <div class="theme-card">
+                <div class="theme-name">🔵 Sapphire</div>
+                <div class="notebox notebox-sapphire">
+                    <div class="notebox-title">Sapphire Theme</div>
+                    <div class="notebox-content">
+                        Ideal for trust, knowledge, and calm content. 
+                        Classic blue that inspires confidence.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 3: Ruby -->
+            <div class="theme-card">
+                <div class="theme-name">🔴 Ruby</div>
+                <div class="notebox notebox-ruby">
+                    <div class="notebox-title">Ruby Theme</div>
+                    <div class="notebox-content">
+                        Best for important, urgent, or danger warnings. 
+                        Commands attention immediately.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 4: Amber -->
+            <div class="theme-card">
+                <div class="theme-name">🟠 Amber</div>
+                <div class="notebox notebox-amber">
+                    <div class="notebox-title">Amber Theme</div>
+                    <div class="notebox-content">
+                        Great for warnings, attention, and energetic content. 
+                        Warm and inviting orange tones.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 5: Violet -->
+            <div class="theme-card">
+                <div class="theme-name">🟣 Violet</div>
+                <div class="notebox notebox-violet">
+                    <div class="notebox-title">Violet Theme</div>
+                    <div class="notebox-content">
+                        Perfect for creative, royal, and wisdom content. 
+                        Sophisticated purple shades.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 6: Rose -->
+            <div class="theme-card">
+                <div class="theme-name">🌸 Rose</div>
+                <div class="notebox notebox-rose">
+                    <div class="notebox-title">Rose Theme</div>
+                    <div class="notebox-content">
+                        Ideal for gentle, friendly, and love-related content. 
+                        Soft pink tones.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 7: Cyan -->
+            <div class="theme-card">
+                <div class="theme-name">🔷 Cyan</div>
+                <div class="notebox notebox-cyan">
+                    <div class="notebox-title">Cyan Theme</div>
+                    <div class="notebox-content">
+                        Best for tech, modern, and fresh content. 
+                        Vibrant cyan blue.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 8: Indigo -->
+            <div class="theme-card">
+                <div class="theme-name">💙 Indigo</div>
+                <div class="notebox notebox-indigo">
+                    <div class="notebox-title">Indigo Theme</div>
+                    <div class="notebox-content">
+                        Perfect for deep, professional, and stable content. 
+                        Rich indigo blue.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 9: Lime -->
+            <div class="theme-card">
+                <div class="theme-name">🟢 Lime</div>
+                <div class="notebox notebox-lime">
+                    <div class="notebox-title">Lime Theme</div>
+                    <div class="notebox-content">
+                        Great for fresh, vibrant, and new content. 
+                        Energetic lime green.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 10: Teal -->
+            <div class="theme-card">
+                <div class="theme-name">🔹 Teal</div>
+                <div class="notebox notebox-teal">
+                    <div class="notebox-title">Teal Theme</div>
+                    <div class="notebox-content">
+                        Ideal for balance, clarity, and focus content. 
+                        Calming teal blue-green.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 11: Crimson -->
+            <div class="theme-card">
+                <div class="theme-name">🔴 Crimson</div>
+                <div class="notebox notebox-crimson">
+                    <div class="notebox-title">Crimson Theme</div>
+                    <div class="notebox-content">
+                        Best for critical, serious, and power content. 
+                        Deep dark red.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 12: Gold -->
+            <div class="theme-card">
+                <div class="theme-name">🟡 Gold</div>
+                <div class="notebox notebox-gold">
+                    <div class="notebox-title">Gold Theme</div>
+                    <div class="notebox-content">
+                        Perfect for premium, valuable, and achievement content. 
+                        Luxurious gold.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 13: Silver -->
+            <div class="theme-card">
+                <div class="theme-name">⚪ Silver</div>
+                <div class="notebox notebox-silver">
+                    <div class="notebox-title">Silver Theme</div>
+                    <div class="notebox-content">
+                        Great for neutral, elegant, and modern content. 
+                        Sleek silver gray.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 14: Bronze -->
+            <div class="theme-card">
+                <div class="theme-name">🟤 Bronze</div>
+                <div class="notebox notebox-bronze">
+                    <div class="notebox-title">Bronze Theme</div>
+                    <div class="notebox-content">
+                        Ideal for classic, warm, and traditional content. 
+                        Rich bronze brown.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 15: Ocean -->
+            <div class="theme-card">
+                <div class="theme-name">🌊 Ocean</div>
+                <div class="notebox notebox-ocean">
+                    <div class="notebox-title">Ocean Theme</div>
+                    <div class="notebox-content">
+                        Best for depth, vast, and exploration content. 
+                        Deep ocean blue.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 16: Forest -->
+            <div class="theme-card">
+                <div class="theme-name">🌲 Forest</div>
+                <div class="notebox notebox-forest">
+                    <div class="notebox-title">Forest Theme</div>
+                    <div class="notebox-content">
+                        Perfect for natural, grounded, and stable content. 
+                        Deep forest green.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 17: Sunset -->
+            <div class="theme-card">
+                <div class="theme-name">🌅 Sunset</div>
+                <div class="notebox notebox-sunset">
+                    <div class="notebox-title">Sunset Theme</div>
+                    <div class="notebox-content">
+                        Great for warm, ending, and transition content. 
+                        Beautiful sunset orange-red.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 18: Dawn -->
+            <div class="theme-card">
+                <div class="theme-name">🌄 Dawn</div>
+                <div class="notebox notebox-dawn">
+                    <div class="notebox-title">Dawn Theme</div>
+                    <div class="notebox-content">
+                        Ideal for beginning, hope, and new content. 
+                        Bright dawn yellow.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 19: Midnight -->
+            <div class="theme-card">
+                <div class="theme-name">🌙 Midnight</div>
+                <div class="notebox notebox-midnight">
+                    <div class="notebox-title">Midnight Theme</div>
+                    <div class="notebox-content">
+                        Best for mystery, deep, and night content. 
+                        Dark midnight blue.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 20: Lavender -->
+            <div class="theme-card">
+                <div class="theme-name">💜 Lavender</div>
+                <div class="notebox notebox-lavender">
+                    <div class="notebox-title">Lavender Theme</div>
+                    <div class="notebox-content">
+                        Perfect for calm, soothing, and gentle content. 
+                        Soft lavender purple.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 21: Coral -->
+            <div class="theme-card">
+                <div class="theme-name">🪸 Coral</div>
+                <div class="notebox notebox-coral">
+                    <div class="notebox-title">Coral Theme</div>
+                    <div class="notebox-content">
+                        Great for friendly, warm, and inviting content. 
+                        Vibrant coral orange.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 22: Mint -->
+            <div class="theme-card">
+                <div class="theme-name">🌿 Mint</div>
+                <div class="notebox notebox-mint">
+                    <div class="notebox-title">Mint Theme</div>
+                    <div class="notebox-content">
+                        Ideal for fresh, clean, and cool content. 
+                        Refreshing mint green.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 23: Peach -->
+            <div class="theme-card">
+                <div class="theme-name">🍑 Peach</div>
+                <div class="notebox notebox-peach">
+                    <div class="notebox-title">Peach Theme</div>
+                    <div class="notebox-content">
+                        Best for soft, warm, and approachable content. 
+                        Gentle peach orange.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 24: Slate -->
+            <div class="theme-card">
+                <div class="theme-name">⬜ Slate</div>
+                <div class="notebox notebox-slate">
+                    <div class="notebox-title">Slate Theme</div>
+                    <div class="notebox-content">
+                        Perfect for professional, neutral, and modern content. 
+                        Cool slate gray.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme 25: Gradient Mix -->
+            <div class="theme-card">
+                <div class="theme-name">🌈 Gradient Mix</div>
+                <div class="notebox notebox-gradient-mix">
+                    <div class="notebox-title">Gradient Mix Theme</div>
+                    <div class="notebox-content">
+                        Ideal for dynamic, vibrant, and special content. 
+                        Multi-color gradient effect.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; padding: 2rem; opacity: 0.7;">
+            <p>🎨 All 25 themes are fully responsive and support dark/light modes</p>
+            <p style="margin-top: 0.5rem;">📦 Part of the Notty NoteBox System</p>
+        </div>
+    </div>
+    
+    <script>
+        function toggleMode() {
+            document.body.classList.toggle('light-mode');
+            const btn = document.querySelector('.toggle-mode');
+            if (document.body.classList.contains('light-mode')) {
+                btn.textContent = '🌙 Toggle Dark Mode';
+            } else {
+                btn.textContent = '☀️ Toggle Light Mode';
+            }
+        }
+    </script>
+</body>
+</html>

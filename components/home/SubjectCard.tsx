@@ -25,10 +25,15 @@ export default function SubjectCard({ s }: { s: Subject }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(`lastRead:${s.slug}`)
-      if (!raw) return
-      const { nodeId, title, at } = JSON.parse(raw)
-      if (nodeId) setResume({ nodeId, title, at })
-    } catch {}
+      if (!raw || raw.trim() === '') return
+      const parsed = JSON.parse(raw)
+      if (parsed && parsed.nodeId) {
+        setResume({ nodeId: parsed.nodeId, title: parsed.title, at: parsed.at })
+      }
+    } catch (error) {
+      // Silently handle invalid JSON
+      console.debug('Failed to parse lastRead data:', error)
+    }
   }, [s.slug])
 
   function onMove(e: React.MouseEvent) {

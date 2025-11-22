@@ -1,4 +1,4 @@
-﻿// components/admin/NoteBoxCreator.tsx
+// components/admin/NoteBoxCreator.tsx
 'use client';
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useAuth } from '@clerk/nextjs';
@@ -57,7 +57,7 @@ const PRESETS: Record<string, { title: string; bodyHtml?: string; pointsText?: s
   'right-wrong': [
     {
       title: 'True or False',
-      pointsText: '✓ Article 15 prohibits discrimination\n✗ Article 15 allows discrimination on all grounds\n✓ Special provisions can be made for women and children'
+      pointsText: '? Article 15 prohibits discrimination\n? Article 15 allows discrimination on all grounds\n? Special provisions can be made for women and children'
     }
   ],
   'quick-reference': [
@@ -246,7 +246,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
     if (!supabase) return;
 
     const noteDraftKey = DRAFT_KEY(subjectId, topicId, subtopicId, type);
-    console.log('🔔 Setting up realtime for noteKey:', noteDraftKey, 'editorId:', editorId);
+    console.log('?? Setting up realtime for noteKey:', noteDraftKey, 'editorId:', editorId);
 
     // Helper function to fetch and update active users
     const fetchActiveUsers = async () => {
@@ -255,7 +255,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
           .from('note_edit_presence')
           .select('*')
           .eq('note_key', noteDraftKey);
-        console.log('👥 Fetched active users:', data);
+        console.log('?? Fetched active users:', data);
         if (data) {
           setActiveUsers(
             data.map((r: any) => ({
@@ -278,7 +278,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
         'postgres_changes',
         { event: '*', schema: 'public', table: 'note_edit_presence', filter: `note_key=eq.${noteDraftKey}` },
         async () => {
-          console.log('👥 Presence change detected for', noteDraftKey);
+          console.log('?? Presence change detected for', noteDraftKey);
           await fetchActiveUsers();
         }
       )
@@ -287,13 +287,13 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
         'postgres_changes',
         { event: '*', schema: 'public', table: 'note_drafts', filter: `note_key=eq.${noteDraftKey}` },
         (payload) => {
-          console.log('📝 Draft change detected:', payload);
+          console.log('?? Draft change detected:', payload);
           try {
             const rec = (payload as any).record;
             if (!rec) return;
             // If the saving user is not this editor, set remoteDraft notification
             if (rec.user_id && rec.user_id !== editorId) {
-              console.log('📝 Remote draft from user:', rec.user_id);
+              console.log('?? Remote draft from user:', rec.user_id);
               setRemoteDraft(rec.payload || rec);
               setRemoteChangedAt(rec.updated_at || new Date().toISOString());
             }
@@ -303,7 +303,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
         }
       )
       .subscribe((status) => {
-        console.log('📡 Subscription status:', status);
+        console.log('?? Subscription status:', status);
       });
 
     channelRef.current = channel;
@@ -314,14 +314,14 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
         // Only send heartbeat if the user is signed in
         if (!isSignedIn) return;
 
-        console.log('💓 Sending heartbeat for', noteDraftKey);
+        console.log('?? Sending heartbeat for', noteDraftKey);
         const response = await fetch('/api/presence/heartbeat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ noteKey: noteDraftKey, userId: editorId, displayName }),
         });
         const result = await response.json();
-        console.log('💓 Heartbeat response:', result);
+        console.log('?? Heartbeat response:', result);
         
         // After successful heartbeat, fetch the updated user list
         await fetchActiveUsers();
@@ -423,8 +423,8 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
       case 'right-wrong': {
         const lines = pointsText ? pointsText.split('\n').filter(Boolean) : [];
         const statements = lines.map((line, i) => {
-          // Format: ✓ OR true: OR correct: = correct statement
-          // Format: ✗ OR false: OR wrong: OR incorrect: = incorrect statement
+          // Format: ? OR true: OR correct: = correct statement
+          // Format: ? OR false: OR wrong: OR incorrect: = incorrect statement
           const trimmedLine = line.trim();
           let isCorrect = true; // default
           let statement = trimmedLine;
@@ -564,24 +564,24 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
       return;
     }
     
-    console.log('🚀 Creating note with:', { subjectId, topicId, subtopicId, type });
+    console.log('?? Creating note with:', { subjectId, topicId, subtopicId, type });
     
     // Verify the IDs exist
     const subject = NOTES_MANAGER.getSubject(subjectId);
     if (!subject) {
-      alert(`❌ Subject not found: ${subjectId}\n\nPlease make sure the subject exists in notesManager.`);
+      alert(`? Subject not found: ${subjectId}\n\nPlease make sure the subject exists in notesManager.`);
       return;
     }
     
     const topic = subject.topics.find(t => t.id === topicId);
     if (!topic) {
-      alert(`❌ Topic not found: ${topicId}\n\nPlease make sure the topic exists in the selected subject.`);
+      alert(`? Topic not found: ${topicId}\n\nPlease make sure the topic exists in the selected subject.`);
       return;
     }
     
     const subtopic = topic.subtopics.find(st => st.id === subtopicId);
     if (!subtopic) {
-      alert(`❌ Subtopic not found: ${subtopicId}\n\nPlease make sure the subtopic exists in the selected topic.`);
+      alert(`? Subtopic not found: ${subtopicId}\n\nPlease make sure the subtopic exists in the selected topic.`);
       return;
     }
     
@@ -598,7 +598,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
       const updatedSubtopic = updatedTopic?.subtopics.find(st => st.id === subtopicId);
       const noteCount = updatedSubtopic?.notes.length || 0;
       
-      alert(`✅ Note created successfully!\n\nThis subtopic now has ${noteCount} note${noteCount !== 1 ? 's' : ''}.\nYour new note was added to the end of the list.`);
+      alert(`? Note created successfully!\n\nThis subtopic now has ${noteCount} note${noteCount !== 1 ? 's' : ''}.\nYour new note was added to the end of the list.`);
     } else {
       alert('Failed to create note. Check IDs');
     }
@@ -631,16 +631,16 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
 
       if (!response.ok) {
         const error = await response.json();
-        alert(`❌ Failed to publish: ${error.message}`);
+        alert(`? Failed to publish: ${error.message}`);
         return;
       }
 
       const result = await response.json();
-      alert(`✅ Note published successfully!\n\nPublic URL: /notes/${result.noteKey}\n\nStudents can now see this note in the published section.`);
+      alert(`? Note published successfully!\n\nPublic URL: /notes/${result.noteKey}\n\nStudents can now see this note in the published section.`);
       setLastCreatedNote(null);
     } catch (error) {
       console.error('Publish error:', error);
-      alert(`❌ Error publishing note: ${(error as Error).message}`);
+      alert(`? Error publishing note: ${(error as Error).message}`);
     } finally {
       setIsPublishing(false);
     }
@@ -700,7 +700,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
           <div className="text-sm text-slate-300 mb-2">Drafts</div>
           <div className="text-xs text-slate-400 mb-3">Autosave every 5s. Manual save on Create.</div>
           <div className="flex flex-col gap-2">
-            <div className="text-xs text-slate-300">Last saved: {lastSaved ? new Date(lastSaved).toLocaleString() : '—'}</div>
+            <div className="text-xs text-slate-300">Last saved: {lastSaved ? new Date(lastSaved).toLocaleString() : '�'}</div>
             <button onClick={saveDraft} className="px-2 py-1 rounded bg-slate-800/30 text-sm">Save Draft</button>
             <button onClick={clearDraft} className="px-2 py-1 rounded border border-slate-700 text-sm">Clear Draft</button>
             {history.length > 0 && (
@@ -723,7 +723,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
 
         {/* Collaboration Status - Always Visible for Debugging */}
         <div className="p-3 rounded-lg admin-card">
-          <div className="text-sm text-slate-300 mb-2">👥 Collaboration</div>
+          <div className="text-sm text-slate-300 mb-2">Collaboration</div>
           <div className="text-xs text-slate-400 mb-2">
             My ID: {editorId.slice(0, 8)} | Total users: {activeUsers.length}
           </div>
@@ -749,7 +749,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
 
           {remoteDraft && (
             <div className="p-2 rounded border border-yellow-600 bg-yellow-900/10">
-              <div className="text-xs font-medium text-yellow-300 mb-1">🔔 Remote changes</div>
+              <div className="text-xs font-medium text-yellow-300 mb-1">Remote changes</div>
               <button 
                 onClick={applyRemoteDraft} 
                 className="px-2 py-1 rounded bg-yellow-600 text-white text-xs hover:bg-yellow-700 w-full"
@@ -778,12 +778,12 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
             >
               {isPublishing ? (
                 <>
-                  <span className="inline-block animate-spin">⏳</span>
+                  <span className="inline-block animate-spin">?</span>
                   Publishing...
                 </>
               ) : (
                 <>
-                  📤 Publish to Student View
+  Publish to Student View
                 </>
               )}
             </button>
@@ -794,7 +794,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
       <div className="col-span-2 grid grid-cols-2 gap-4">
         <div className="p-4 rounded-lg admin-card col-span-1">
           <div className="mb-3 flex items-center justify-between">
-            <div className="text-sm text-slate-300">✏️ Editor</div>
+            <div className="text-sm text-slate-300">Editor</div>
             <div className="text-xs text-slate-400 px-2 py-1 rounded bg-slate-800/30">{type}</div>
           </div>
 
@@ -802,7 +802,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
             {/* Title Field - Universal */}
             <div>
               <label className="block text-xs text-slate-400 mb-1">
-                {type === 'mnemonic-magic' || type === 'mnemonic-card' ? '🎯 Mnemonic (e.g., RRCSP)' : '📝 Title'}
+                {type === 'mnemonic-magic' || type === 'mnemonic-card' ? 'Mnemonic (e.g., RRCSP)' : 'Title'}
               </label>
               <input 
                 value={title} 
@@ -819,7 +819,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
             {/* Body Field - Rich Text for big-notes and container-notes */}
             {(type === 'big-notes' || type === 'container-notes') && (
               <div>
-                <label className="block text-xs text-slate-400 mb-1">📄 Content (Rich Text)</label>
+                <label className="block text-xs text-slate-400 mb-1">Content (Rich Text)</label>
                 <RichTextEditor 
                   value={bodyHtml} 
                   onChange={(val) => { setBodyHtml(val); setIsDirty(true); }} 
@@ -834,11 +834,11 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
               type === 'right-wrong' || type === 'quick-reference') && (
               <div>
                 <label className="block text-xs text-slate-400 mb-1">
-                  {type === 'small-notes' && '📋 Points (one per line)'}
-                  {(type === 'big-notes' || type === 'container-notes') && '✨ Key Highlights (one per line, optional)'}
-                  {(type === 'mnemonic-magic' || type === 'mnemonic-card') && '🔤 Breakdown (Format: Letter - Word - Meaning)'}
-                  {type === 'right-wrong' && '✓✗ Statements (Use ✓/✗ symbols OR true:/false: text)'}
-                  {type === 'quick-reference' && '📌 Facts (Format: Label | Value OR Label: Value)'}
+                  {type === 'small-notes' && 'Points (one per line)'}
+                  {(type === 'big-notes' || type === 'container-notes') && 'Key Highlights (one per line, optional)'}
+                  {(type === 'mnemonic-magic' || type === 'mnemonic-card') && 'Breakdown (Format: Letter - Word - Meaning)'}
+                  {type === 'right-wrong' && 'Statements (Use correct/incorrect symbols OR true:/false: text)'}
+                  {type === 'quick-reference' && 'Facts (Format: Label | Value OR Label: Value)'}
                 </label>
                 
                 {/* Symbol helper buttons for right-wrong */}
@@ -852,7 +852,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
                           const start = textarea.selectionStart;
                           const end = textarea.selectionEnd;
                           const text = textarea.value;
-                          const newText = text.substring(0, start) + '✓ ' + text.substring(end);
+                          const newText = text.substring(0, start) + '? ' + text.substring(end);
                           setPointsText(newText);
                           setIsDirty(true);
                           setTimeout(() => {
@@ -863,7 +863,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
                       }}
                       className="px-3 py-1 rounded bg-green-600/20 border border-green-600/40 text-green-400 text-xs hover:bg-green-600/30 transition-colors flex items-center gap-1"
                     >
-                      <span className="text-base">✓</span> Insert Correct
+                      <span className="text-base">?</span> Insert Correct
                     </button>
                     <button
                       type="button"
@@ -873,7 +873,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
                           const start = textarea.selectionStart;
                           const end = textarea.selectionEnd;
                           const text = textarea.value;
-                          const newText = text.substring(0, start) + '✗ ' + text.substring(end);
+                          const newText = text.substring(0, start) + '? ' + text.substring(end);
                           setPointsText(newText);
                           setIsDirty(true);
                           setTimeout(() => {
@@ -884,7 +884,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
                       }}
                       className="px-3 py-1 rounded bg-red-600/20 border border-red-600/40 text-red-400 text-xs hover:bg-red-600/30 transition-colors flex items-center gap-1"
                     >
-                      <span className="text-base">✗</span> Insert Incorrect
+                      <span className="text-base">?</span> Insert Incorrect
                     </button>
                   </div>
                 )}
@@ -896,7 +896,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
                     type === 'small-notes' ? 'Point 1\nPoint 2\nPoint 3' :
                     (type === 'big-notes' || type === 'container-notes') ? 'Highlight 1\nHighlight 2 (optional)' :
                     (type === 'mnemonic-magic' || type === 'mnemonic-card') ? 'R - Religion - Cannot discriminate based on religion\nR - Race - Cannot discriminate based on race\nC - Caste - No caste discrimination' :
-                    type === 'right-wrong' ? '✓ This statement is correct\ntrue: You can also use text format\n✗ This statement is wrong\nfalse: Or use false: for incorrect' :
+                    type === 'right-wrong' ? '? This statement is correct\ntrue: You can also use text format\n? This statement is wrong\nfalse: Or use false: for incorrect' :
                     type === 'quick-reference' ? 'Article Number | 15\nType | Fundamental Right\nYear Enacted: 1950' :
                     'Enter content'
                   } 
@@ -904,11 +904,11 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
                   className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none transition-colors font-mono text-sm"
                 />
                 <div className="mt-1 text-xs text-slate-500">
-                  {type === 'small-notes' && '💡 Each line becomes a bullet point'}
-                  {(type === 'big-notes' || type === 'container-notes') && '💡 Optional: Add key highlights to display as badges'}
-                  {(type === 'mnemonic-magic' || type === 'mnemonic-card') && '💡 Use "-" or ":" as separators. Each line = one letter breakdown'}
-                  {type === 'right-wrong' && '💡 Use ✓/✗ symbols (click buttons above) OR type "true:"/"false:" OR "correct:"/"wrong:"'}
-                  {type === 'quick-reference' && '💡 Use "|" or ":" to separate label from value'}
+                  {type === 'small-notes' && 'Each line becomes a bullet point'}
+                  {(type === 'big-notes' || type === 'container-notes') && 'Optional: Add key highlights to display as badges'}
+                  {(type === 'mnemonic-magic' || type === 'mnemonic-card') && 'Use "-" or ":" as separators. Each line = one letter breakdown'}
+                  {type === 'right-wrong' && 'Use correct/incorrect symbols (click buttons above) OR type "true:"/"false:" OR "correct:"/"wrong:"'}
+                  {type === 'quick-reference' && 'Use "|" or ":" to separate label from value'}
                 </div>
               </div>
             )}
@@ -916,7 +916,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
             {/* Flashcard Field */}
             {type === 'flashcard' && (
               <div>
-                <label className="block text-xs text-slate-400 mb-1">🎴 Flashcards (Format: Question | Answer)</label>
+                <label className="block text-xs text-slate-400 mb-1">Flashcards (Format: Question | Answer)</label>
                 <textarea 
                   value={flashText} 
                   onChange={(e) => { setFlashText(e.target.value); setIsDirty(true); }} 
@@ -925,7 +925,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
                   className="w-full px-3 py-2 rounded bg-slate-900/50 border border-slate-700 text-white placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none transition-colors font-mono text-sm"
                 />
                 <div className="mt-1 text-xs text-slate-500">
-                  💡 Each line is one flashcard. Use "|" to separate question from answer
+                  Each line is one flashcard. Use "|" to separate question from answer
                 </div>
               </div>
             )}
@@ -934,7 +934,7 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
           {/* JSON Preview - Collapsible */}
           <details className="mt-4">
             <summary className="text-xs text-slate-400 cursor-pointer hover:text-slate-300 transition-colors">
-              🔍 Advanced: View/Edit Raw JSON
+              Advanced: View/Edit Raw JSON
             </summary>
             <pre className="mt-2 rounded bg-[#061022] p-3 text-xs overflow-auto max-h-64 border border-slate-800">{JSON.stringify(contentForType, null, 2)}</pre>
           </details>

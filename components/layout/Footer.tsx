@@ -1,75 +1,242 @@
-﻿import Link from 'next/link'
-import { getAllSubjects } from '@/lib/data'
+'use client'
+
+import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { useMemo } from 'react'
+
+// Seeded random for consistent SSR/client rendering
+const seededRandom = (seed: number) => {
+  const x = Math.sin(seed) * 10000
+  return x - Math.floor(x)
+}
 
 export default function Footer() {
-  const subjects = getAllSubjects() || []
-  const quick = (subjects || []).slice(0, 6)
-  const allTags = Array.from(
-    new Set(
-      (subjects || []).flatMap((s: any) =>
-        (s.topics ?? []).flatMap((topic: any) => collectTopicTags(topic) ?? [])
-      )
-    )
-  ).slice(0, 12)
+  const orbs = useMemo(() => 
+    [...Array(20)].map((_, i) => ({
+      id: i,
+      left: seededRandom(i * 4 + 1) * 100,
+      top: seededRandom(i * 4 + 2) * 100,
+      x: seededRandom(i * 4 + 3) * 50 - 25,
+      y: seededRandom(i * 4 + 4) * 50 - 25,
+      duration: 10 + seededRandom(i * 4 + 5) * 10,
+      delay: seededRandom(i * 4 + 6) * 5,
+    })), 
+  [])
+  const socialLinks = [
+    { icon: '𝕏', label: 'Twitter', href: '#' },
+    { icon: '💼', label: 'LinkedIn', href: '#' },
+    { icon: '📷', label: 'Instagram', href: '#' },
+    { icon: '▶️', label: 'YouTube', href: '#' },
+  ]
+
+  const footerSections = [
+    {
+      title: 'Product',
+      color: 'violet',
+      links: [
+        { label: 'Features', href: '/features' },
+        { label: 'Subjects', href: '/subjects' },
+        { label: 'Pricing', href: '/pricing' },
+        { label: 'Roadmap', href: '/roadmap' },
+      ]
+    },
+    {
+      title: 'Resources',
+      color: 'fuchsia',
+      links: [
+        { label: 'Blog', href: '/blog' },
+        { label: 'Study Guides', href: '/study-guides' },
+        { label: 'Help Center', href: '/help-center' },
+        { label: 'Community', href: '/community' },
+      ]
+    },
+    {
+      title: 'Company',
+      color: 'pink',
+      links: [
+        { label: 'About Us', href: '/about' },
+        { label: 'Careers', href: '/careers' },
+        { label: 'Contact', href: '/contact' },
+        { label: 'Privacy', href: '/privacy' },
+      ]
+    }
+  ]
 
   return (
-    <footer className="mt-16 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0b1220]">
-      <div className="max-w-6xl mx-auto px-4 py-10 grid sm:grid-cols-2 md:grid-cols-4 gap-8">
-        <div>
-          <h4 className="font-extrabold text-lg">Notty</h4>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">World class learning platform</p>
-          <p className="text-xs text-gray-500 dark:text-gray-500 mt-4">Made with â¤ï¸ for learners.</p>
+    <footer className="relative bg-gradient-to-br from-gray-900 via-violet-950 to-gray-900 text-white overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        {orbs.map((orb) => (
+          <motion.div
+            key={orb.id}
+            className="absolute w-32 h-32 bg-violet-500/5 rounded-full blur-xl"
+            style={{
+              left: `${orb.left}%`,
+              top: `${orb.top}%`,
+            }}
+            animate={{
+              scale: [1, 1.5, 1],
+              opacity: [0.1, 0.3, 0.1],
+              x: [0, orb.x, 0],
+              y: [0, orb.y, 0],
+            }}
+            transition={{
+              duration: orb.duration,
+              repeat: Infinity,
+              delay: orb.delay,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Pattern Overlay */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+          backgroundSize: '30px 30px'
+        }}></div>
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+          {/* Brand Section */}
+          <div className="lg:col-span-2">
+            <Link href="/" className="flex items-center gap-3 mb-6 group">
+              <motion.div 
+                className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 via-fuchsia-600 to-pink-600 flex items-center justify-center shadow-2xl"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+              >
+                <span className="text-white font-black text-3xl">N</span>
+              </motion.div>
+              <div className="flex flex-col">
+                <span className="text-3xl font-black bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400 bg-clip-text text-transparent">
+                  Notty
+                </span>
+                <span className="text-xs text-gray-400">notes that stick</span>
+              </div>
+            </Link>
+            
+            <p className="text-gray-400 mb-6 max-w-sm leading-relaxed">
+              World-class notes with flashcards, quizzes, and spaced repetition learning. 
+              Ace your competitive exams with confidence.
+            </p>
+            
+            <div className="flex gap-3">
+              {socialLinks.map((social, i) => (
+                <motion.a
+                  key={i}
+                  href={social.href}
+                  className="w-11 h-11 rounded-xl bg-white/5 hover:bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10 transition-all"
+                  whileHover={{ scale: 1.1, y: -3 }}
+                  whileTap={{ scale: 0.95 }}
+                  aria-label={social.label}
+                >
+                  <span className="text-xl">{social.icon}</span>
+                </motion.a>
+              ))}
+            </div>
+          </div>
+
+          {/* Footer Sections */}
+          {footerSections.map((section, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.1 }}
+            >
+              <h3 className={`font-bold text-${section.color}-300 mb-4 text-lg`}>
+                {section.title}
+              </h3>
+              <ul className="space-y-3">
+                {section.links.map((link, i) => (
+                  <li key={i}>
+                    <Link 
+                      href={link.href} 
+                      className="text-gray-400 hover:text-white transition-all inline-flex items-center gap-2 group"
+                    >
+                      <motion.span
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                        initial={false}
+                      >
+                        →
+                      </motion.span>
+                      <span className="group-hover:translate-x-1 transition-transform">
+                        {link.label}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
         </div>
 
-        <div>
-          <h5 className="font-bold mb-2">Quick Links</h5>
-          <ul className="space-y-1 text-sm">
-            <li><Link href="/" className="hover:underline">Home</Link></li>
-            <li><a href="/#subjects" className="hover:underline">Explore</a></li>
-          </ul>
-        </div>
+        {/* Newsletter Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-12 p-8 rounded-3xl bg-gradient-to-r from-violet-600/10 via-fuchsia-600/10 to-pink-600/10 backdrop-blur-sm border border-white/10"
+        >
+          <div className="max-w-2xl mx-auto text-center">
+            <h3 className="text-2xl font-black mb-3 bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400 bg-clip-text text-transparent">
+              📬 Stay Updated
+            </h3>
+            <p className="text-gray-400 mb-6">
+              Get the latest study tips, new subjects, and exclusive content delivered to your inbox.
+            </p>
+            <div className="flex gap-3 max-w-md mx-auto">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="flex-1 px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 transition-all"
+              />
+              <motion.button
+                className="px-8 py-3 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-bold shadow-lg"
+                whileHover={{ scale: 1.05, boxShadow: '0 10px 30px rgba(139, 92, 246, 0.4)' }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Subscribe
+              </motion.button>
+            </div>
+          </div>
+        </motion.div>
 
-        <div>
-          <h5 className="font-bold mb-2">Subjects</h5>
-          <ul className="space-y-1 text-sm">
-            {quick.map(s => (
-              <li key={s.slug}><Link href={`/subjects/${s.slug}`} className="hover:underline">{s.title}</Link></li>
+        {/* Bottom Bar */}
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <motion.p 
+            className="text-gray-400 text-sm"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            © 2025 Notty. Made with{' '}
+            <motion.span
+              className="inline-block"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 1, repeat: Infinity }}
+            >
+              💜
+            </motion.span>
+            {' '}for learners worldwide.
+          </motion.p>
+          
+          <div className="flex gap-6 text-sm">
+            {['Terms', 'Privacy', 'Cookies'].map((item, i) => (
+              <motion.div key={i} whileHover={{ scale: 1.05 }}>
+                <Link 
+                  href={`/${item.toLowerCase()}`} 
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  {item}
+                </Link>
+              </motion.div>
             ))}
-          </ul>
-        </div>
-
-        <div>
-          <h5 className="font-bold mb-2">Top Tags</h5>
-          <div className="flex flex-wrap gap-2">
-            {allTags.length > 0 ? allTags.map(t => (
-              <span key={t} className="px-2 py-0.5 text-xs rounded-full border bg-blue-50 text-blue-700 border-blue-200">#{t}</span>
-            )) : <span className="text-xs text-gray-500">No tags yet</span>}
           </div>
         </div>
       </div>
-      <div className="border-t border-gray-200 dark:border-gray-800 text-center py-4 text-xs text-gray-500">
-        Â© {new Date().getFullYear()} Notty. All rights reserved.
-      </div>
     </footer>
   )
-}
-
-function collectTopicTags(topic: any): string[] {
-  const tags: string[] = []
-  if (topic.content) {
-    topic.content.forEach((node: any) => {
-      if (node.meta?.tags) tags.push(...node.meta.tags)
-    })
-  }
-  if (topic.quiz) {
-    topic.quiz.forEach((q: any) => {
-      if (q.meta?.tags) tags.push(...q.meta.tags)
-    })
-  }
-  if (topic.subTopics && topic.subTopics.length > 0) {
-    topic.subTopics.forEach((subTopic: any) => {
-      tags.push(...collectTopicTags(subTopic))
-    })
-  }
-  return tags
 }

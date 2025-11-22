@@ -3,7 +3,7 @@
 import React from 'react';
 import { NoteBoxType } from '@/lib/admin-types';
 
-const BOX_TYPE_ICONS: Record<NoteBoxType, string> = {
+const BOX_TYPE_ICONS: Partial<Record<NoteBoxType, string>> = {
   'big-notes': '📝',
   'small-notes': '📋',
   'right-wrong': '✓✗',

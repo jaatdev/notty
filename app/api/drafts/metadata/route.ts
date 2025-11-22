@@ -2,12 +2,20 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const supa = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
-  auth: { persistSession: false },
-});
-
 export async function GET(req: Request) {
   try {
+    // Create client inside handler to avoid build-time initialization
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      return NextResponse.json({ error: 'Supabase configuration missing' }, { status: 500 });
+    }
+    
+    const supa = createClient(supabaseUrl, supabaseKey, {
+      auth: { persistSession: false },
+    });
+    
     const url = new URL(req.url);
     const noteKey = url.searchParams.get('noteKey');
     if (!noteKey) return NextResponse.json({ error: 'noteKey required' }, { status: 400 });

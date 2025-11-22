@@ -1,0 +1,204 @@
+
+> notty@0.1.0 dev
+> npm run build:data && next dev
+
+
+> notty@0.1.0 build:data
+> node scripts/build-static-data.js
+
+🔨 Building static data from folder structure...
+
+Processing: Indian Polity
+Could not read c:\Users\Kapil Chaudhary\Desktop\notty\data\subjects\polity\fundamental-rights\article-15\quiz.json
+Processing: Indian History
+Could not read c:\Users\Kapil Chaudhary\Desktop\notty\data\subjects\history\freedom-struggle\quit-india\quiz.json
+Processing: sdfg
+Processing: Hindi
+Could not read c:\Users\Kapil Chaudhary\Desktop\notty\data\subjects\hindi\varnamala\intro-to-hindi\quiz.json
+
+✅ Static data built successfully!
+📄 Output: c:\Users\Kapil Chaudhary\Desktop\notty\data\notes-static.json
+
+   ▲ Next.js 15.0.3
+   - Local:        http://localhost:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ⚠ Invalid next.config.ts options detected: 
+ ⚠     Unrecognized key(s) in object: 'turbopack'
+ ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+> [PWA] PWA support is disabled
+> [PWA] PWA support is disabled
+ ✓ Ready in 3.4s
+ ○ Compiling /subjects/[slug]/[topicId]/[...path] ...
+(node:16580) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ⨯ app\layout.tsx
+An error occurred in `next/font`.
+
+Error: Cannot find module '@tailwindcss/postcss'
+Require stack:
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\index.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\index.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack-config.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\router-server.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\start-server.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1249:15)
+    at c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\require-hook.js:55:36
+    at Function.resolve (node:internal/modules/helpers:151:19)
+    at loadPlugin (c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:49:32)
+    at c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:157:56
+    at Array.map (<anonymous>)
+    at getPostCssPlugins (c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:157:47)
+    at async c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\index.js:124:36
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../typescript/lib/typescript' in c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build for build dependencies doesn't lead to expected result 'C:\Users\Kapil Chaudhary\Desktop\notty\node_modules\typescript\lib\typescript.js', but to 'c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\typescript\lib\typescript.js' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../typescript/lib/typescript (expected C:\Users\Kapil Chaudhary\Desktop\notty\node_modules\typescript\lib\typescript.js)
+<w>  at file dependencies c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file dependencies c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\dev\turbopack-utils.js
+<w>  at file c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\dev\turbopack-utils.js
+<w>  at file dependencies c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\swc\index.js
+<w>  at file c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\swc\index.js
+<w>  at file dependencies c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\analysis\parse-module.js
+<w>  at file c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\analysis\parse-module.js
+<w>  at file dependencies c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\analysis\get-page-static-info.js
+<w>  at file c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\analysis\get-page-static-info.js
+<w>  at file dependencies c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\loaders\next-flight-loader\index.js
+<w>  at file c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\loaders\next-flight-loader\index.js
+<w>  at resolve commonjs c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\loaders\next-flight-loader\index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../typescript/lib/typescript' in c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build for build dependencies doesn't lead to expected result 'C:\Users\Kapil Chaudhary\Desktop\notty\node_modules\typescript\lib\typescript.js', but to 'c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\typescript\lib\typescript.js' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../typescript/lib/typescript (expected C:\Users\Kapil Chaudhary\Desktop\notty\node_modules\typescript\lib\typescript.js)
+<w>  at file dependencies c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file dependencies c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack-config.js
+<w>  at file c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack-config.js
+<w>  at file dependencies c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+ ⨯ app\layout.tsx
+An error occurred in `next/font`.
+
+Error: Cannot find module '@tailwindcss/postcss'
+Require stack:
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\index.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\index.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack-config.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\router-server.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\start-server.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1249:15)
+    at c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\require-hook.js:55:36
+    at Function.resolve (node:internal/modules/helpers:151:19)
+    at loadPlugin (c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:49:32)
+    at c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:157:56
+    at Array.map (<anonymous>)
+    at getPostCssPlugins (c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:157:47)
+    at async c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\index.js:124:36
+ ⨯ app\layout.tsx
+An error occurred in `next/font`.
+
+Error: Cannot find module '@tailwindcss/postcss'
+Require stack:
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\index.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\index.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack-config.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\router-server.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\start-server.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1249:15)
+    at c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\require-hook.js:55:36
+    at Function.resolve (node:internal/modules/helpers:151:19)
+    at loadPlugin (c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:49:32)
+    at c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:157:56
+    at Array.map (<anonymous>)
+    at getPostCssPlugins (c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:157:47)
+    at async c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\index.js:124:36
+ GET /subjects/polity/top_fundamental_rights/subt_fr_introduction 500 in 25623ms
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../typescript/lib/typescript' in c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build for build dependencies doesn't lead to expected result 'C:\Users\Kapil Chaudhary\Desktop\notty\node_modules\typescript\lib\typescript.js', but to 'c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\typescript\lib\typescript.js' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../typescript/lib/typescript (expected C:\Users\Kapil Chaudhary\Desktop\notty\node_modules\typescript\lib\typescript.js)
+<w>  at file dependencies c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file dependencies c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\dev\turbopack-utils.js
+<w>  at file c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\dev\turbopack-utils.js
+<w>  at file dependencies c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\swc\index.js
+<w>  at file c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\swc\index.js
+<w>  at file dependencies c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack-config.js
+<w>  at file c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack-config.js
+<w>  at file dependencies c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\handle-externals.js
+<w>  at file c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\handle-externals.js
+<w>  at file dependencies c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+ ⨯ app\layout.tsx
+An error occurred in `next/font`.
+
+Error: Cannot find module '@tailwindcss/postcss'
+Require stack:
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\index.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\index.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack-config.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\router-server.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\start-server.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1249:15)
+    at c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\require-hook.js:55:36
+    at Function.resolve (node:internal/modules/helpers:151:19)
+    at loadPlugin (c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:49:32)
+    at c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:157:56
+    at Array.map (<anonymous>)
+    at getPostCssPlugins (c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:157:47)
+    at async c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\index.js:124:36
+ GET /subjects/polity/top_fundamental_rights/subt_fr_introduction 500 in 45ms
+ ⨯ app\layout.tsx
+An error occurred in `next/font`.
+
+Error: Cannot find module '@tailwindcss/postcss'
+Require stack:
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\index.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\index.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack-config.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\router-server.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\start-server.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1249:15)
+    at c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\require-hook.js:55:36
+    at Function.resolve (node:internal/modules/helpers:151:19)
+    at loadPlugin (c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:49:32)
+    at c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:157:56
+    at Array.map (<anonymous>)
+    at getPostCssPlugins (c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:157:47)
+    at async c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\index.js:124:36
+ GET / 500 in 1745ms
+ ⨯ app\layout.tsx
+An error occurred in `next/font`.
+
+Error: Cannot find module '@tailwindcss/postcss'
+Require stack:
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\index.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\index.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack-config.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\router-server.js
+- c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\lib\start-server.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1249:15)
+    at c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\server\require-hook.js:55:36
+    at Function.resolve (node:internal/modules/helpers:151:19)
+    at loadPlugin (c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:49:32)
+    at c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:157:56
+    at Array.map (<anonymous>)
+    at getPostCssPlugins (c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:157:47)
+    at async c:\Users\Kapil Chaudhary\Desktop\notty\node_modules\next\dist\build\webpack\config\blocks\css\index.js:124:36
+[?25h

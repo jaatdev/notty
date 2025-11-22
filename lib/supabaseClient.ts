@@ -18,9 +18,19 @@ if (!url || !anonKey) {
  * Returns the shared Supabase client instance.
  * Uses global for dev HMR persistence to ensure true singleton.
  * This eliminates "Multiple GoTrueClient instances detected" warning.
+ * Returns null during SSR/build to prevent initialization errors.
  */
-export function getSupabaseClient(): SupabaseClient {
+export function getSupabaseClient(): SupabaseClient | null {
+  // Only initialize in browser environment
+  if (typeof window === 'undefined') return null;
+  
   if (global.__supabase_client) return global.__supabase_client;
+  
+  // Check if env vars are available
+  if (!url || !anonKey) {
+    console.warn('Supabase env vars missing, returning null client');
+    return null;
+  }
   
   global.__supabase_client = createClient(url, anonKey, {
     auth: {

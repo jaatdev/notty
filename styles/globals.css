@@ -1,5 +1,4 @@
-@import "tailwindcss/preflight";
-@import "tailwindcss/utilities";
+@import "tailwindcss";
 
 /* ===== Base Setup ===== */
 :root {
@@ -26,6 +25,13 @@ body {
   font-family: var(--font-inter, 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
   transition: background-color 0.3s ease, color 0.3s ease;
   line-height: 1.6;
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+html.dark body {
+  background-color: #0b1220;
+  color: #e5e7eb;
 }
 
 /* Monospace font for code */
@@ -65,13 +71,39 @@ code, pre, kbd {
 
 /* === NOTES THEME SCOPE === */
 
-/* --- Base Elements (Scoped) --- */
+/* --- Base Elements (Global & Scoped) --- */
+
+/* Hero background - used on homepage */
+.hero-bg {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+}
+
+html.dark .hero-bg {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+}
+
+.hero-bg h1,
+.hero-bg p {
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
 
 .notes-theme .hero-dots {
   position: absolute; inset: 0;
   background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px);
   background-size: 18px 18px;
   mask-image: radial-gradient(circle at 40% 20%, black 40%, transparent 70%);
+}
+
+/* Card styles - used globally */
+.card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+  border-radius: 1rem;
+  box-shadow: 0 15px 30px -15px rgba(0,0,0,0.25);
+}
+
+.card:hover { 
+  transform: translateY(-6px); 
+  box-shadow: 0 35px 50px -20px rgba(0,0,0,0.35); 
 }
 
 .notes-theme .card {
@@ -551,11 +583,13 @@ textarea:focus-visible {
 }
 
 /* Hide scrollbars but keep functionality */
-.no-scrollbar::-webkit-scrollbar {
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 
-.no-scrollbar {
+.no-scrollbar,
+.scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -578,6 +612,8 @@ textarea:focus-visible {
 .notes-theme img {
   max-width: 100%;
   height: auto;
+  max-height: 300px;
+  object-fit: contain;
 }
 
 /* Mobile drawer transitions */
@@ -847,6 +883,181 @@ button:active {
 /* ===================================================================
    PRINT STYLES
    ================================================================= */
+
+/* ===================================================================
+   FULLSCREEN MODE
+   ================================================================= */
+
+/* Fullscreen button styles */
+.fullscreen-btn,
+.fullscreen-exit-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  transition: all 0.3s ease;
+}
+
+.fullscreen-btn:hover,
+.fullscreen-exit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5);
+}
+
+.fullscreen-exit-btn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.fullscreen-exit-btn:hover {
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.5);
+}
+
+/* Hide navbar and footer ONLY on notes pages in fullscreen */
+html[data-fullscreen="true"][data-page-type="notes"] nav,
+html[data-fullscreen="true"][data-page-type="notes"] footer {
+  display: none !important;
+}
+
+/* Hide dialogs and modals in fullscreen on all pages */
+html[data-fullscreen="true"] .no-print {
+  display: none !important;
+}
+
+/* ===================================================================
+   TOAST NOTIFICATIONS
+   ================================================================= */
+
+.toasts {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+}
+
+.toast-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  border-left: 4px solid;
+  animation: slideInRight 0.3s ease-out;
+  min-width: 300px;
+}
+
+.toast-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.toast-msg {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+html.dark .toast-msg {
+  color: #f3f4f6;
+}
+
+html.dark .toast-card {
+  background: #1f2937;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.toast-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast-btn {
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #10b981;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toast-btn:hover {
+  background: #059669;
+  transform: scale(1.05);
+}
+
+.toast-close {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 18px;
+  transition: all 0.2s;
+}
+
+.toast-close:hover {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+html.dark .toast-close:hover {
+  background: #374151;
+  color: #f3f4f6;
+}
+
+.toast-info {
+  border-left-color: #3b82f6;
+}
+
+.toast-success {
+  border-left-color: #10b981;
+}
+
+.toast-warning {
+  border-left-color: #f59e0b;
+}
+
+.toast-error {
+  border-left-color: #ef4444;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 
 @media print {
   .no-print { display: none !important; }

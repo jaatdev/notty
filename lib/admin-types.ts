@@ -4,14 +4,45 @@
 // ============================================================================
 
 export type NoteBoxType =
+  // Content Presentation
   | 'big-notes'
   | 'small-notes'
-  | 'right-wrong'
+  | 'container-notes'
+  | 'rich-content'
+  | 'story-box'
+  | 'definition-box'
+  | 'example-box'
+  | 'summary-box'
+  // Memory & Learning
   | 'mnemonic-magic'
   | 'mnemonic-card'
-  | 'container-notes'
+  | 'flashcard'
+  | 'acronym-box'
+  | 'analogy-box'
+  | 'pattern-box'
+  | 'memory-palace'
+  // Assessment & Practice
+  | 'right-wrong'
+  | 'quiz-box'
+  | 'case-study'
+  | 'problem-solution'
+  | 'practice-box'
+  | 'challenge-box'
+  // Reference & Quick Access
   | 'quick-reference'
-  | 'flashcard';
+  | 'formula-box'
+  | 'timeline-box'
+  | 'comparison-box'
+  | 'checklist-box'
+  // Visual & Interactive
+  | 'diagram-box'
+  | 'flowchart-box'
+  | 'infographic-box'
+  | 'gallery-box'
+  // Special Purpose
+  | 'warning-box'
+  | 'tip-box'
+  | 'quote-box';
 
 export interface NoteBox {
   id: string;
@@ -165,4 +196,209 @@ export function isQuickReferenceContent(content: any): content is QuickReference
 
 export function isFlashcardContent(content: any): content is FlashcardContent {
   return content && Array.isArray(content.cards);
+}
+
+// ============================================================================
+// NEW BOX TYPES - Extended Content Types
+// ============================================================================
+
+// RICH CONTENT
+export interface RichContentData {
+  title: string;
+  content: string;
+  images?: Array<{url: string; caption: string}>;
+}
+
+// STORY BOX
+export interface StoryBoxContent {
+  title: string;
+  story: string;
+  moral?: string;
+  image?: string;
+}
+
+// DEFINITION BOX
+export interface DefinitionBoxContent {
+  term: string;
+  definition: string;
+  examples: string[];
+  etymology?: string;
+}
+
+// EXAMPLE BOX
+export interface ExampleBoxContent {
+  title: string;
+  examples: Array<{title: string; description: string; code?: string}>;
+}
+
+// SUMMARY BOX
+export interface SummaryBoxContent {
+  title: string;
+  points: string[];
+  keyTakeaway: string;
+}
+
+// ACRONYM BOX
+export interface AcronymBoxContent {
+  acronym: string;
+  fullForm: string;
+  breakdown: Array<{letter: string; word: string; meaning: string}>;
+}
+
+// ANALOGY BOX
+export interface AnalogyBoxContent {
+  concept: string;
+  analogy: string;
+  explanation: string;
+  image?: string;
+}
+
+// PATTERN BOX
+export interface PatternBoxContent {
+  title: string;
+  pattern: string;
+  examples: string[];
+  rule: string;
+}
+
+// MEMORY PALACE
+export interface MemoryPalaceContent {
+  title: string;
+  locations: Array<{place: string; item: string; image?: string}>;
+}
+
+// QUIZ BOX
+export interface QuizBoxContent {
+  questions: Array<{
+    id: string;
+    question: string;
+    options: string[];
+    correctIndex: number;
+    explanation: string;
+  }>;
+}
+
+// CASE STUDY
+export interface CaseStudyContent {
+  title: string;
+  scenario: string;
+  analysis: string;
+  outcome: string;
+  lessons: string[];
+}
+
+// PROBLEM SOLUTION
+export interface ProblemSolutionContent {
+  problem: string;
+  approach: string;
+  steps: string[];
+  solution: string;
+  verification?: string;
+}
+
+// PRACTICE BOX
+export interface PracticeBoxContent {
+  title: string;
+  problems: Array<{
+    id: string;
+    question: string;
+    difficulty: 'easy' | 'medium' | 'hard';
+    hint?: string;
+  }>;
+}
+
+// CHALLENGE BOX
+export interface ChallengeBoxContent {
+  title: string;
+  challenge: string;
+  difficulty: number;
+  timeLimit?: string;
+  reward?: string;
+}
+
+// FORMULA BOX
+export interface FormulaBoxContent {
+  name: string;
+  formula: string;
+  variables: Array<{symbol: string; meaning: string}>;
+  example?: string;
+}
+
+// TIMELINE BOX
+export interface TimelineBoxContent {
+  title: string;
+  events: Array<{
+    date: string;
+    event: string;
+    description?: string;
+    image?: string;
+  }>;
+}
+
+// COMPARISON BOX
+export interface ComparisonBoxContent {
+  title: string;
+  items: Array<{name: string; features: string[]}>;
+  conclusion?: string;
+}
+
+// CHECKLIST BOX
+export interface ChecklistBoxContent {
+  title: string;
+  items: Array<{text: string; completed?: boolean; note?: string}>;
+}
+
+// DIAGRAM BOX
+export interface DiagramBoxContent {
+  title: string;
+  imageUrl: string;
+  annotations: Array<{label: string; description: string}>;
+}
+
+// FLOWCHART BOX
+export interface FlowchartBoxContent {
+  title: string;
+  steps: Array<{
+    id: string;
+    type: 'start' | 'process' | 'decision' | 'end';
+    text: string;
+    next?: string[];
+  }>;
+}
+
+// INFOGRAPHIC BOX
+export interface InfographicBoxContent {
+  title: string;
+  imageUrl: string;
+  dataPoints: Array<{label: string; value: string}>;
+}
+
+// GALLERY BOX
+export interface GalleryBoxContent {
+  title: string;
+  images: Array<{url: string; caption: string; description?: string}>;
+}
+
+// WARNING BOX
+export interface WarningBoxContent {
+  title: string;
+  message: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  icon?: string;
+}
+
+// TIP BOX
+export interface TipBoxContent {
+  title: string;
+  tip: string;
+  category?: string;
+  icon?: string;
+}
+
+// QUOTE BOX
+export interface QuoteBoxContent {
+  quote: string;
+  author: string;
+  context?: string;
+  image?: string;
 }

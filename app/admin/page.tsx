@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -46,28 +46,28 @@ export default function AdminDashboard() {
       description: 'Add a new subject to your library',
       href: '/admin/create',
       icon: Plus,
-      color: 'bg-gradient-to-br from-purple-500 to-indigo-600',
+      color: 'bg-linear-to-br from-purple-500 to-indigo-600',
     },
     {
       title: 'Browse Subjects',
       description: 'View and manage existing subjects',
       href: '/admin/subjects',
       icon: BookOpen,
-      color: 'bg-gradient-to-br from-blue-500 to-cyan-600',
+      color: 'bg-linear-to-br from-blue-500 to-cyan-600',
     },
     {
       title: 'File Explorer',
       description: 'Navigate the file structure',
       href: '/admin/files',
       icon: FolderOpen,
-      color: 'bg-gradient-to-br from-green-500 to-emerald-600',
+      color: 'bg-linear-to-br from-green-500 to-emerald-600',
     },
     {
       title: 'Statistics',
       description: 'View detailed analytics',
       href: '/admin/statistics',
       icon: TrendingUp,
-      color: 'bg-gradient-to-br from-orange-500 to-red-600',
+      color: 'bg-linear-to-br from-orange-500 to-red-600',
     },
   ]
 
@@ -77,7 +77,7 @@ export default function AdminDashboard() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
         <p className="text-gray-600 mt-1">
-          Welcome back! Here's an overview of your content.
+          Welcome back! Here is an overview of your content.
         </p>
       </div>
 
@@ -95,7 +95,7 @@ export default function AdminDashboard() {
               <div>
                 <p className="text-sm font-medium text-gray-600">{stat.label}</p>
                 <p className="text-3xl font-bold text-gray-900 mt-2">
-                  {loading ? '—' : stat.value}
+                  {loading ? '�' : stat.value}
                 </p>
               </div>
               <div className={`w-12 h-12 rounded-lg bg-linear-to-br ${stat.color} flex items-center justify-center`}>

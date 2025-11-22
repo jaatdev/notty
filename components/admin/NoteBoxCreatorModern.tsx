@@ -17,7 +17,7 @@ import { getSupabaseClient } from '@/lib/supabaseClient';
 
 const NOTES_MANAGER = createNotesManager();
 
-const BOX_TYPE_ICONS: Record<NoteBoxType, string> = {
+const BOX_TYPE_ICONS: Partial<Record<NoteBoxType, string>> = {
   'big-notes': '📝',
   'small-notes': '📋',
   'right-wrong': '✓✗',
@@ -208,7 +208,7 @@ export default function NoteBoxCreatorModern({
 
   // Suggested themes based on note type
   const suggestedThemes = useMemo(() => {
-    const typeMap: Record<NoteBoxType, string[]> = {
+    const typeMap: Partial<Record<NoteBoxType, string[]>> = {
       'big-notes': ['indigo', 'blue', 'slate'],
       'small-notes': ['cyan', 'teal', 'emerald'],
       'mnemonic-magic': ['purple', 'fuchsia', 'pink'],

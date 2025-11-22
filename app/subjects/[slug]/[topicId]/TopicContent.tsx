@@ -10,7 +10,9 @@ import NotesAnalytics from '@/components/NotesAnalytics'
 import PerformanceMonitor from '@/components/PerformanceMonitor'
 import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp'
 import ToolsMenu from '@/components/admin/ToolsMenu'
-import { useFullscreen } from '@/lib/fullscreen-context'
+import TableOfContents from '@/components/ui/TableOfContents'
+import { getThemeById } from '@/lib/theme-variants'
+
 import { addNote, getNotesForTopic } from '@/lib/notes-hierarchical'
 import { measurePerformance, checkStorageHealth } from '@/lib/notes-performance'
 import type { ContentNode } from '@/lib/types'
@@ -40,29 +42,12 @@ export default function TopicContent({ content, subjectSlug, topicId, brandColor
   const [isHelpOpen, setIsHelpOpen] = useState(false)
   const [notes, setNotes] = useState<Note[]>([])
   const { showToast } = useToast()
-  const { isFullscreen, toggleFullscreen } = useFullscreen()
+  const theme = getThemeById(topicId)
 
   // Load topic notes on mount
   useEffect(() => {
     loadNotes()
   }, [subjectSlug, topicId])
-
-  // Keyboard shortcuts for fullscreen mode
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      // ESC to exit fullscreen
-      if (e.key === 'Escape' && isFullscreen) {
-        toggleFullscreen()
-      }
-      // F to enter fullscreen
-      if (e.key === 'f' && !isFullscreen) {
-        toggleFullscreen()
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyPress)
-    return () => window.removeEventListener('keydown', handleKeyPress)
-  }, [isFullscreen, toggleFullscreen])
 
   // Check storage health on mount
   useEffect(() => {
@@ -181,43 +166,20 @@ export default function TopicContent({ content, subjectSlug, topicId, brandColor
 
   return (
     <>
-      {/* Fullscreen Exit Button */}
-      {isFullscreen && (
-        <button
-          onClick={toggleFullscreen}
-          className="fullscreen-exit-btn"
-          title="Exit fullscreen mode (Esc)"
-          aria-label="Exit fullscreen mode"
-        >
-          ✕ Exit Focus Mode
-        </button>
-      )}
-
-      {/* Fullscreen Button (only show when not in fullscreen) */}
-      {!isFullscreen && (
-        <button
-          onClick={toggleFullscreen}
-          className="fullscreen-btn"
-          title="Enter fullscreen mode for distraction-free studying"
-          aria-label="Enter fullscreen mode"
-        >
-          ⛶ Focus Mode
-        </button>
-      )}
+      {/* Table of Contents */}
+      <TableOfContents content={content} theme={theme} />
 
       {/* Tools Menu */}
-      {!isFullscreen && (
-        <div className="fixed top-24 right-6 z-40">
-          <ToolsMenu
-            onHelpClick={() => setIsHelpOpen(true)}
-            onPerformanceClick={() => setIsPerformanceOpen(true)}
-            onAnalyticsClick={() => setIsAnalyticsOpen(true)}
-            onSearchClick={() => setIsSearchOpen(true)}
-            onBackupClick={() => setIsExportImportOpen(true)}
-            onQuickNoteClick={() => setIsNotesModalOpen(true)}
-          />
-        </div>
-      )}
+      <div className="fixed top-24 right-6 z-40">
+        <ToolsMenu
+          onHelpClick={() => setIsHelpOpen(true)}
+          onPerformanceClick={() => setIsPerformanceOpen(true)}
+          onAnalyticsClick={() => setIsAnalyticsOpen(true)}
+          onSearchClick={() => setIsSearchOpen(true)}
+          onBackupClick={() => setIsExportImportOpen(true)}
+          onQuickNoteClick={() => setIsNotesModalOpen(true)}
+        />
+      </div>
 
       {/* Keyboard Shortcuts Help */}
       <KeyboardShortcutsHelp
@@ -265,19 +227,24 @@ export default function TopicContent({ content, subjectSlug, topicId, brandColor
         {content.map((node: any, index: number) => {
           // Check if this is a NoteBox (has 'type' field instead of 'kind')
           if (node.type && !node.kind) {
-            return <NoteBoxRenderer key={node.id} note={node} index={index} />
+            return (
+              <div key={node.id} id={node.id} data-toc-section>
+                <NoteBoxRenderer note={node} index={index} />
+              </div>
+            )
           }
           // Otherwise render as regular ContentNode
           return (
-            <NodeRenderer 
-              key={node.id} 
-              node={node} 
-              brand={brandColor}
-              instantQuiz={instantQuiz}
-              bookmarks={bookmarks}
-              onToggleBookmark={toggleBookmark}
-              subjectSlug={subjectSlug}
-            />
+            <div key={node.id} id={node.id} data-toc-section>
+              <NodeRenderer 
+                node={node} 
+                brand={brandColor}
+                instantQuiz={instantQuiz}
+                bookmarks={bookmarks}
+                onToggleBookmark={toggleBookmark}
+                subjectSlug={subjectSlug}
+              />
+            </div>
           )
         })}
       </div>

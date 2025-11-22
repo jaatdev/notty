@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table of Contents - Demo Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 3rem;
+            font-size: 1.125rem;
+        }
+
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .demo-box {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toc-preview {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .toc-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 1rem;
+        }
+
+        .toc-header-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+            font-size: 0.875rem;
+        }
+
+        .toc-icon {
+            width: 2rem;
+            height: 2rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            width: 45%;
+            transition: width 0.3s;
+        }
+
+        .toc-item {
+            padding: 0.75rem;
+            margin-bottom: 0.25rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .toc-item:hover {
+            background: #f3f4f6;
+        }
+
+        .toc-item.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .toc-item-icon {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .toc-item.level-2 {
+            margin-left: 1.5rem;
+            font-size: 0.8125rem;
+        }
+
+        .toc-item.level-3 {
+            margin-left: 3rem;
+            font-size: 0.75rem;
+        }
+
+        .toc-footer {
+            padding: 0.75rem;
+            border-top: 2px solid #e5e7eb;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: #6b7280;
+            background: #f9fafb;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-item {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: #f0fdf4;
+            border-left: 4px solid #10b981;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+        }
+
+        .feature-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .feature-content h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            color: #1f2937;
+        }
+
+        .feature-content p {
+            font-size: 0.875rem;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .toggle-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: white;
+            border: 2px solid #10b981;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1000;
+        }
+
+        .toggle-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .demo-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: #10b981;
+            color: white;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+
+        .code-block {
+            background: #1f2937;
+            color: #10b981;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📑 Table of Contents System</h1>
+        <p class="subtitle">Auto-generating, collapsible navigation for all notes pages</p>
+
+        <div class="demo-container">
+            <!-- TOC Preview -->
+            <div class="demo-box">
+                <div class="demo-title">
+                    <span>🎨</span>
+                    Live Preview
+                </div>
+                
+                <div class="toc-preview">
+                    <div class="toc-header">
+                        <div class="toc-header-title">
+                            <div class="toc-icon">📑</div>
+                            <span>Contents</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+
+                    <div class="toc-item active">
+                        <span class="toc-item-icon">📄</span>
+                        <span>Introduction</span>
+                    </div>
+
+                    <div class="toc-item level-2">
+                        <span class="toc-item-icon">📝</span>
+                        <span>Overview</span>
+                    </div>
+
+                    <div class="toc-item level-2">
+                        <span class="toc-item-icon">📝</span>
+                        <span>Key Concepts</span>
+                    </div>
+
+                    <div class="toc-item">
+                        <span class="toc-item-icon">📄</span>
+                        <span>Main Content</span>
+                    </div>
+
+                    <div class="toc-item level-2">
+                        <span class="toc-item-icon">📝</span>
+                        <span>Section 1: Fundamentals</span>
+                    </div>
+
+                    <div class="toc-item level-3">
+                        <span class="toc-item-icon">•</span>
+                        <span>Subsection A</span>
+                    </div>
+
+                    <div class="toc-item level-3">
+                        <span class="toc-item-icon">•</span>
+                        <span>Subsection B</span>
+                    </div>
+
+                    <div class="toc-item level-2">
+                        <span class="toc-item-icon">📝</span>
+                        <span>Section 2: Advanced Topics</span>
+                    </div>
+
+                    <div class="toc-item">
+                        <span class="toc-item-icon">❓</span>
+                        <span>Practice Quiz</span>
+                    </div>
+
+                    <div class="toc-item">
+                        <span class="toc-item-icon">🎴</span>
+                        <span>Flashcards</span>
+                    </div>
+
+                    <div class="toc-item">
+                        <span class="toc-item-icon">📄</span>
+                        <span>Summary</span>
+                    </div>
+
+                    <div class="toc-footer">
+                        <span>📊 11 sections</span>
+                        <span style="color: #10b981; font-weight: bold;">45%</span>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    &lt;TableOfContents content={content} theme={theme} /&gt;
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="demo-box">
+                <div class="demo-title">
+                    <span>✨</span>
+                    Key Features
+                </div>
+
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <span class="feature-icon">🤖</span>
+                        <div class="feature-content">
+                            <h3>Auto-Generation</h3>
+                            <p>Automatically extracts TOC from your content structure. No manual configuration needed.</p>
+                        </div>
+                    </li>
+
+                    <li class="feature-item">
+                        <span class="feature-icon">🎯</span>
+                        <div class="feature-content">
+                            <h3>Active Tracking</h3>
+                            <p>Highlights current section as you scroll using Intersection Observer API.</p>
+                        </div>
+                    </li>
+
+                    <li class="feature-item">
+                        <span class="feature-icon">🔗</span>
+                        <div class="feature-content">
+                            <h3>URL Navigation</h3>
+                            <p>Deep link to any section with URL hashes. Share specific sections easily.</p>
+                        </div>
+                    </li>
+
+                    <li class="feature-item">
+                        <span class="feature-icon">📊</span>
+                        <div class="feature-content">
+                            <h3>Progress Tracking</h3>
+                            <p>Visual progress bar shows reading completion percentage.</p>
+                        </div>
+                    </li>
+
+                    <li class="feature-item">
+                        <span class="feature-icon">📱</span>
+                        <div class="feature-content">
+                            <h3>Mobile Responsive</h3>
+                            <p>Full-screen drawer on mobile with backdrop overlay and smooth animations.</p>
+                        </div>
+                    </li>
+
+                    <li class="feature-item">
+                        <span class="feature-icon">🎨</span>
+                        <div class="feature-content">
+                            <h3>Theme Integration</h3>
+                            <p>Uses subject-specific colors and gradients for consistent branding.</p>
+                        </div>
+                    </li>
+
+                    <li class="feature-item">
+                        <span class="feature-icon">⚡</span>
+                        <div class="feature-content">
+                            <h3>Smooth Animations</h3>
+                            <p>Framer Motion powered transitions for delightful user experience.</p>
+                        </div>
+                    </li>
+
+                    <li class="feature-item">
+                        <span class="feature-icon">🌳</span>
+                        <div class="feature-content">
+                            <h3>Hierarchical Structure</h3>
+                            <p>Supports nested sections with expand/collapse functionality.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Toggle Button Demo -->
+        <div class="toggle-button">
+            <span>☰</span>
+            <span>Contents</span>
+            <span class="badge">NEW</span>
+        </div>
+    </div>
+
+    <script>
+        // Simple demo interactions
+        document.querySelectorAll('.toc-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.toc-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update progress
+                const items = Array.from(document.querySelectorAll('.toc-item'));
+                const index = items.indexOf(this);
+                const progress = ((index + 1) / items.length) * 100;
+                document.querySelector('.progress-fill').style.width = progress + '%';
+            });
+        });
+
+        document.querySelector('.toggle-button').addEventListener('click', function() {
+            alert('In the actual app, this toggles the TOC sidebar!\n\nFeatures:\n• Smooth slide animation\n• Backdrop on mobile\n• Keyboard accessible\n• Auto-close after navigation');
+        });
+    </script>
+</body>
+</html>

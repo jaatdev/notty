@@ -206,7 +206,7 @@ export default function QuizPage() {
     return (
       <div className="min-h-screen bg-gray-900 text-white p-6">
         <div className="max-w-4xl mx-auto">
-          <div className={\`bg-gradient-to-br \${colors.hero} rounded-2xl p-8 mb-8 text-center\`}>
+          <div className={\`bg-linear-to-br \${colors.hero} rounded-2xl p-8 mb-8 text-center\`}>
             <div className="text-6xl mb-4">
               {score >= 80 ? '🎉' : score >= 60 ? '👍' : '📚'}
             </div>
@@ -332,7 +332,7 @@ export default function QuizPage() {
           {/* Progress Bar */}
           <div className="w-full bg-gray-700 rounded-full h-2">
             <div 
-              className={\`h-2 rounded-full bg-gradient-to-r \${colors.hero} transition-all duration-300\`}
+              className={\`h-2 rounded-full bg-linear-to-r \${colors.hero} transition-all duration-300\`}
               style={{ width: \`\${progress}%\` }}
             />
           </div>

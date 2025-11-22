@@ -22,11 +22,13 @@ A modern note-taking and learning platform built with Next.js 16, featuring:
 - **Mastery Milestones** - Track cards mastered (10, 50, 100+)
 
 ### Reading Experience
+- **Table of Contents** - Auto-generated, collapsible sidebar with progress tracking
 - **Customizable Reading** - 3 font sizes, line heights, and widths
 - **Dyslexia-friendly Font** - Toggle OpenDyslexic font
 - **Focus Mode** - Distraction-free reading
 - **Keyboard Navigation** - J/K for sections, G for top
 - **Breadcrumb Trail** - Track your reading path
+- **URL Hash Navigation** - Deep link to any section
 
 ### Content Enhancement
 - **Image Zoom** - Click to enlarge with lightbox
@@ -75,6 +77,7 @@ npm start
 
 ## 📖 Documentation
 
+- **[Table of Contents Guide](./TABLE_OF_CONTENTS_GUIDE.md)** - Advanced TOC system documentation
 - **[Performance Optimization Guide](./PERFORMANCE_OPTIMIZATION.md)** - Detailed performance strategies
 - **[Performance Budget](./PERFORMANCE_BUDGET.md)** - Target metrics and budgets
 

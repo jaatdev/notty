@@ -1,4 +1,4 @@
-﻿// components/admin/NoteBoxPreview.tsx
+// components/admin/NoteBoxPreview.tsx
 import React from "react";
 import { NoteBox } from "@/lib/admin-types";
 import NoteBoxRenderer from "@/components/NoteBoxRenderer";
@@ -11,7 +11,7 @@ export default function NoteBoxPreview({ note, interactive = true }: Props) {
       <div className="px-4 py-3 border-b border-slate-800/50">
         <div className="flex items-center justify-between">
           <div className="text-sm text-slate-400 font-medium">
-            🔍 Live Preview
+            ?? Live Preview
           </div>
           <div className="text-xs text-slate-500">
             Type: {note.type}

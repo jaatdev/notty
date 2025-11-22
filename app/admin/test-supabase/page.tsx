@@ -13,6 +13,13 @@ export default function TestSupabasePage() {
     async function testConnection() {
       try {
         const supabase = getSupabaseClient();
+        
+        if (!supabase) {
+          setError('Supabase client is null - check environment variables');
+          setStatus('❌ Failed to create Supabase client');
+          return;
+        }
+        
         setStatus('Supabase client created ✓');
 
         // Test 1: Check if we can query note_drafts table

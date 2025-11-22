@@ -1,0 +1,477 @@
+/* ============================================================================
+   NOTEBOX THEMES - 25 Professional Color Themes
+   Each theme includes: background gradient, border, text color, accent
+   Full dark mode support with proper contrast
+   ============================================================================ */
+
+/* Theme 1: Emerald */
+.notebox-emerald {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.1));
+  border: 2px solid rgba(16, 185, 129, 0.4);
+  border-left: 5px solid rgb(16, 185, 129);
+}
+
+/* Theme 2: Sapphire */
+.notebox-sapphire {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(37, 99, 235, 0.1));
+  border: 2px solid rgba(59, 130, 246, 0.4);
+  border-left: 5px solid rgb(59, 130, 246);
+}
+
+/* Theme 3: Ruby */
+.notebox-ruby {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
+  border: 2px solid rgba(239, 68, 68, 0.4);
+  border-left: 5px solid rgb(239, 68, 68);
+}
+
+/* Theme 4: Amber */
+.notebox-amber {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.1));
+  border: 2px solid rgba(251, 191, 36, 0.4);
+  border-left: 5px solid rgb(251, 191, 36);
+}
+
+/* Theme 5: Violet */
+.notebox-violet {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(147, 51, 234, 0.1));
+  border: 2px solid rgba(168, 85, 247, 0.4);
+  border-left: 5px solid rgb(168, 85, 247);
+}
+
+/* Theme 6: Rose */
+.notebox-rose {
+  background: linear-gradient(135deg, rgba(244, 114, 182, 0.15), rgba(236, 72, 153, 0.1));
+  border: 2px solid rgba(244, 114, 182, 0.4);
+  border-left: 5px solid rgb(244, 114, 182);
+}
+
+/* Theme 7: Cyan */
+.notebox-cyan {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(8, 145, 178, 0.1));
+  border: 2px solid rgba(6, 182, 212, 0.4);
+  border-left: 5px solid rgb(6, 182, 212);
+}
+
+/* Theme 8: Indigo */
+.notebox-indigo {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(79, 70, 229, 0.1));
+  border: 2px solid rgba(99, 102, 241, 0.4);
+  border-left: 5px solid rgb(99, 102, 241);
+}
+
+/* Theme 9: Lime */
+.notebox-lime {
+  background: linear-gradient(135deg, rgba(163, 230, 53, 0.15), rgba(132, 204, 22, 0.1));
+  border: 2px solid rgba(163, 230, 53, 0.4);
+  border-left: 5px solid rgb(163, 230, 53);
+}
+
+/* Theme 10: Teal */
+.notebox-teal {
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.15), rgba(13, 148, 136, 0.1));
+  border: 2px solid rgba(20, 184, 166, 0.4);
+  border-left: 5px solid rgb(20, 184, 166);
+}
+
+/* Theme 11: Crimson */
+.notebox-crimson {
+  background: linear-gradient(135deg, rgba(185, 28, 28, 0.15), rgba(153, 27, 27, 0.1));
+  border: 2px solid rgba(185, 28, 28, 0.4);
+  border-left: 5px solid rgb(185, 28, 28);
+}
+
+/* Theme 12: Gold */
+.notebox-gold {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(202, 138, 4, 0.1));
+  border: 2px solid rgba(234, 179, 8, 0.4);
+  border-left: 5px solid rgb(234, 179, 8);
+}
+
+/* Theme 13: Silver */
+.notebox-silver {
+  background: linear-gradient(135deg, rgba(148, 163, 184, 0.15), rgba(100, 116, 139, 0.1));
+  border: 2px solid rgba(148, 163, 184, 0.4);
+  border-left: 5px solid rgb(148, 163, 184);
+}
+
+/* Theme 14: Bronze */
+.notebox-bronze {
+  background: linear-gradient(135deg, rgba(180, 83, 9, 0.15), rgba(146, 64, 14, 0.1));
+  border: 2px solid rgba(180, 83, 9, 0.4);
+  border-left: 5px solid rgb(180, 83, 9);
+}
+
+/* Theme 15: Ocean */
+.notebox-ocean {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.15), rgba(29, 78, 216, 0.1));
+  border: 2px solid rgba(30, 58, 138, 0.4);
+  border-left: 5px solid rgb(30, 58, 138);
+}
+
+/* Theme 16: Forest */
+.notebox-forest {
+  background: linear-gradient(135deg, rgba(21, 128, 61, 0.15), rgba(22, 101, 52, 0.1));
+  border: 2px solid rgba(21, 128, 61, 0.4);
+  border-left: 5px solid rgb(21, 128, 61);
+}
+
+/* Theme 17: Sunset */
+.notebox-sunset {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(234, 88, 12, 0.1));
+  border: 2px solid rgba(249, 115, 22, 0.4);
+  border-left: 5px solid rgb(249, 115, 22);
+}
+
+/* Theme 18: Dawn */
+.notebox-dawn {
+  background: linear-gradient(135deg, rgba(253, 224, 71, 0.15), rgba(252, 211, 77, 0.1));
+  border: 2px solid rgba(253, 224, 71, 0.4);
+  border-left: 5px solid rgb(253, 224, 71);
+}
+
+/* Theme 19: Midnight */
+.notebox-midnight {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.3), rgba(15, 23, 42, 0.2));
+  border: 2px solid rgba(71, 85, 105, 0.5);
+  border-left: 5px solid rgb(71, 85, 105);
+}
+
+/* Theme 20: Lavender */
+.notebox-lavender {
+  background: linear-gradient(135deg, rgba(196, 181, 253, 0.15), rgba(167, 139, 250, 0.1));
+  border: 2px solid rgba(196, 181, 253, 0.4);
+  border-left: 5px solid rgb(196, 181, 253);
+}
+
+/* Theme 21: Coral */
+.notebox-coral {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.15), rgba(249, 115, 22, 0.1));
+  border: 2px solid rgba(251, 146, 60, 0.4);
+  border-left: 5px solid rgb(251, 146, 60);
+}
+
+/* Theme 22: Mint */
+.notebox-mint {
+  background: linear-gradient(135deg, rgba(110, 231, 183, 0.15), rgba(52, 211, 153, 0.1));
+  border: 2px solid rgba(110, 231, 183, 0.4);
+  border-left: 5px solid rgb(110, 231, 183);
+}
+
+/* Theme 23: Peach */
+.notebox-peach {
+  background: linear-gradient(135deg, rgba(254, 215, 170, 0.15), rgba(253, 186, 116, 0.1));
+  border: 2px solid rgba(254, 215, 170, 0.4);
+  border-left: 5px solid rgb(254, 215, 170);
+}
+
+/* Theme 24: Slate */
+.notebox-slate {
+  background: linear-gradient(135deg, rgba(100, 116, 139, 0.15), rgba(71, 85, 105, 0.1));
+  border: 2px solid rgba(100, 116, 139, 0.4);
+  border-left: 5px solid rgb(100, 116, 139);
+}
+
+/* Theme 25: Gradient Mix */
+.notebox-gradient-mix {
+  background: linear-gradient(135deg,
+      rgba(59, 130, 246, 0.15) 0%,
+      rgba(168, 85, 247, 0.15) 50%,
+      rgba(236, 72, 153, 0.15) 100%);
+  border: 2px solid transparent;
+  border-image: linear-gradient(135deg, rgb(59, 130, 246), rgb(168, 85, 247), rgb(236, 72, 153)) 1;
+  border-left: 5px solid rgb(168, 85, 247);
+}
+
+/* ============================================================================
+   BASE NOTEBOX STYLES - Common to all boxes
+   ============================================================================ */
+
+.notebox {
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  color: #e2e8f0;
+}
+
+@media (prefers-color-scheme: light) {
+  .notebox {
+    color: #1e293b;
+  }
+}
+
+.notebox:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.notebox-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #f1f5f9;
+}
+
+.notebox-content {
+  line-height: 1.7;
+  color: #e2e8f0;
+}
+
+@media (prefers-color-scheme: light) {
+  .notebox-title {
+    color: #0f172a;
+  }
+
+  .notebox-content {
+    color: #1e293b;
+  }
+}
+
+.notebox-image {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================================================
+   SPECIAL BOX STYLES - Unique styling for specific box types
+   ============================================================================ */
+
+/* Warning Box - Dashed border */
+.notebox-warning {
+  border-style: dashed !important;
+  border-width: 3px !important;
+}
+
+/* Tip Box - Dotted top border */
+.notebox-tip {
+  border-top: 4px dotted !important;
+}
+
+/* Quote Box - Large left border */
+.notebox-quote {
+  border-left-width: 8px !important;
+  font-style: italic;
+}
+
+/* Gallery Box - Grid layout */
+.notebox-gallery .notebox-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* Timeline Box - Vertical line */
+.notebox-timeline {
+  border-left-width: 4px !important;
+  padding-left: 2rem;
+}
+
+/* Formula Box - Monospace font */
+.notebox-formula .formula-text {
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+/* Checklist Box - Checkbox styling */
+.notebox-checklist .checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.notebox-checklist .checklist-item input[type="checkbox"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  cursor: pointer;
+}
+
+/* Comparison Box - Table layout */
+.notebox-comparison table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.notebox-comparison th,
+.notebox-comparison td {
+  padding: 0.75rem;
+  border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+/* ============================================================================
+   DARK MODE OVERRIDES
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  .notebox {
+    background: rgba(30, 41, 59, 0.4) !important;
+    color: #e2e8f0 !important;
+  }
+
+  .notebox * {
+    color: inherit;
+  }
+
+  .notebox .notebox-title {
+    color: #f1f5f9 !important;
+  }
+
+  .notebox .notebox-content {
+    color: #e2e8f0 !important;
+  }
+
+  .notebox-emerald {
+    border-color: rgba(16, 185, 129, 0.6);
+  }
+
+  .notebox-sapphire {
+    border-color: rgba(59, 130, 246, 0.6);
+  }
+
+  .notebox-ruby {
+    border-color: rgba(239, 68, 68, 0.6);
+  }
+
+  .notebox-amber {
+    border-color: rgba(251, 191, 36, 0.6);
+  }
+
+  .notebox-violet {
+    border-color: rgba(168, 85, 247, 0.6);
+  }
+
+  .notebox-rose {
+    border-color: rgba(244, 114, 182, 0.6);
+  }
+
+  .notebox-cyan {
+    border-color: rgba(6, 182, 212, 0.6);
+  }
+
+  .notebox-indigo {
+    border-color: rgba(99, 102, 241, 0.6);
+  }
+
+  .notebox-lime {
+    border-color: rgba(163, 230, 53, 0.6);
+  }
+
+  .notebox-teal {
+    border-color: rgba(20, 184, 166, 0.6);
+  }
+
+  .notebox-crimson {
+    border-color: rgba(185, 28, 28, 0.6);
+  }
+
+  .notebox-gold {
+    border-color: rgba(234, 179, 8, 0.6);
+  }
+
+  .notebox-silver {
+    border-color: rgba(148, 163, 184, 0.6);
+  }
+
+  .notebox-bronze {
+    border-color: rgba(180, 83, 9, 0.6);
+  }
+
+  .notebox-ocean {
+    border-color: rgba(30, 58, 138, 0.6);
+  }
+
+  .notebox-forest {
+    border-color: rgba(21, 128, 61, 0.6);
+  }
+
+  .notebox-sunset {
+    border-color: rgba(249, 115, 22, 0.6);
+  }
+
+  .notebox-dawn {
+    border-color: rgba(253, 224, 71, 0.6);
+  }
+
+  .notebox-midnight {
+    border-color: rgba(71, 85, 105, 0.7);
+  }
+
+  .notebox-lavender {
+    border-color: rgba(196, 181, 253, 0.6);
+  }
+
+  .notebox-coral {
+    border-color: rgba(251, 146, 60, 0.6);
+  }
+
+  .notebox-mint {
+    border-color: rgba(110, 231, 183, 0.6);
+  }
+
+  .notebox-peach {
+    border-color: rgba(254, 215, 170, 0.6);
+  }
+
+  .notebox-slate {
+    border-color: rgba(100, 116, 139, 0.6);
+  }
+
+  .notebox-formula .formula-text {
+    background: rgba(255, 255, 255, 0.05);
+    color: #e2e8f0;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .notebox {
+    background: rgba(241, 245, 249, 0.6) !important;
+    color: #1e293b !important;
+  }
+
+  .notebox * {
+    color: inherit;
+  }
+
+  .notebox .notebox-title {
+    color: #0f172a !important;
+  }
+
+  .notebox .notebox-content {
+    color: #1e293b !important;
+  }
+
+  .notebox-formula .formula-text {
+    background: rgba(0, 0, 0, 0.05);
+    color: #1e293b;
+  }
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .notebox {
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
+  .notebox-title {
+    font-size: 1.1rem;
+  }
+
+  .notebox-gallery .notebox-content {
+    grid-template-columns: 1fr;
+  }
+}

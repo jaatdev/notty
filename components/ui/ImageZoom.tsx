@@ -37,6 +37,7 @@ export default function ImageZoom({ zoomable = true, className, alt, ...props }:
     <>
       <img 
         className={`${className} cursor-zoom-in hover:opacity-90 transition-opacity`}
+        style={{maxHeight: '300px', height: 'auto', objectFit: 'contain', ...props.style}}
         alt={alt}
         onClick={() => setIsZoomed(true)}
         {...props}

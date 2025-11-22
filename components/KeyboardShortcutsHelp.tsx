@@ -100,6 +100,27 @@ const shortcutGroups: ShortcutGroup[] = [
     ]
   },
   {
+    title: 'Fullscreen Mode',
+    icon: '🎯',
+    shortcuts: [
+      {
+        keys: ['F11'],
+        description: 'Toggle true fullscreen',
+        context: 'Hides ALL OS UI (taskbar, window controls, etc.)'
+      },
+      {
+        keys: ['Ctrl', 'Shift', 'F'],
+        description: 'Toggle fullscreen (alternative)',
+        context: 'Custom shortcut for fullscreen'
+      },
+      {
+        keys: ['Escape'],
+        description: 'Exit fullscreen',
+        context: 'When in fullscreen mode'
+      }
+    ]
+  },
+  {
     title: 'General',
     icon: '⚡',
     shortcuts: [
