@@ -42,7 +42,7 @@ export default function Navbar() {
           {active && (
             <motion.div
               layoutId="navbar-active"
-              className="absolute inset-0 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-xl shadow-lg"
+              className="absolute inset-0 bg-linear-to-r from-violet-600 to-fuchsia-600 rounded-xl shadow-lg"
               transition={{ type: "spring", stiffness: 380, damping: 30 }}
             />
           )}
@@ -66,14 +66,14 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 group">
           <motion.div 
-            className="w-11 h-11 rounded-2xl bg-gradient-to-br from-violet-600 via-fuchsia-600 to-pink-600 flex items-center justify-center shadow-lg"
+            className="w-11 h-11 rounded-2xl bg-linear-to-br from-violet-600 via-fuchsia-600 to-pink-600 flex items-center justify-center shadow-lg"
             whileHover={{ scale: 1.1, rotate: 5 }}
             whileTap={{ scale: 0.95 }}
           >
             <span className="text-white font-black text-xl">N</span>
           </motion.div>
           <div className="flex flex-col">
-            <span className="bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 bg-clip-text text-transparent font-black text-xl">
+            <span className="bg-linear-to-r from-violet-600 via-fuchsia-600 to-pink-600 bg-clip-text text-transparent font-black text-xl">
               Notty
             </span>
             <span className="hidden sm:inline text-[10px] font-semibold text-gray-500 dark:text-gray-400 -mt-1">
@@ -104,6 +104,7 @@ export default function Navbar() {
           </a>
 
           <motion.button
+            type="button"
             onClick={() => window.dispatchEvent(new Event('notty:openCommand'))}
             className="px-4 py-2 rounded-xl text-sm font-bold text-gray-700 dark:text-gray-300 flex items-center gap-2"
             whileHover={{ scale: 1.05 }}
@@ -117,9 +118,10 @@ export default function Navbar() {
           <InstallPrompt />
 
           <motion.button
+            type="button"
             aria-label="Toggle dark mode"
             onClick={() => setTheme(current === 'dark' ? 'light' : 'dark')}
-            className="ml-2 w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white flex items-center justify-center shadow-lg"
+            className="ml-2 w-10 h-10 rounded-xl bg-linear-to-br from-violet-600 to-fuchsia-600 text-white flex items-center justify-center shadow-lg"
             whileHover={{ scale: 1.1, rotate: 180 }}
             whileTap={{ scale: 0.9 }}
             suppressHydrationWarning
@@ -130,7 +132,7 @@ export default function Navbar() {
           <SignedOut>
             <Link href="/sign-in">
               <motion.div
-                className="ml-2 px-6 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg"
+                className="ml-2 px-6 py-2 rounded-xl text-sm font-bold bg-linear-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg"
                 whileHover={{ scale: 1.05, boxShadow: '0 10px 30px rgba(139, 92, 246, 0.4)' }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -144,7 +146,8 @@ export default function Navbar() {
         </div>
 
         <motion.button
-          className="md:hidden p-2 rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white"
+          type="button"
+          className="md:hidden p-2 rounded-xl bg-linear-to-br from-violet-600 to-fuchsia-600 text-white"
           onClick={() => setOpen(!open)}
           whileTap={{ scale: 0.9 }}
           aria-label="Toggle menu"
@@ -170,6 +173,7 @@ export default function Navbar() {
                 Features
               </a>
               <button
+                type="button"
                 onClick={() => window.dispatchEvent(new Event('notty:openCommand'))}
                 className="px-4 py-2 rounded-xl text-sm font-bold text-gray-700 dark:text-gray-300 text-left"
                 aria-label="Open command palette"
@@ -177,16 +181,17 @@ export default function Navbar() {
                 ⌘K Search
               </button>
               <button
+                type="button"
                 aria-label="Toggle dark mode"
                 onClick={() => setTheme(current === 'dark' ? 'light' : 'dark')}
-                className="mt-2 px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white"
+                className="mt-2 px-4 py-2 rounded-xl text-sm font-bold bg-linear-to-r from-violet-600 to-fuchsia-600 text-white"
                 suppressHydrationWarning
               >
                 {current === 'dark' ? '☀️ Light' : '🌙 Dark'}
               </button>
               <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
                 <SignedOut>
-                  <a href="/sign-in" className="block w-full px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white text-center">
+                  <a href="/sign-in" className="block w-full px-4 py-2 rounded-xl text-sm font-bold bg-linear-to-r from-violet-600 to-fuchsia-600 text-white text-center">
                     Sign In
                   </a>
                 </SignedOut>

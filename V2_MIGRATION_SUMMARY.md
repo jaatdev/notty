@@ -19,7 +19,7 @@
 - ✅ 124 files changed, 25,392 insertions, 2,941 deletions
 
 ### 3. Major Features Included
-- ✅ 8 NoteBox types with themes
+- ✅ **33 NoteBox types** with 10+ themes (Content, Memory, Assessment, Reference, Visual, Special)
 - ✅ Enhanced homepage with modern UI
 - ✅ Admin panel with live preview
 - ✅ Real-time collaboration features
@@ -121,6 +121,7 @@ export async function POST(req: Request) {
 
 This migration represents a **major upgrade** to Notty with:
 - Modern, professional UI design
+- **33 NoteBox types** covering all learning scenarios
 - Advanced note-taking capabilities
 - Real-time collaboration features
 - Comprehensive admin tools

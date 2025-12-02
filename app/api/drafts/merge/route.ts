@@ -1,13 +1,7 @@
 // app/api/drafts/merge/route.ts
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import { requireAdminFromCookies } from '@/lib/adminAuth';
-
-const supa = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { persistSession: false } }
-);
+import { createServerSupabaseClient } from '@/lib/supabaseServer';
 
 // Simple HTML sanitizer (removes scripts and event handlers)
 function sanitizeHtml(html: string): string {
@@ -31,6 +25,11 @@ export async function POST(req: Request) {
   // auth: server routes must be protected
   const auth = await requireAdminFromCookies();
   if (!auth.ok) return NextResponse.json({ error: auth.message }, { status: auth.status || 401 });
+
+  const supa = createServerSupabaseClient();
+  if (!supa) {
+    return NextResponse.json({ error: 'Database unavailable' }, { status: 500 });
+  }
 
   try {
     const body = await req.json();

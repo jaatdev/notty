@@ -42,8 +42,8 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
         x.set(0)
         y.set(0)
       }}
-      style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
-      className="relative group"
+      style={{ rotateX, rotateY }}
+      className="relative group transform-3d"
     >
       <motion.div
         className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 overflow-hidden"
@@ -52,15 +52,14 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
       >
         {/* Gradient glow */}
         <motion.div
-          className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-10 transition-opacity`}
+          className={`absolute inset-0 bg-linear-to-br ${feature.color} opacity-0 group-hover:opacity-10 transition-opacity`}
           animate={isHovered ? { scale: [1, 1.2, 1] } : {}}
           transition={{ duration: 2, repeat: Infinity }}
         />
 
         {/* Icon */}
         <motion.div
-          className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 shadow-2xl`}
-          style={{ transform: 'translateZ(50px)' }}
+          className={`w-16 h-16 rounded-2xl bg-linear-to-br ${feature.color} flex items-center justify-center mb-6 shadow-2xl transform-[translateZ(50px)]`}
           animate={isHovered ? { rotate: [0, 360] } : {}}
           transition={{ duration: 0.6 }}
         >
@@ -68,11 +67,11 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
         </motion.div>
 
         {/* Content */}
-        <div style={{ transform: 'translateZ(30px)' }}>
+        <div className="transform-[translateZ(30px)]">
           <h3 className="text-2xl font-black text-white mb-3">{feature.title}</h3>
           <p className="text-gray-400 mb-4">{feature.desc}</p>
           <motion.div
-            className={`inline-block px-4 py-2 rounded-full bg-gradient-to-r ${feature.color} text-white text-sm font-bold`}
+            className={`inline-block px-4 py-2 rounded-full bg-linear-to-r ${feature.color} text-white text-sm font-bold`}
             whileHover={{ scale: 1.1 }}
           >
             {feature.stats}
@@ -97,7 +96,7 @@ export default function FeaturesPage() {
   const [activeFeature, setActiveFeature] = useState(0)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-violet-950 to-gray-900 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-gray-900 via-violet-950 to-gray-900 relative overflow-hidden">
       {/* Animated background */}
       <div className="absolute inset-0">
         {[...Array(15)].map((_, i) => (
@@ -140,14 +139,11 @@ export default function FeaturesPage() {
             </motion.div>
             
             <motion.h1 
-              className="text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400 bg-clip-text text-transparent"
+              className="text-6xl md:text-8xl font-black mb-6 bg-linear-to-r from-violet-400 via-fuchsia-400 to-pink-400 bg-clip-text text-transparent bg-size-[200%_100%]"
               animate={{ 
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
               }}
               transition={{ duration: 5, repeat: Infinity }}
-              style={{
-                backgroundSize: '200% 100%',
-              }}
             >
               Everything You Need
             </motion.h1>
@@ -167,12 +163,12 @@ export default function FeaturesPage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="bg-gradient-to-br from-violet-500/10 to-fuchsia-500/10 backdrop-blur-xl border border-white/10 rounded-3xl p-12 mb-20"
+            className="bg-linear-to-br from-violet-500/10 to-fuchsia-500/10 backdrop-blur-xl border border-white/10 rounded-3xl p-12 mb-20"
           >
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
                 <motion.div 
-                  className={`w-24 h-24 rounded-3xl bg-gradient-to-br ${features[activeFeature].color} flex items-center justify-center mb-8 shadow-2xl`}
+                  className={`w-24 h-24 rounded-3xl bg-linear-to-br ${features[activeFeature].color} flex items-center justify-center mb-8 shadow-2xl`}
                   whileHover={{ rotate: 360, scale: 1.1 }}
                   transition={{ duration: 0.6 }}
                 >
@@ -198,7 +194,7 @@ export default function FeaturesPage() {
                 </div>
 
                 <motion.div
-                  className={`inline-block px-6 py-3 rounded-full bg-gradient-to-r ${features[activeFeature].color} text-white font-bold text-lg`}
+                  className={`inline-block px-6 py-3 rounded-full bg-linear-to-r ${features[activeFeature].color} text-white font-bold text-lg`}
                   whileHover={{ scale: 1.05 }}
                 >
                   {features[activeFeature].stats}
@@ -206,11 +202,10 @@ export default function FeaturesPage() {
               </div>
 
               <motion.div 
-                className="relative h-96 bg-gradient-to-br from-gray-900/50 to-gray-800/50 rounded-3xl border border-white/10 flex items-center justify-center overflow-hidden"
-                style={{ transformStyle: 'preserve-3d' }}
+                className="relative h-96 bg-linear-to-br from-gray-900/50 to-gray-800/50 rounded-3xl border border-white/10 flex items-center justify-center overflow-hidden transform-3d"
               >
                 <motion.div
-                  className={`w-64 h-64 rounded-full bg-gradient-to-br ${features[activeFeature].color} opacity-20 blur-3xl absolute`}
+                  className={`w-64 h-64 rounded-full bg-linear-to-br ${features[activeFeature].color} opacity-20 blur-3xl absolute`}
                   animate={{ scale: [1, 1.2, 1], rotate: 360 }}
                   transition={{ duration: 10, repeat: Infinity }}
                 />
@@ -244,7 +239,7 @@ export default function FeaturesPage() {
           viewport={{ once: true }}
           className="max-w-5xl mx-auto relative"
         >
-          <div className="relative bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 rounded-3xl p-16 text-center overflow-hidden">
+          <div className="relative bg-linear-to-r from-violet-600 via-fuchsia-600 to-pink-600 rounded-3xl p-16 text-center overflow-hidden">
             {/* Animated background */}
             {[...Array(10)].map((_, i) => (
               <motion.div

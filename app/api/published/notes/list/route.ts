@@ -15,13 +15,15 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+import { createServerSupabaseClient } from '@/lib/supabaseServer';
 
 export async function GET(req: NextRequest) {
   try {
+    const supa = createServerSupabaseClient();
+    if (!supa) {
+      return NextResponse.json({ error: 'Database unavailable' }, { status: 500 });
+    }
+
     // Parse query params
     const { searchParams } = new URL(req.url);
     const subject = searchParams.get('subject');
@@ -35,11 +37,6 @@ export async function GET(req: NextRequest) {
     const page = Math.max(1, parseInt(pageStr, 10));
     const limit = Math.min(100, Math.max(1, parseInt(limitStr, 10)));
     const offset = (page - 1) * limit;
-
-    // Create Supabase client with service role (can read published_notes via RLS)
-    const supa = createClient(supabaseUrl, supabaseServiceKey, {
-      auth: { persistSession: false }
-    });
 
     // Build query
     let query = supa

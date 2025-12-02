@@ -4747,22 +4747,47 @@
               "quiz": []
             },
             {
+              "id": "subt_characteristics_of_fr",
+              "slug": "characteristics-of-fr",
+              "title": "Characteristics of Fundamental Rights",
+              "published": true,
+              "order": 1,
               "content": [],
               "quiz": []
             },
             {
+              "id": "subt_classification_of_fr",
+              "slug": "classification-of-fr",
+              "title": "Classification of Fundamental Rights",
+              "published": true,
+              "order": 2,
               "content": [],
               "quiz": []
             },
             {
+              "id": "subt_article_12",
+              "slug": "article-12",
+              "title": "Article 12 - Definition of State",
+              "published": true,
+              "order": 3,
               "content": [],
               "quiz": []
             },
             {
+              "id": "subt_article_13",
+              "slug": "article-13",
+              "title": "Article 13 - Laws inconsistent with or in derogation of Fundamental Rights",
+              "published": true,
+              "order": 4,
               "content": [],
               "quiz": []
             },
             {
+              "id": "subt_right_to_equality",
+              "slug": "right-to-equality",
+              "title": "Right to Equality",
+              "published": true,
+              "order": 5,
               "content": [],
               "quiz": []
             }

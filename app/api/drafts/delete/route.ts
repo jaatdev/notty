@@ -1,20 +1,18 @@
 // app/api/drafts/delete/route.ts
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import { requireAdminFromCookies } from '@/lib/adminAuth';
 import rateLimit from '@/lib/rateLimiter';
-
-const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SUPA_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-
-const supa = createClient(SUPA_URL, SUPA_SERVICE_ROLE, { 
-  auth: { persistSession: false } 
-});
+import { createServerSupabaseClient } from '@/lib/supabaseServer';
 
 export async function POST(req: Request) {
   // Verify Clerk auth via cookies (App Router)
   const auth = await requireAdminFromCookies();
   if (!auth.ok) return NextResponse.json({ error: auth.message }, { status: auth.status || 401 });
+
+  const supa = createServerSupabaseClient();
+  if (!supa) {
+    return NextResponse.json({ error: 'Database unavailable' }, { status: 500 });
+  }
 
   try {
     const { noteKey } = await req.json();

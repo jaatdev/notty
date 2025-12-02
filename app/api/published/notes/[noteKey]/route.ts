@@ -12,10 +12,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+import { createServerSupabaseClient } from '@/lib/supabaseServer';
 
 export async function GET(
   req: NextRequest,
@@ -31,10 +28,10 @@ export async function GET(
       );
     }
 
-    // Create Supabase client with service role
-    const supa = createClient(supabaseUrl, supabaseServiceKey, {
-      auth: { persistSession: false }
-    });
+    const supa = createServerSupabaseClient();
+    if (!supa) {
+      return NextResponse.json({ error: 'Database unavailable' }, { status: 500 });
+    }
 
     // Fetch the published note
     const { data, error } = await supa

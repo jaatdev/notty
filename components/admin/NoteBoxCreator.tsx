@@ -11,15 +11,46 @@ import { getSupabaseClient } from '@/lib/supabaseClient';
 
 const NOTES_MANAGER = createNotesManager();
 
-const BOX_TYPES: { key: NoteBoxType; label: string; hint?: string }[] = [
-  { key: 'big-notes', label: 'Big Notes', hint: 'Long explanation, headings' },
-  { key: 'small-notes', label: 'Small Notes', hint: 'Bullet points / quick facts' },
-  { key: 'right-wrong', label: 'Right / Wrong', hint: 'T/F statements' },
-  { key: 'mnemonic-magic', label: 'Mnemonic Magic', hint: 'Mnemonic breakdown' },
-  { key: 'mnemonic-card', label: 'Mnemonic Card', hint: 'Cards for quick recall' },
-  { key: 'container-notes', label: 'Container Notes', hint: 'Sections / containers' },
-  { key: 'quick-reference', label: 'Quick Reference', hint: 'Short labels & values' },
-  { key: 'flashcard', label: 'Flashcard', hint: 'Q/A pairs' },
+const BOX_TYPES: { key: NoteBoxType; label: string; hint?: string; category: string }[] = [
+  // Content Presentation
+  { key: 'big-notes', label: 'Big Notes', hint: 'Long explanation', category: 'Content' },
+  { key: 'small-notes', label: 'Small Notes', hint: 'Bullet points', category: 'Content' },
+  { key: 'container-notes', label: 'Container', hint: 'Sections', category: 'Content' },
+  { key: 'rich-content', label: 'Rich Content', hint: 'Media rich', category: 'Content' },
+  { key: 'story-box', label: 'Story', hint: 'Narrative', category: 'Content' },
+  { key: 'definition-box', label: 'Definition', hint: 'Term definition', category: 'Content' },
+  { key: 'example-box', label: 'Examples', hint: 'Code examples', category: 'Content' },
+  { key: 'summary-box', label: 'Summary', hint: 'Key takeaways', category: 'Content' },
+  // Memory & Learning
+  { key: 'mnemonic-magic', label: 'Mnemonic Magic', hint: 'Letter breakdown', category: 'Memory' },
+  { key: 'mnemonic-card', label: 'Mnemonic Card', hint: 'Quick recall', category: 'Memory' },
+  { key: 'flashcard', label: 'Flashcard', hint: 'Q/A pairs', category: 'Memory' },
+  { key: 'acronym-box', label: 'Acronym', hint: 'Acronym expansion', category: 'Memory' },
+  { key: 'analogy-box', label: 'Analogy', hint: 'Concept analogy', category: 'Memory' },
+  { key: 'pattern-box', label: 'Pattern', hint: 'Pattern recognition', category: 'Memory' },
+  { key: 'memory-palace', label: 'Memory Palace', hint: 'Location memory', category: 'Memory' },
+  // Assessment
+  { key: 'right-wrong', label: 'Right/Wrong', hint: 'T/F statements', category: 'Assessment' },
+  { key: 'quiz-box', label: 'Quiz', hint: 'MCQ questions', category: 'Assessment' },
+  { key: 'case-study', label: 'Case Study', hint: 'Scenario analysis', category: 'Assessment' },
+  { key: 'problem-solution', label: 'Problem/Solution', hint: 'Step-by-step', category: 'Assessment' },
+  { key: 'practice-box', label: 'Practice', hint: 'Practice problems', category: 'Assessment' },
+  { key: 'challenge-box', label: 'Challenge', hint: 'Timed challenge', category: 'Assessment' },
+  // Reference
+  { key: 'quick-reference', label: 'Quick Reference', hint: 'Label/value pairs', category: 'Reference' },
+  { key: 'formula-box', label: 'Formula', hint: 'Math formulas', category: 'Reference' },
+  { key: 'timeline-box', label: 'Timeline', hint: 'Chronological events', category: 'Reference' },
+  { key: 'comparison-box', label: 'Comparison', hint: 'Side-by-side', category: 'Reference' },
+  { key: 'checklist-box', label: 'Checklist', hint: 'Task checklist', category: 'Reference' },
+  // Visual
+  { key: 'diagram-box', label: 'Diagram', hint: 'Annotated diagram', category: 'Visual' },
+  { key: 'flowchart-box', label: 'Flowchart', hint: 'Process flow', category: 'Visual' },
+  { key: 'infographic-box', label: 'Infographic', hint: 'Data visualization', category: 'Visual' },
+  { key: 'gallery-box', label: 'Gallery', hint: 'Image gallery', category: 'Visual' },
+  // Special
+  { key: 'warning-box', label: 'Warning', hint: 'Important warning', category: 'Special' },
+  { key: 'tip-box', label: 'Tip', hint: 'Helpful tip', category: 'Special' },
+  { key: 'quote-box', label: 'Quote', hint: 'Inspirational quote', category: 'Special' },
 ];
 
 const DRAFT_KEY = (subjectId: string, topicId: string, subtopicId: string, type: string) =>
@@ -649,20 +680,25 @@ export default function NoteBoxCreator({ subjectId, topicId, subtopicId, onCreat
   return (
     <div className="grid grid-cols-3 gap-6">
       <div className="col-span-1 space-y-4">
-        <div className="p-4 rounded-lg admin-card">
-          <div className="text-sm text-slate-300 mb-2">Box type</div>
-          <div className="grid gap-2">
-            {BOX_TYPES.map(b => (
-              <button
-                key={b.key}
-                onClick={() => setType(b.key)}
-                className={`text-left px-3 py-2 rounded-md border ${type === b.key ? 'border-indigo-500 bg-slate-800/30' : 'border-slate-700'}`}
-              >
-                <div className="font-medium">{b.label}</div>
-                <div className="text-xs text-slate-400">{b.hint}</div>
-              </button>
-            ))}
-          </div>
+        <div className="p-4 rounded-lg admin-card max-h-[600px] overflow-y-auto">
+          <div className="text-sm text-slate-300 mb-2">Box type (33 types)</div>
+          {['Content', 'Memory', 'Assessment', 'Reference', 'Visual', 'Special'].map(cat => (
+            <div key={cat} className="mb-4">
+              <div className="text-xs font-semibold text-slate-500 mb-2">{cat}</div>
+              <div className="grid gap-2">
+                {BOX_TYPES.filter(b => b.category === cat).map(b => (
+                  <button
+                    key={b.key}
+                    onClick={() => setType(b.key)}
+                    className={`text-left px-3 py-2 rounded-md border ${type === b.key ? 'border-indigo-500 bg-slate-800/30' : 'border-slate-700'}`}
+                  >
+                    <div className="font-medium text-sm">{b.label}</div>
+                    <div className="text-xs text-slate-400">{b.hint}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="p-4 rounded-lg admin-card">

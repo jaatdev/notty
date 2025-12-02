@@ -1,19 +1,8 @@
 // app/api/presence/heartbeat/route.ts
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import { requireAdminFromCookies } from '@/lib/adminAuth';
 import rateLimit from '@/lib/rateLimiter';
-
-const SUPA_URL = process.env.SUPABASE_URL!;
-const SUPA_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-
-if (!SUPA_URL || !SUPA_SERVICE_ROLE) {
-  console.warn('Supabase env missing for presence API.');
-}
-
-const supa = createClient(SUPA_URL, SUPA_SERVICE_ROLE, {
-  auth: { persistSession: false },
-});
+import { createServerSupabaseClient } from '@/lib/supabaseServer';
 
 /**
  * POST { noteKey, userId, displayName, cursor }
@@ -32,6 +21,11 @@ export async function POST(req: Request) {
     } else {
       return NextResponse.json({ error: auth.message }, { status: auth.status || 401 });
     }
+  }
+
+  const supa = createServerSupabaseClient();
+  if (!supa) {
+    return NextResponse.json({ error: 'Database unavailable' }, { status: 500 });
   }
 
   try {

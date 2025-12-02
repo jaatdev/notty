@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import { requireAdminFromCookies } from '@/lib/adminAuth';
-
-const supa = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { persistSession: false } }
-);
+import { createServerSupabaseClient } from '@/lib/supabaseServer';
 
 // Simple HTML sanitizer (replaces isomorphic-dompurify to avoid ESM issues)
 function sanitizeHtml(html: string): string {
@@ -24,6 +18,11 @@ export async function POST(req: NextRequest) {
     const auth = await requireAdminFromCookies();
     if (!auth.ok) {
       return NextResponse.json({ error: auth.message || 'Unauthorized' }, { status: auth.status || 401 });
+    }
+
+    const supa = createServerSupabaseClient();
+    if (!supa) {
+      return NextResponse.json({ error: 'Database unavailable' }, { status: 500 });
     }
 
     const body = await req.json();
