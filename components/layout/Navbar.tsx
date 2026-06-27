@@ -5,7 +5,7 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
-import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { useAuth, UserButton } from '@clerk/nextjs';
 
 import InstallPrompt from '@/components/pwa/InstallPrompt';
 import NavContinuePill from './NavContinuePill';
@@ -14,6 +14,7 @@ import { NavbarMobileMenu } from './NavbarMobileMenu';
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { isSignedIn } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Track scroll for background styling
@@ -132,20 +133,18 @@ export default function Navbar() {
 
                 {/* Authentication */}
                 <div className="pl-2 border-l border-white/10">
-                  <SignedOut>
-                    <Link href="/sign-in">
-                      <motion.div
-                        className="px-5 py-2 rounded-full text-sm font-bold bg-white text-black hover:bg-gray-200 transition-colors shadow-[0_0_15px_rgba(255,255,255,0.2)]"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        Login
-                      </motion.div>
+                  {!isSignedIn ? (
+                    <Link
+                      href="/sign-in"
+                      className="px-5 py-2 text-sm font-bold text-white bg-white/10 hover:bg-white/20 border border-white/20 rounded-full transition-all"
+                    >
+                      Login
                     </Link>
-                  </SignedOut>
-                  <SignedIn>
-                    <UserButton afterSignOutUrl="/" />
-                  </SignedIn>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <UserButton appearance={{ elements: { userButtonAvatarBox: "w-9 h-9 border border-white/20" } }} />
+                    </div>
+                  )}
                 </div>
               </div>
 

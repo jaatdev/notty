@@ -2,13 +2,14 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { useAuth, UserButton } from '@clerk/nextjs';
 
 interface NavbarMobileMenuProps {
   closeMenu: () => void;
 }
 
 export function NavbarMobileMenu({ closeMenu }: NavbarMobileMenuProps) {
+  const { isSignedIn } = useAuth();
   const menuItems = [
     { label: 'KD Method', href: '/kd-method' },
     { label: 'Success Stories', href: '/success-stories' },
@@ -86,7 +87,7 @@ export function NavbarMobileMenu({ closeMenu }: NavbarMobileMenuProps) {
         className="flex flex-col w-full gap-4 max-w-sm"
       >
         <div className="flex justify-center w-full mt-4">
-          <SignedOut>
+          {!isSignedIn ? (
             <Link 
               href="/sign-in" 
               onClick={closeMenu}
@@ -94,13 +95,12 @@ export function NavbarMobileMenu({ closeMenu }: NavbarMobileMenuProps) {
             >
               Login
             </Link>
-          </SignedOut>
-          <SignedIn>
+          ) : (
             <div className="flex flex-col items-center gap-2" onClick={closeMenu}>
-              <UserButton afterSignOutUrl="/" appearance={{ elements: { userButtonAvatarBox: "w-12 h-12" } }} />
+              <UserButton appearance={{ elements: { userButtonAvatarBox: "w-12 h-12" } }} />
               <span className="text-sm font-medium text-gray-500">Account</span>
             </div>
-          </SignedIn>
+          )}
         </div>
       </motion.div>
     </motion.div>

@@ -7,13 +7,12 @@ export default function SignUpPage() {
       <div className="w-full max-w-md">
         <SignUp 
           appearance={{
-            baseTheme: undefined, // Let Clerk handle theming
             elements: {
               rootBox: 'w-full',
               card: 'bg-white dark:bg-[#1a2332] rounded-xl shadow-xl',
             }
           }}
-          redirectUrl="/admin/notes"
+          fallbackRedirectUrl="/admin/notes"
           signInUrl="/sign-in"
         />
       </div>
