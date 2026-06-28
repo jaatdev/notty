@@ -13,6 +13,7 @@ import NoteBoxRenderer from '@/components/NoteBoxRenderer';
 import { useUser } from '@clerk/nextjs';
 import { KDQuiz } from '@/types/kdMethod';
 import { MathJaxContext } from 'better-react-mathjax';
+import CanvasOverlay from '../canvas/CanvasOverlay';
 
 interface Props {
   title: string;
@@ -26,6 +27,7 @@ interface Props {
 
 export function ConceptInteractiveViewer({ title, notesMarkdown, noteBoxes, pdfUrl, youtubeUrls, quizzes, slug }: Props) {
   const [activeQuizId, setActiveQuizId] = useState<string | null>(null);
+  const [isCanvasOpen, setIsCanvasOpen] = useState(false);
   const [isFullscreenPdf, setIsFullscreenPdf] = useState(false);
   const { enterFullscreen, exitFullscreen } = useFullscreen();
   const { user } = useUser();
@@ -71,7 +73,8 @@ export function ConceptInteractiveViewer({ title, notesMarkdown, noteBoxes, pdfU
 
   return (
     <MathJaxContext config={mathJaxConfig}>
-      <div className="space-y-6">
+      <div className="space-y-6 relative">
+        <CanvasOverlay isOpen={isCanvasOpen} onClose={() => setIsCanvasOpen(false)} />
         {/* Notes View */}
       <div className={activeQuizId ? 'hidden' : 'block'}>
         
@@ -154,13 +157,22 @@ export function ConceptInteractiveViewer({ title, notesMarkdown, noteBoxes, pdfU
               </button>
             </div>
           </div>
-            {/* PDF Viewer - Append #toolbar=0 to disable native download/print buttons */}
+            {/* PDF Viewer */}
             <div className="flex-1 w-full h-full relative" onContextMenu={(e) => e.preventDefault()}>
-              <iframe 
-                src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`} 
-                className="absolute inset-0 w-full h-full border-none" 
-                title={`PDF Notes for ${title}`}
-              />
+              {isFullscreenPdf && userEmail === 'kc90040@gmail.com' ? (
+                <iframe 
+                  src={`https://trickfunda-canvas.vercel.app/?pdfUrl=${encodeURIComponent(pdfUrl)}`}
+                  className="absolute inset-0 w-full h-full border-none" 
+                  title={`Trickfunda Canvas for ${title}`}
+                  allow="fullscreen"
+                />
+              ) : (
+                <iframe 
+                  src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`} 
+                  className="absolute inset-0 w-full h-full border-none" 
+                  title={`PDF Notes for ${title}`}
+                />
+              )}
             </div>
           </div>
         )}

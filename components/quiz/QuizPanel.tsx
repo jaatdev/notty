@@ -14,6 +14,8 @@ import { QuizQuestion } from '@/lib/types';
 import { MathJax } from 'better-react-mathjax';
 import { getThemeById } from '@/lib/theme-variants';
 import { QuizReview } from './QuizReview';
+import { useUser } from '@clerk/nextjs';
+import CanvasOverlay from '../canvas/CanvasOverlay';
 
 // Convert QuizQuestion to EnhancedQuizQuestion
 function enhanceQuestions(questions: QuizQuestion[]): EnhancedQuizQuestion[] {
@@ -45,6 +47,10 @@ export function QuizPanel({ questions, topicId, onComplete }: QuizPanelProps) {
   const [showResults, setShowResults] = useState(false);
   const [showReview, setShowReview] = useState(false);
   const [language, setLanguage] = useState<'en' | 'hi'>('en');
+  const [isCanvasOpen, setIsCanvasOpen] = useState(false);
+
+  const { user } = useUser();
+  const isAdmin = user?.primaryEmailAddress?.emailAddress === 'kc90040@gmail.com';
 
   const hasHindi = enhancedQuestions.some(q => q.prompt_hi);
 
@@ -185,6 +191,7 @@ export function QuizPanel({ questions, topicId, onComplete }: QuizPanelProps) {
 
   return (
     <div className="relative min-h-screen bg-linear-to-br from-neutral-50 to-neutral-100 dark:from-neutral-950 dark:to-neutral-900">
+      <CanvasOverlay isOpen={isCanvasOpen} onClose={() => setIsCanvasOpen(false)} />
       {/* Header */}
       <div className="sticky top-0 z-20 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-lg border-b border-neutral-200 dark:border-neutral-800">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -197,8 +204,19 @@ export function QuizPanel({ questions, topicId, onComplete }: QuizPanelProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
+            {isAdmin && (
+              <button
+                onClick={() => setIsCanvasOpen(true)}
+                className="px-3 py-1.5 md:px-4 md:py-2 bg-linear-to-r from-violet-600 to-fuchsia-600 text-white rounded-lg text-xs md:text-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+                <span className="hidden sm:inline">Use Canvas</span>
+              </button>
+            )}
             <div>
-              <h2 className="text-lg font-bold">Quiz Session</h2>
+              <h2 className="text-lg font-bold hidden sm:block">Quiz Session</h2>
               <p className="text-sm text-neutral-600 dark:text-neutral-400">
                 Question {quiz.navigation.currentIndex + 1} of {quiz.navigation.totalQuestions}
               </p>
