@@ -287,7 +287,7 @@ export function QuizPanel({ questions, topicId, onComplete }: QuizPanelProps) {
                   <QuizSidebar
                     questions={quiz.session.questions}
                     currentIndex={quiz.navigation.currentIndex}
-                    onQuestionClick={(index) => {
+                    onQuestionClick={(index: number) => {
                       quiz.goToQuestion(index);
                       if (typeof window !== 'undefined' && window.innerWidth < 1024) setShowSidebar(false);
                     }}

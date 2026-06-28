@@ -36,15 +36,15 @@ export default async function HomePage() {
     } catch(e) {}
     
     // Map KD subjects to visually appealing brand colors and emojis
-    let brandColor = 'emerald';
+    let brandColor: BrandKey = 'emerald';
     let emoji = '📚';
     let title = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     
     if (slug === 'maths-trickfunda') { brandColor = 'blue'; emoji = '➗'; title = 'Maths TrickFunda'; }
-    if (slug === 'english-100-concepts') { brandColor = 'violet'; emoji = '📝'; title = 'English 100 Rules'; }
+    if (slug === 'english-100-concepts') { brandColor = 'purple'; emoji = '📝'; title = 'English 100 Rules'; }
     if (slug === 'gs-trickfunda') { brandColor = 'amber'; emoji = '🌍'; title = 'GS TrickFunda'; }
     if (slug === 'reasoning-trickfunda') { brandColor = 'pink'; emoji = '🧠'; title = 'Reasoning TrickFunda'; }
-    if (slug === 'vocab-trickfunda') { brandColor = 'rose'; emoji = '📖'; title = 'Vocab TrickFunda'; }
+    if (slug === 'vocab-trickfunda') { brandColor = 'red'; emoji = '📖'; title = 'Vocab TrickFunda'; }
 
     return {
       title,
