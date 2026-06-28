@@ -28,7 +28,7 @@ interface Props {
 export function ConceptInteractiveViewer({ title, notesMarkdown, noteBoxes, pdfUrl, youtubeUrls, quizzes, slug }: Props) {
   const [activeQuizId, setActiveQuizId] = useState<string | null>(null);
   const [isCanvasOpen, setIsCanvasOpen] = useState(false);
-  const [isFullscreenPdf, setIsFullscreenPdf] = useState(false);
+  const [fullscreenMode, setFullscreenMode] = useState<'none' | 'pdf' | 'canvas'>('none');
   const { enterFullscreen, exitFullscreen } = useFullscreen();
   const { user } = useUser();
   const userEmail = user?.primaryEmailAddress?.emailAddress;
@@ -49,7 +49,7 @@ export function ConceptInteractiveViewer({ title, notesMarkdown, noteBoxes, pdfU
   if (hasMarkdown) tabs.push({ id: 'markdown', label: '📝 Text Notes' });
 
   useEffect(() => {
-    if (activeQuizId || isFullscreenPdf) {
+    if (activeQuizId || fullscreenMode !== 'none') {
       document.documentElement.setAttribute('data-page-type', 'notes');
       enterFullscreen();
     } else {
@@ -57,11 +57,20 @@ export function ConceptInteractiveViewer({ title, notesMarkdown, noteBoxes, pdfU
       exitFullscreen();
     }
 
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setFullscreenMode('none');
+        setActiveQuizId(null);
+      }
+    };
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
       document.documentElement.removeAttribute('data-page-type');
       exitFullscreen();
     };
-  }, [activeQuizId, isFullscreenPdf, enterFullscreen, exitFullscreen]);
+  }, [activeQuizId, fullscreenMode, enterFullscreen, exitFullscreen]);
 
   const activeQuiz = quizzes?.find(q => q.id === activeQuizId);
 
@@ -116,7 +125,7 @@ export function ConceptInteractiveViewer({ title, notesMarkdown, noteBoxes, pdfU
 
         {/* Render PDF if active */}
         {activeTab === 'pdf' && pdfUrl && (
-          <div className={`mb-8 animate-in fade-in duration-500 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm bg-white dark:bg-gray-900 flex flex-col ${isFullscreenPdf ? 'fixed inset-0 z-[100] rounded-none border-none m-0' : 'w-full h-[80vh] min-h-[600px]'}`}>
+          <div className={`mb-8 animate-in fade-in duration-500 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm bg-white dark:bg-gray-900 flex flex-col ${fullscreenMode !== 'none' ? 'fixed inset-0 z-[100] rounded-none border-none m-0' : 'w-full h-[80vh] min-h-[600px]'}`}>
             {/* PDF Header with Fullscreen Toggle */}
             <div className="flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
               <h3 className="font-semibold text-gray-700 dark:text-gray-200 truncate pr-4">
@@ -135,31 +144,62 @@ export function ConceptInteractiveViewer({ title, notesMarkdown, noteBoxes, pdfU
                     <span>Download PDF</span>
                   </a>
                 )}
-                <button
-                  onClick={() => setIsFullscreenPdf(!isFullscreenPdf)}
-                  className="flex items-center space-x-2 px-3 py-1.5 text-sm rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors shadow-sm whitespace-nowrap shrink-0"
-                >
-                {isFullscreenPdf ? (
+                {userEmail === 'kc90040@gmail.com' ? (
                   <>
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    <span>Exit Fullscreen</span>
+                    <button
+                      onClick={() => setFullscreenMode(fullscreenMode === 'pdf' ? 'none' : 'pdf')}
+                      className={`flex items-center space-x-2 px-3 py-1.5 text-sm rounded-lg border transition-colors shadow-sm whitespace-nowrap shrink-0 ${
+                        fullscreenMode === 'pdf' 
+                          ? 'bg-emerald-50 border-emerald-200 text-emerald-600 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400' 
+                          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                      </svg>
+                      <span>{fullscreenMode === 'pdf' ? 'Exit Fullscreen' : 'Read Fullscreen'}</span>
+                    </button>
+                    <button
+                      onClick={() => setFullscreenMode(fullscreenMode === 'canvas' ? 'none' : 'canvas')}
+                      className={`flex items-center space-x-2 px-3 py-1.5 text-sm rounded-lg border transition-colors shadow-sm whitespace-nowrap shrink-0 ${
+                        fullscreenMode === 'canvas'
+                          ? 'bg-violet-50 border-violet-200 text-violet-600 dark:bg-violet-900/20 dark:border-violet-800 dark:text-violet-400'
+                          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      </svg>
+                      <span>{fullscreenMode === 'canvas' ? 'Exit Canvas' : 'Teach Fullscreen'}</span>
+                    </button>
                   </>
                 ) : (
-                  <>
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                    </svg>
-                    <span>Read in Fullscreen</span>
-                  </>
+                  <button
+                    onClick={() => setFullscreenMode(fullscreenMode === 'pdf' ? 'none' : 'pdf')}
+                    className="flex items-center space-x-2 px-3 py-1.5 text-sm rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors shadow-sm whitespace-nowrap shrink-0"
+                  >
+                  {fullscreenMode === 'pdf' ? (
+                    <>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      <span>Exit Fullscreen</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                      </svg>
+                      <span>Read in Fullscreen</span>
+                    </>
+                  )}
+                  </button>
                 )}
-              </button>
             </div>
           </div>
             {/* PDF Viewer */}
             <div className="flex-1 w-full h-full relative" onContextMenu={(e) => e.preventDefault()}>
-              {isFullscreenPdf && userEmail === 'kc90040@gmail.com' ? (
+              {fullscreenMode === 'canvas' && userEmail === 'kc90040@gmail.com' ? (
                 <iframe 
                   src={`https://trickfunda-canvas.vercel.app/?pdfUrl=${encodeURIComponent(
                     pdfUrl.startsWith('http') ? pdfUrl : (typeof window !== 'undefined' ? window.location.origin + pdfUrl : pdfUrl)
