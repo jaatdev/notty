@@ -191,7 +191,7 @@ export function QuizPanel({ questions, topicId, onComplete }: QuizPanelProps) {
 
   return (
     <div className="relative min-h-screen bg-linear-to-br from-neutral-50 to-neutral-100 dark:from-neutral-950 dark:to-neutral-900">
-      <CanvasOverlay isOpen={isCanvasOpen} onClose={() => setIsCanvasOpen(false)} />
+      <CanvasOverlay isOpen={isCanvasOpen} onClose={() => setIsCanvasOpen(false)} questionIndex={quiz.navigation.currentIndex} />
       {/* Header */}
       <div className="sticky top-0 z-20 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-lg border-b border-neutral-200 dark:border-neutral-800">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
