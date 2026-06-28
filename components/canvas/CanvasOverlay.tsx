@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import getStroke from 'perfect-freehand';
 import { Pen, Eraser, Trash2, X, Settings2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -38,15 +38,67 @@ interface CanvasOverlayProps {
 
 export default function CanvasOverlay({ isOpen, onClose, questionIndex }: CanvasOverlayProps) {
   const [strokes, setStrokes] = useState<Stroke[]>([]);
-  const [currentPoints, setCurrentPoints] = useState<Point[]>([]);
-  const [isDrawing, setIsDrawing] = useState(false);
   const [tool, setTool] = useState<'pen' | 'eraser'>('pen');
-  const [color, setColor] = useState<string>('#ef4444'); // Default Red
+  const [color, setColor] = useState<string>('#ef4444');
   const [penSize, setPenSize] = useState<number>(4);
   const [eraserSize, setEraserSize] = useState<number>(20);
   const [showSettings, setShowSettings] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const staticCanvasRef = useRef<HTMLCanvasElement>(null);
+  const activeCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Drawing state (bypassing React state for buttery smoothness)
+  const isDrawing = useRef(false);
+  const currentPoints = useRef<Point[]>([]);
+
+  // Initialize and resize canvases
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const resizeCanvas = () => {
+      const container = containerRef.current;
+      const staticCanvas = staticCanvasRef.current;
+      const activeCanvas = activeCanvasRef.current;
+      
+      if (!container || !staticCanvas || !activeCanvas) return;
+      
+      const { clientWidth, clientHeight } = container;
+      const dpr = window.devicePixelRatio || 1;
+      
+      // Set physical pixels
+      staticCanvas.width = clientWidth * dpr;
+      staticCanvas.height = clientHeight * dpr;
+      activeCanvas.width = clientWidth * dpr;
+      activeCanvas.height = clientHeight * dpr;
+      
+      // Set logical CSS pixels
+      staticCanvas.style.width = `${clientWidth}px`;
+      staticCanvas.style.height = `${clientHeight}px`;
+      activeCanvas.style.width = `${clientWidth}px`;
+      activeCanvas.style.height = `${clientHeight}px`;
+      
+      // Scale context for DPI
+      const staticCtx = staticCanvas.getContext('2d');
+      const activeCtx = activeCanvas.getContext('2d');
+      if (staticCtx) {
+        staticCtx.setTransform(1, 0, 0, 1, 0, 0);
+        staticCtx.scale(dpr, dpr);
+      }
+      if (activeCtx) {
+        activeCtx.setTransform(1, 0, 0, 1, 0, 0);
+        activeCtx.scale(dpr, dpr);
+      }
+      
+      renderStaticLayer();
+    };
+
+    window.addEventListener('resize', resizeCanvas);
+    // Slight delay to ensure layout is complete before sizing
+    setTimeout(resizeCanvas, 0);
+    
+    return () => window.removeEventListener('resize', resizeCanvas);
+  }, [isOpen]); // Only re-run if isOpen changes
 
   // Disable body scroll when drawing
   useEffect(() => {
@@ -63,13 +115,66 @@ export default function CanvasOverlay({ isOpen, onClose, questionIndex }: Canvas
     setStrokes([]);
   }, [questionIndex]);
 
+  // Render static layer when strokes change
+  const renderStaticLayer = useCallback(() => {
+    const canvas = staticCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Clear canvas based on physical bounds, but we are scaled, so we clear logical bounds
+    // Let's just clear the whole transform bounding box by resetting transform temporarily
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
+
+    strokes.forEach(stroke => {
+      if (stroke.points.length < 2) return;
+      
+      const input = stroke.points.map(p => [p.x, p.y, p.pressure]);
+      const strokeData = getStroke(input, { size: stroke.size, thinning: 0.5, streamline: 0.5 });
+      const pathData = getSvgPathFromStroke(strokeData);
+      const path = new Path2D(pathData);
+      
+      ctx.globalCompositeOperation = stroke.isEraser ? 'destination-out' : 'source-over';
+      ctx.fillStyle = stroke.isEraser ? 'rgba(0,0,0,1)' : stroke.color;
+      ctx.fill(path);
+    });
+  }, [strokes]);
+
+  useEffect(() => {
+    if (isOpen) {
+      renderStaticLayer();
+    }
+  }, [strokes, isOpen, renderStaticLayer]);
+
+  const drawLiveSegment = (ctx: CanvasRenderingContext2D, points: Point[], isEraser: boolean, currentColor: string, currentSize: number) => {
+    if (points.length < 2) return;
+    
+    // Clear active layer
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.restore();
+
+    // Use perfect-freehand for the live stroke as well, it's fast enough on canvas
+    const input = points.map(p => [p.x, p.y, p.pressure]);
+    const strokeData = getStroke(input, { size: currentSize, thinning: 0.5, streamline: 0.5 });
+    const pathData = getSvgPathFromStroke(strokeData);
+    const path = new Path2D(pathData);
+    
+    ctx.globalCompositeOperation = isEraser ? 'destination-out' : 'source-over';
+    ctx.fillStyle = isEraser ? 'rgba(255, 255, 255, 0.5)' : currentColor; // Show a semi-transparent white/gray for eraser preview
+    ctx.fill(path);
+  };
+
   const handlePointerDown = (e: React.PointerEvent) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     
-    // Prevent default to avoid selection/scrolling
     (e.target as Element).setPointerCapture?.(e.pointerId);
     
-    setIsDrawing(true);
+    isDrawing.current = true;
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
     
@@ -77,38 +182,88 @@ export default function CanvasOverlay({ isOpen, onClose, questionIndex }: Canvas
     const y = e.clientY - rect.top;
     const pressure = e.pressure !== 0 ? e.pressure : 0.5;
 
-    setCurrentPoints([{ x, y, pressure }]);
-    setShowSettings(false); // hide settings on draw
+    currentPoints.current = [{ x, y, pressure }];
+    setShowSettings(false);
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDrawing) return;
+    if (!isDrawing.current) return;
     
+    // Use requestAnimationFrame for buttery smooth coalescing if needed, 
+    // but direct context drawing is usually fast enough.
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
 
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const pressure = e.pressure !== 0 ? e.pressure : 0.5;
+    // Fast coordinate extraction
+    // Add multiple points if event coalescing is supported (Chrome/Edge)
+    const newPoints: Point[] = [];
+    const nativeEvent = e.nativeEvent as PointerEvent;
+    if (nativeEvent.getCoalescedEvents) {
+      const events = nativeEvent.getCoalescedEvents();
+      for (const ev of events) {
+        newPoints.push({
+          x: ev.clientX - rect.left,
+          y: ev.clientY - rect.top,
+          pressure: ev.pressure !== 0 ? ev.pressure : 0.5
+        });
+      }
+    } else {
+      newPoints.push({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+        pressure: e.pressure !== 0 ? e.pressure : 0.5
+      });
+    }
 
-    setCurrentPoints((prev) => [...prev, { x, y, pressure }]);
+    currentPoints.current.push(...newPoints);
+
+    // Draw to active canvas
+    const activeCanvas = activeCanvasRef.current;
+    if (activeCanvas) {
+      const ctx = activeCanvas.getContext('2d');
+      if (ctx) {
+        requestAnimationFrame(() => {
+          drawLiveSegment(
+            ctx, 
+            currentPoints.current, 
+            tool === 'eraser', 
+            color, 
+            tool === 'eraser' ? eraserSize : penSize
+          );
+        });
+      }
+    }
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
-    if (!isDrawing) return;
-    setIsDrawing(false);
+    if (!isDrawing.current) return;
+    isDrawing.current = false;
 
-    if (currentPoints.length > 0) {
+    if (currentPoints.current.length > 0) {
       const newStroke: Stroke = {
         id: Date.now().toString(),
-        points: currentPoints,
+        points: [...currentPoints.current],
         color,
         size: tool === 'eraser' ? eraserSize : penSize,
         isEraser: tool === 'eraser',
       };
+      
+      // Clear active canvas
+      const activeCanvas = activeCanvasRef.current;
+      if (activeCanvas) {
+        const ctx = activeCanvas.getContext('2d');
+        if (ctx) {
+          ctx.save();
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.clearRect(0, 0, activeCanvas.width, activeCanvas.height);
+          ctx.restore();
+        }
+      }
+
+      // Add to React state which will trigger renderStaticLayer
       setStrokes((prev) => [...prev, newStroke]);
     }
-    setCurrentPoints([]);
+    currentPoints.current = [];
   };
 
   const clearCanvas = () => setStrokes([]);
@@ -121,48 +276,24 @@ export default function CanvasOverlay({ isOpen, onClose, questionIndex }: Canvas
       {/* Drawing Area */}
       <div 
         ref={containerRef}
-        className="flex-1 w-full h-full pointer-events-auto touch-none"
+        className="flex-1 w-full h-full pointer-events-auto touch-none relative"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
         onPointerLeave={handlePointerUp}
       >
-        <svg className="w-full h-full">
-          <defs>
-            <mask id="eraser-mask">
-              <rect width="100%" height="100%" fill="white" />
-              {strokes.filter(s => s.isEraser).map((stroke) => {
-                const input = stroke.points.map(p => [p.x, p.y, p.pressure]);
-                const strokeData = getStroke(input, { size: stroke.size, thinning: 0.5, streamline: 0.5 });
-                const pathData = getSvgPathFromStroke(strokeData);
-                return <path key={stroke.id} d={pathData} fill="black" />;
-              })}
-              {tool === 'eraser' && currentPoints.length > 0 && (
-                <path 
-                  d={getSvgPathFromStroke(getStroke(currentPoints.map(p => [p.x, p.y, p.pressure]), { size: eraserSize, thinning: 0.5, streamline: 0.5 }))} 
-                  fill="black" 
-                />
-              )}
-            </mask>
-          </defs>
-
-          <g mask="url(#eraser-mask)">
-            {strokes.filter(s => !s.isEraser).map((stroke) => {
-              const input = stroke.points.map(p => [p.x, p.y, p.pressure]);
-              const strokeData = getStroke(input, { size: stroke.size, thinning: 0.5, streamline: 0.5 });
-              const pathData = getSvgPathFromStroke(strokeData);
-              return <path key={stroke.id} d={pathData} fill={stroke.color} />;
-            })}
-            
-            {tool === 'pen' && currentPoints.length > 0 && (
-              <path 
-                d={getSvgPathFromStroke(getStroke(currentPoints.map(p => [p.x, p.y, p.pressure]), { size: penSize, thinning: 0.5, streamline: 0.5 }))} 
-                fill={color} 
-              />
-            )}
-          </g>
-        </svg>
+        {/* Static Layer (Finished Strokes) */}
+        <canvas 
+          ref={staticCanvasRef} 
+          className="absolute inset-0 w-full h-full pointer-events-none"
+        />
+        
+        {/* Active Layer (Live Stroke) */}
+        <canvas 
+          ref={activeCanvasRef} 
+          className="absolute inset-0 w-full h-full pointer-events-none"
+        />
       </div>
 
       {/* Floating Toolbar */}
