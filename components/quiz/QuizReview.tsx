@@ -32,8 +32,29 @@ interface QuizReviewProps {
   onClose: () => void;
 }
 
+import { useState } from 'react';
+
 export function QuizReview({ attempts, score, topicId, onClose }: QuizReviewProps) {
   const theme = getThemeById(topicId);
+  const [filter, setFilter] = useState<'all' | 'correct' | 'incorrect' | 'skipped' | 'time'>('all');
+
+  // Compute Time Analytics
+  const validBreakdowns = attempts.map((a, index) => ({ ...a, originalIndex: index + 1 }));
+  const fastest = validBreakdowns.length > 0 ? validBreakdowns.reduce((prev, curr) => (curr.timeSpent || 0) < (prev.timeSpent || 0) ? curr : prev) : null;
+  const slowest = validBreakdowns.length > 0 ? validBreakdowns.reduce((prev, curr) => (curr.timeSpent || 0) > (prev.timeSpent || 0) ? curr : prev) : null;
+  const averageTime = score.averageTimePerQuestion || 0;
+
+  // Filter and sort attempts
+  let displayedAttempts = validBreakdowns;
+  if (filter === 'correct') {
+    displayedAttempts = validBreakdowns.filter(a => a.isCorrect);
+  } else if (filter === 'incorrect') {
+    displayedAttempts = validBreakdowns.filter(a => !a.isCorrect && a.status !== 'skipped' && a.status !== 'not-answered');
+  } else if (filter === 'skipped') {
+    displayedAttempts = validBreakdowns.filter(a => a.status === 'skipped' || a.status === 'not-answered');
+  } else if (filter === 'time') {
+    displayedAttempts = [...validBreakdowns].sort((a, b) => (b.timeSpent || 0) - (a.timeSpent || 0));
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-950 dark:to-neutral-900 py-8">
@@ -51,20 +72,45 @@ export function QuizReview({ attempts, score, topicId, onClose }: QuizReviewProp
             </p>
           </div>
 
+          {/* Filters */}
+          <div className="flex justify-center gap-2 mb-6">
+            <button
+              onClick={() => setFilter('all')}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${filter === 'all' ? 'bg-neutral-800 text-white dark:bg-white dark:text-neutral-900' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-400'}`}
+            >
+              All Questions
+            </button>
+            <button
+              onClick={() => setFilter('time')}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${filter === 'time' ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400'}`}
+            >
+              Sort by Time
+            </button>
+          </div>
+
           {/* Score Summary */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-xl">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <button 
+              onClick={() => setFilter(filter === 'correct' ? 'all' : 'correct')}
+              className={`text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-xl transition-all hover:scale-105 ${filter === 'correct' ? 'ring-2 ring-green-500 ring-offset-2 dark:ring-offset-neutral-900' : ''}`}
+            >
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">{score.correct}</div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400">Correct</div>
-            </div>
-            <div className="text-center p-4 bg-red-50 dark:bg-red-900/20 rounded-xl">
+            </button>
+            <button 
+              onClick={() => setFilter(filter === 'incorrect' ? 'all' : 'incorrect')}
+              className={`text-center p-4 bg-red-50 dark:bg-red-900/20 rounded-xl transition-all hover:scale-105 ${filter === 'incorrect' ? 'ring-2 ring-red-500 ring-offset-2 dark:ring-offset-neutral-900' : ''}`}
+            >
               <div className="text-2xl font-bold text-red-600 dark:text-red-400">{score.incorrect}</div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400">Incorrect</div>
-            </div>
-            <div className="text-center p-4 bg-neutral-50 dark:bg-neutral-800 rounded-xl">
+            </button>
+            <button 
+              onClick={() => setFilter(filter === 'skipped' ? 'all' : 'skipped')}
+              className={`text-center p-4 bg-neutral-50 dark:bg-neutral-800 rounded-xl transition-all hover:scale-105 ${filter === 'skipped' ? 'ring-2 ring-neutral-400 ring-offset-2 dark:ring-offset-neutral-900' : ''}`}
+            >
               <div className="text-2xl font-bold">{score.unanswered}</div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400">Skipped</div>
-            </div>
+            </button>
             <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
               <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                 {Math.round(score.percentage)}%
@@ -73,9 +119,33 @@ export function QuizReview({ attempts, score, topicId, onClose }: QuizReviewProp
             </div>
           </div>
 
+          {/* Time Analytics */}
+          <div className="bg-neutral-50 dark:bg-neutral-800/50 rounded-xl p-6 border border-neutral-200 dark:border-neutral-700">
+            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <span>⏱️</span> Time Analytics
+            </h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{formatTime(fastest?.timeSpent || 0)}</div>
+                {fastest && <div className="text-sm text-emerald-700 dark:text-emerald-300 font-medium">Q{fastest.originalIndex}</div>}
+                <div className="text-xs text-neutral-500 uppercase tracking-wider font-semibold mt-1">Fastest</div>
+              </div>
+              <div className="text-center border-l border-r border-neutral-200 dark:border-neutral-700">
+                <div className="text-xl font-bold text-blue-600 dark:text-blue-400">{formatTime(Math.round(averageTime))}</div>
+                <div className="text-sm text-transparent select-none">-</div>
+                <div className="text-xs text-neutral-500 uppercase tracking-wider font-semibold mt-1">Average</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xl font-bold text-rose-600 dark:text-rose-400">{formatTime(slowest?.timeSpent || 0)}</div>
+                {slowest && <div className="text-sm text-rose-700 dark:text-rose-300 font-medium">Q{slowest.originalIndex}</div>}
+                <div className="text-xs text-neutral-500 uppercase tracking-wider font-semibold mt-1">Slowest</div>
+              </div>
+            </div>
+          </div>
+
           <button
             onClick={onClose}
-            className="mt-6 w-full px-6 py-3 rounded-lg font-medium text-white transition-all"
+            className="mt-6 w-full px-6 py-3 rounded-lg font-medium text-white transition-all hover:shadow-lg"
             style={{ background: theme.gradient }}
           >
             Back to Quiz
@@ -84,7 +154,7 @@ export function QuizReview({ attempts, score, topicId, onClose }: QuizReviewProp
 
         {/* Questions Review */}
         <div className="space-y-4">
-          {attempts.map((attempt, index) => (
+          {displayedAttempts.map((attempt, index) => (
             <motion.div
               key={attempt.questionId}
               initial={{ opacity: 0, y: 20 }}
@@ -96,7 +166,7 @@ export function QuizReview({ attempts, score, topicId, onClose }: QuizReviewProp
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     <span className="px-3 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-full text-sm font-medium">
-                      Question {index + 1}
+                      Question {(attempt as any).originalIndex}
                     </span>
                     {attempt.isCorrect ? (
                       <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-sm font-medium">

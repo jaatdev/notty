@@ -46,6 +46,7 @@ export function QuizPanel({ questions, topicId, onComplete }: QuizPanelProps) {
   const [showSidebar, setShowSidebar] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [showReview, setShowReview] = useState(false);
+  const [reviewFilter, setReviewFilter] = useState<string>('all');
   const [language, setLanguage] = useState<'en' | 'hi'>('en');
   const [isCanvasOpen, setIsCanvasOpen] = useState(false);
 
