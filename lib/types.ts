@@ -61,9 +61,12 @@ export type ContentNode = MarkdownNode | FlashcardsNode
 export type QuizQuestion = {
   id: string
   prompt: string
+  prompt_hi?: string
   options: string[]
+  options_hi?: string[]
   answerIndex: number
   reason?: string
+  reason_hi?: string
   meta?: NodeMeta
 }
 

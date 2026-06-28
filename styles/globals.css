@@ -926,7 +926,7 @@ button:active {
 }
 
 /* Hide navbar and footer ONLY on notes pages in fullscreen */
-html[data-fullscreen="true"][data-page-type="notes"] nav,
+html[data-fullscreen="true"][data-page-type="notes"] header,
 html[data-fullscreen="true"][data-page-type="notes"] footer {
   display: none !important;
 }

@@ -103,16 +103,16 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-3 mb-6 group">
               <motion.div 
-                className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 via-fuchsia-600 to-pink-600 flex items-center justify-center shadow-2xl"
+                className="w-14 h-14 flex items-center justify-center"
                 whileHover={{ scale: 1.1, rotate: 5 }}
               >
-                <span className="text-white font-black text-3xl">N</span>
+                <img src="/logo.jpg" alt="TrickFunda Logo" className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(255,215,0,0.4)] rounded-2xl" />
               </motion.div>
               <div className="flex flex-col">
-                <span className="text-3xl font-black bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400 bg-clip-text text-transparent">
-                  Notty
+                <span className="text-3xl font-black bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent">
+                  TrickFunda
                 </span>
-                <span className="text-xs text-gray-400">notes that stick</span>
+                <span className="text-xs text-gray-400">Learn, Master, Excel</span>
               </div>
             </Link>
             

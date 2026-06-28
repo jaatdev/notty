@@ -42,6 +42,10 @@ export function QuizPanel({ questions, topicId, onComplete }: QuizPanelProps) {
 
   const [showSidebar, setShowSidebar] = useState(true);
   const [showResults, setShowResults] = useState(false);
+  const [showReview, setShowReview] = useState(false);
+  const [language, setLanguage] = useState<'en' | 'hi'>('en');
+
+  const hasHindi = enhancedQuestions.some(q => q.prompt_hi);
 
   // Get theme for this quiz
   const theme = getThemeById(topicId);
@@ -60,6 +64,8 @@ export function QuizPanel({ questions, topicId, onComplete }: QuizPanelProps) {
       onComplete?.(quiz.session.score.percentage);
     }
   }, [quiz.session?.state]);
+
+
 
   // Keyboard navigation
   useEffect(() => {
@@ -151,6 +157,27 @@ export function QuizPanel({ questions, topicId, onComplete }: QuizPanelProps) {
     );
   }
 
+  if (showReview && quiz.session) {
+    return (
+      <QuizReview
+        attempts={quiz.session.questions.map(q => ({
+          questionId: q.question.id,
+          prompt: language === 'hi' && q.question.prompt_hi ? q.question.prompt_hi : q.question.prompt,
+          options: language === 'hi' && q.question.options_hi ? q.question.options_hi : q.question.options,
+          selectedOptionId: q.selectedOptionId ? q.question.options.indexOf(q.selectedOptionId).toString() : null,
+          correctOptionId: q.question.answerIndex.toString(),
+          isCorrect: q.selectedOptionId === q.question.options[q.question.answerIndex],
+          reason: language === 'hi' && q.question.reason_hi ? q.question.reason_hi : q.question.reason,
+          status: q.status,
+          timeSpent: q.timeSpent,
+        }))}
+        score={quiz.session.score!}
+        topicId={topicId}
+        onClose={() => setShowReview(false)}
+      />
+    );
+  }
+
   const currentAttempt = quiz.currentQuestion;
   const currentQuestion = currentAttempt.question;
   const isMarked = currentAttempt.status === 'marked' || currentAttempt.status === 'answered-marked';
@@ -177,9 +204,24 @@ export function QuizPanel({ questions, topicId, onComplete }: QuizPanelProps) {
             </div>
           </div>
 
-          {/* Timer */}
-          {quiz.timer.isRunning && (
-            <div className="flex items-center gap-2 px-4 py-2 bg-neutral-100 dark:bg-neutral-800 rounded-full">
+          <div className="flex items-center gap-4">
+            {/* Language Toggle */}
+            {hasHindi && (
+              <div className="flex bg-neutral-200 dark:bg-neutral-800 rounded-lg p-1 hidden sm:flex">
+                <button 
+                  onClick={() => setLanguage('en')}
+                  className={`px-3 py-1 text-sm rounded-md transition-colors ${language === 'en' ? 'bg-white dark:bg-neutral-700 shadow-[0_1px_3px_rgba(0,0,0,0.1)]' : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200'}`}
+                >English</button>
+                <button 
+                  onClick={() => setLanguage('hi')}
+                  className={`px-3 py-1 text-sm rounded-md transition-colors ${language === 'hi' ? 'bg-white dark:bg-neutral-700 shadow-[0_1px_3px_rgba(0,0,0,0.1)]' : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200'}`}
+                >हिंदी</button>
+              </div>
+            )}
+
+            {/* Timer */}
+            {quiz.timer.isRunning && (
+              <div className="flex items-center gap-2 px-4 py-2 bg-neutral-100 dark:bg-neutral-800 rounded-full">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -188,6 +230,7 @@ export function QuizPanel({ questions, topicId, onComplete }: QuizPanelProps) {
               </span>
             </div>
           )}
+          </div>
 
           {/* Progress */}
           <div className="flex items-center gap-4">
@@ -260,9 +303,18 @@ export function QuizPanel({ questions, topicId, onComplete }: QuizPanelProps) {
                             {currentAttempt.question.meta.difficulty}
                           </span>
                         )}
+                        {/* Mobile Language Toggle */}
+                        {hasHindi && (
+                          <button 
+                            onClick={() => setLanguage(l => l === 'en' ? 'hi' : 'en')}
+                            className="sm:hidden px-2 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 ml-2"
+                          >
+                            {language === 'en' ? 'अ (Hindi)' : 'A (English)'}
+                          </button>
+                        )}
                       </div>
-                      <h3 className="text-xl font-bold leading-relaxed">
-                        {currentQuestion.prompt}
+                      <h3 className="text-xl font-bold leading-relaxed whitespace-pre-wrap">
+                        {language === 'hi' && currentQuestion.prompt_hi ? currentQuestion.prompt_hi : currentQuestion.prompt}
                       </h3>
                     </div>
                     
@@ -284,14 +336,17 @@ export function QuizPanel({ questions, topicId, onComplete }: QuizPanelProps) {
 
                 {/* Options */}
                 <div className="p-6 space-y-3">
-                  {currentQuestion.options.map((option, index) => {
-                    const isSelected = currentAttempt.selectedOptionId === option;
+                  {currentQuestion.options.map((originalOption, index) => {
+                    const isSelected = currentAttempt.selectedOptionId === originalOption;
                     const optionLetter = String.fromCharCode(65 + index); // A, B, C, D
+                    
+                    const displayOptions = language === 'hi' && currentQuestion.options_hi ? currentQuestion.options_hi : currentQuestion.options;
+                    const displayOption = displayOptions[index] || originalOption;
 
                     return (
                       <motion.button
                         key={index}
-                        onClick={() => quiz.selectOption(option)}
+                        onClick={() => quiz.selectOption(originalOption)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         className={`
@@ -312,7 +367,7 @@ export function QuizPanel({ questions, topicId, onComplete }: QuizPanelProps) {
                         `}>
                           {optionLetter}
                         </span>
-                        <span className="flex-1 pt-1">{option}</span>
+                        <span className="flex-1 pt-1">{displayOption}</span>
                       </motion.button>
                     );
                   })}
@@ -450,7 +505,7 @@ function QuizSidebar({ questions, currentIndex, onQuestionClick, theme }: any) {
 }
 
 // Results Component
-function QuizResults({ score, theme, onRestart }: any) {
+function QuizResults({ score, theme, onRestart, onReview }: any) {
   return (
     <div className="min-h-screen bg-linear-to-br from-neutral-50 to-neutral-100 dark:from-neutral-950 dark:to-neutral-900 flex items-center justify-center p-4">
       <motion.div
@@ -507,6 +562,14 @@ function QuizResults({ score, theme, onRestart }: any) {
           </div>
 
           {/* Actions */}
+          <div className="flex gap-4 mb-4">
+            <button
+              onClick={onReview}
+              className="flex-1 px-6 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white rounded-xl font-bold transition-all hover:bg-neutral-50 dark:hover:bg-neutral-700"
+            >
+              Review Answers
+            </button>
+          </div>
           <div className="flex gap-4">
             <button
               onClick={onRestart}
