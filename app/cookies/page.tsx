@@ -18,7 +18,7 @@ export default function CookiesPage() {
                 Cookie Policy
               </h1>
               <p className="text-xl text-slate-400 max-w-3xl mx-auto">
-                How Notty uses cookies to enhance your experience
+                How TrickFunda uses cookies to enhance your experience
               </p>
               <p className="text-sm text-slate-500 mt-4">Last updated: January 2025</p>
               <p className="text-sm text-slate-500">Managed by Kapil Chaudhary</p>
@@ -34,7 +34,7 @@ export default function CookiesPage() {
                 <h2 className="text-3xl font-bold text-white">What Are Cookies?</h2>
               </div>
               <div className="space-y-4 text-slate-300">
-                <p>Cookies are small text files stored on your device when you visit Notty. They help <strong className="text-white">Kapil Chaudhary</strong> and the Notty team provide you with a better, faster, and safer experience.</p>
+                <p>Cookies are small text files stored on your device when you visit TrickFunda. They help <strong className="text-white">Kapil Chaudhary</strong> and the TrickFunda team provide you with a better, faster, and safer experience.</p>
                 <p>We use cookies to remember your preferences, understand how you use our service, and improve your overall experience.</p>
               </div>
             </div>
@@ -56,7 +56,7 @@ export default function CookiesPage() {
                 </div>
                 <div className="p-4 bg-slate-800/50 rounded-xl">
                   <h3 className="text-lg font-semibold text-white mb-2">2. Performance Cookies</h3>
-                  <p>Help us understand how visitors interact with Notty by collecting anonymous information about page visits and user behavior.</p>
+                  <p>Help us understand how visitors interact with TrickFunda by collecting anonymous information about page visits and user behavior.</p>
                   <p className="text-sm text-slate-500 mt-2">Examples: Google Analytics, performance monitoring</p>
                 </div>
                 <div className="p-4 bg-slate-800/50 rounded-xl">
@@ -82,7 +82,7 @@ export default function CookiesPage() {
                 <h2 className="text-3xl font-bold text-white">Third-Party Cookies</h2>
               </div>
               <div className="space-y-4 text-slate-300">
-                <p>Notty may use third-party services that set their own cookies. These include:</p>
+                <p>TrickFunda may use third-party services that set their own cookies. These include:</p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
                   <li><strong className="text-white">Google Analytics</strong> - For understanding user behavior and improving the Service</li>
                   <li><strong className="text-white">Authentication Providers</strong> - For secure login and account management</li>
@@ -105,12 +105,12 @@ export default function CookiesPage() {
               <div className="space-y-4 text-slate-300">
                 <p>You have the right to decide whether to accept or reject cookies. You can exercise your cookie preferences by:</p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li>Using the cookie consent banner when you first visit Notty</li>
+                  <li>Using the cookie consent banner when you first visit TrickFunda</li>
                   <li>Adjusting your browser settings to refuse cookies</li>
                   <li>Deleting cookies already stored on your device</li>
                   <li>Using browser extensions that block tracking cookies</li>
                 </ul>
-                <p className="text-amber-400 font-semibold">Note: Disabling certain cookies may affect the functionality of Notty.</p>
+                <p className="text-amber-400 font-semibold">Note: Disabling certain cookies may affect the functionality of TrickFunda.</p>
               </div>
             </div>
           </ScrollAnimation>

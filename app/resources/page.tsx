@@ -24,7 +24,7 @@ const resources = [
     icon: Video,
     color: 'from-orange-500 to-amber-600',
     items: [
-      { title: 'Getting Started with Notty', type: 'Video', duration: '12:30' },
+      { title: 'Getting Started with TrickFunda', type: 'Video', duration: '12:30' },
       { title: 'Mastering Flashcards', type: 'Video', duration: '8:45' },
       { title: 'Advanced Study Techniques', type: 'Video', duration: '15:20' },
     ] as ResourceItem[]

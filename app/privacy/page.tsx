@@ -68,7 +68,7 @@ export default function PrivacyPage() {
               Last updated: January 2025
             </p>
             <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-              At Notty, we take your privacy seriously. This policy explains how we collect, use, and protect your personal information.
+              At TrickFunda, we take your privacy seriously. This policy explains how we collect, use, and protect your personal information.
             </p>
           </motion.div>
 

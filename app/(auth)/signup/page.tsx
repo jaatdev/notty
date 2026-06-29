@@ -35,7 +35,7 @@ export default function SignupPage() {
         {/* Logo/Brand */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-linear-to-tr from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-            <span className="text-4xl font-bold">Notty</span>
+            <span className="text-4xl font-bold">TrickFunda</span>
           </div>
           <p className="text-slate-600 mt-2">Create your account</p>
         </div>

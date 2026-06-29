@@ -45,7 +45,7 @@ export default function CareersPage() {
 
           <ScrollAnimation animation="fade-up" delay={200}>
             <div className="bg-linear-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8 mb-16">
-              <h2 className="text-3xl font-bold text-white mb-6">Why Join Notty?</h2>
+              <h2 className="text-3xl font-bold text-white mb-6">Why Join TrickFunda?</h2>
               <div className="grid md:grid-cols-4 gap-4">
                 {perks.map((perk, idx) => (
                   <div key={idx} className="text-slate-300 text-center p-4 bg-slate-800/50 rounded-xl">

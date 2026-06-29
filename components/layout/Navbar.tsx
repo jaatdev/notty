@@ -82,7 +82,7 @@ export default function Navbar() {
             <Link href="/" className="flex items-center gap-3 group z-50" onClick={() => setIsMobileMenuOpen(false)}>
               {/* LOGO IMAGE ADDED HERE */}
               <img src="/logo.jpg" alt="TrickFunda Logo" className="w-12 h-12 object-contain drop-shadow-[0_0_15px_rgba(255,215,0,0.4)]" />
-              <span className="font-black text-2xl tracking-tight text-white drop-shadow-sm">
+              <span className="font-black text-2xl tracking-tight bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent drop-shadow-sm">
                 TrickFunda
               </span>
             </Link>

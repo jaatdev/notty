@@ -18,7 +18,7 @@ export default function TermsPage() {
                 Terms of Service
               </h1>
               <p className="text-xl text-slate-400 max-w-3xl mx-auto">
-                Please read these terms carefully before using Notty
+                Please read these terms carefully before using TrickFunda
               </p>
               <p className="text-sm text-slate-500 mt-4">Last updated: January 2025</p>
               <p className="text-sm text-slate-500">Owned and operated by Kapil Chaudhary</p>
@@ -34,7 +34,7 @@ export default function TermsPage() {
                 <h2 className="text-3xl font-bold text-white">Agreement to Terms</h2>
               </div>
               <div className="space-y-4 text-slate-300">
-                <p>By accessing or using Notty ("the Service"), you agree to be bound by these Terms of Service. The Service is owned and operated by <strong className="text-white">Kapil Chaudhary</strong>, BCA graduate from CCS University (2023) and MCA from GLA University, Mathura (2025).</p>
+                <p>By accessing or using TrickFunda ("the Service"), you agree to be bound by these Terms of Service. The Service is owned and operated by <strong className="text-white">Kapil Chaudhary</strong>, BCA graduate from CCS University (2023) and MCA from GLA University, Mathura (2025).</p>
                 <p>If you disagree with any part of these terms, you may not access the Service.</p>
               </div>
             </div>

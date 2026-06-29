@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import { AdminSidebar } from '@/components/admin/AdminSidebar'
 
 export const metadata = {
-  title: 'Admin - Notty',
+  title: 'Admin - TrickFunda',
 }
 
 export default function AdminLayout({

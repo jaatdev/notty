@@ -14,7 +14,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const jetbrains = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains' })
 
 export const metadata: Metadata = {
-  title: 'Notty - World-Class Notes',
+  title: 'TrickFunda - World-Class Notes',
   description: 'Data-driven, crisp, recall-ready notes with flashcards, quizzes, and spaced repetition learning.',
 }
 

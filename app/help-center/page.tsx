@@ -20,8 +20,8 @@ const faqs = [
     category: 'Learning'
   },
   { 
-    q: 'Can I use Notty offline?', 
-    a: 'Yes! Notty is a Progressive Web App (PWA) that works offline once you\'ve viewed content at least once. All your notes, flashcards, and progress are cached locally for seamless offline access.',
+    q: 'Can I use TrickFunda offline?', 
+    a: 'Yes! TrickFunda is a Progressive Web App (PWA) that works offline once you\'ve viewed content at least once. All your notes, flashcards, and progress are cached locally for seamless offline access.',
     category: 'Technical'
   },
   { 
@@ -51,7 +51,7 @@ const faqs = [
   },
   { 
     q: 'Is there a mobile app?', 
-    a: 'Notty is a PWA, which means you can install it on your phone like a native app. Just visit the site on your mobile browser and tap "Add to Home Screen" for the full app experience.',
+    a: 'TrickFunda is a PWA, which means you can install it on your phone like a native app. Just visit the site on your mobile browser and tap "Add to Home Screen" for the full app experience.',
     category: 'Technical'
   },
 ];
@@ -64,7 +64,7 @@ const contactMethods = [
 ];
 
 const popularArticles = [
-  { title: 'Getting Started with Notty', views: 15200, category: 'Getting Started' },
+  { title: 'Getting Started with TrickFunda', views: 15200, category: 'Getting Started' },
   { title: 'Creating Your First Flashcard', views: 12800, category: 'Features' },
   { title: 'Understanding Spaced Repetition', views: 11500, category: 'Learning' },
   { title: 'Customizing Your Study Settings', views: 9300, category: 'Settings' },

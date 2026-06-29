@@ -30,7 +30,7 @@ export default function InstallPrompt() {
         if (outcome === 'accepted') setDeferred(null)
       }}
       className="px-3 py-2 rounded-lg text-sm font-semibold bg-emerald-600 text-white hover:bg-emerald-700"
-      title="Install Notty"
+      title="Install TrickFunda"
     >
       ⬇️ Install
     </button>

@@ -77,7 +77,7 @@ export default function AdminNavSidebar({ isOpen, onClose }: AdminNavSidebarProp
                 N
               </div>
               <div>
-                <h2 className="text-lg font-bold text-white">Notty Admin</h2>
+                <h2 className="text-lg font-bold text-white">TrickFunda Admin</h2>
                 <p className="text-xs text-slate-400">Control Center</p>
               </div>
             </div>

@@ -8,7 +8,7 @@ const testimonials = [
     name: 'Priya Sharma',
     role: 'UPSC Aspirant',
     image: '👩‍🎓',
-    text: 'Notty transformed my preparation! The spaced repetition feature helped me retain complex topics effortlessly. Cleared prelims with 95%!',
+    text: 'TrickFunda transformed my preparation! The spaced repetition feature helped me retain complex topics effortlessly. Cleared prelims with 95%!',
     rating: 5,
     exam: 'UPSC CSE 2024'
   },
@@ -40,7 +40,7 @@ const testimonials = [
     name: 'Sneha Reddy',
     role: 'Banking Aspirant',
     image: '👩‍💼',
-    text: 'The quiz analytics helped me identify weak areas. Improved my accuracy from 60% to 92%. Thank you Notty!',
+    text: 'The quiz analytics helped me identify weak areas. Improved my accuracy from 60% to 92%. Thank you TrickFunda!',
     rating: 5,
     exam: 'IBPS PO 2024'
   },

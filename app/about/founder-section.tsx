@@ -29,7 +29,7 @@ export default function FounderSection() {
             </div>
             <p className="text-slate-300 leading-relaxed">
               Passionate about creating innovative learning solutions that combine modern technology with proven educational methods. 
-              Built Notty to help students master concepts through spaced repetition and interactive learning.
+              Built TrickFunda to help students master concepts through spaced repetition and interactive learning.
             </p>
           </div>
         </div>

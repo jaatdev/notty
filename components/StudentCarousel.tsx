@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 
 const students = [
-  { name: 'Priya Sharma', exam: 'UPSC CSE', rank: 'AIR 47', image: '👩‍🎓', quote: 'Notty helped me crack UPSC!', color: 'from-violet-500 to-purple-600' },
+  { name: 'Priya Sharma', exam: 'UPSC CSE', rank: 'AIR 47', image: '👩‍🎓', quote: 'TrickFunda helped me crack UPSC!', color: 'from-violet-500 to-purple-600' },
   { name: 'Rahul Verma', exam: 'SSC CGL', rank: 'Selected', image: '👨‍💼', quote: 'Best platform for SSC prep', color: 'from-cyan-500 to-blue-600' },
   { name: 'Sneha Patel', exam: 'IBPS PO', rank: 'Cleared', image: '👩‍💻', quote: 'Analytics helped me improve', color: 'from-emerald-500 to-teal-600' },
   { name: 'Amit Kumar', exam: 'RRB NTPC', rank: 'AIR 156', image: '👨‍🔧', quote: 'Spaced repetition works!', color: 'from-amber-500 to-orange-600' },

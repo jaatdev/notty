@@ -36,7 +36,7 @@ export default function LoginPage() {
               N
             </div>
             <h1 className="text-2xl font-bold text-slate-900">Welcome Back</h1>
-            <p className="text-slate-500 mt-1">Sign in to your Notty account</p>
+            <p className="text-slate-500 mt-1">Sign in to your TrickFunda account</p>
           </div>
 
           {/* Login Form */}

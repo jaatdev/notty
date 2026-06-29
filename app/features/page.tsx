@@ -154,7 +154,7 @@ export default function FeaturesPage() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              Discover the powerful features that make Notty the ultimate learning platform for students worldwide
+              Discover the powerful features that make TrickFunda the ultimate learning platform for students worldwide
             </motion.p>
           </motion.div>
 
@@ -263,7 +263,7 @@ export default function FeaturesPage() {
 
             <div className="relative z-10">
               <h2 className="text-5xl font-black text-white mb-6">Ready to Experience These Features?</h2>
-              <p className="text-2xl text-white/90 mb-10">Start your learning journey today with Notty</p>
+              <p className="text-2xl text-white/90 mb-10">Start your learning journey today with TrickFunda</p>
               
               <Link href="/#subjects">
                 <motion.button

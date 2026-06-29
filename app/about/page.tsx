@@ -28,7 +28,7 @@ export default function AboutPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-6xl md:text-8xl font-black mb-6"
           >
-            About Notty
+            About TrickFunda
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -51,7 +51,7 @@ export default function AboutPage() {
           >
             <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-6">Our Story</h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
-              Notty was born from a simple frustration: traditional note-taking apps weren't built for serious learners. 
+              TrickFunda was born from a simple frustration: traditional note-taking apps weren't built for serious learners. 
               We wanted something that combined beautiful design with powerful learning science.
             </p>
             <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">

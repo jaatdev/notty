@@ -210,7 +210,7 @@ export default function Footer() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            © 2025 Notty. Made with{' '}
+            © 2025 TrickFunda. Made with{' '}
             <motion.span
               className="inline-block"
               animate={{ scale: [1, 1.2, 1] }}

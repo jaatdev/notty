@@ -59,7 +59,7 @@ export default function OfflinePage() {
         </a>
 
         <p className="mt-6 text-sm text-gray-500 dark:text-gray-400">
-          PWA powered by Notty • Offline mode active
+          PWA powered by TrickFunda • Offline mode active
         </p>
       </div>
     </div>
