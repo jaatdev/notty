@@ -55,19 +55,27 @@ export default async function TrickFundaTypeViewer(props: Props) {
 
   // Format title from slug
   const chapterTitle = params.chapter.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  const subjectTitle = params.subject.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ').replace('Gs', 'GS');
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-24 pb-12 px-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Navigation Breadcrumb */}
-        <div className="mb-8">
-          <Link 
-            href={`/kd-method/${params.subject}/${params.chapter}`} 
-            className="text-emerald-600 dark:text-emerald-400 font-medium hover:underline inline-flex items-center gap-2"
-          >
-            <span>←</span> Back to {chapterTitle}
-          </Link>
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-24 pb-4 px-4 md:pt-32 md:pb-8 md:px-8">
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Breadcrumb Navigation */}
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
+          <Link href="/kd-method" className="hover:text-emerald-500 transition-colors whitespace-nowrap">KD Method</Link>
+          <span>/</span>
+          <Link href={`/kd-method/${params.subject}`} className="hover:text-emerald-500 transition-colors whitespace-nowrap">{subjectTitle}</Link>
+          <span>/</span>
+          <Link href={`/kd-method/${params.subject}/${params.chapter}`} className="hover:text-emerald-500 transition-colors whitespace-nowrap">{chapterTitle}</Link>
+          <span>/</span>
+          <span className="text-gray-900 dark:text-gray-100 truncate max-w-[150px] sm:max-w-none">{typeData.title}</span>
         </div>
+
+        <header className="space-y-4">
+          <h1 className="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white">
+            {typeData.title}
+          </h1>
+        </header>
 
         {/* Content Viewer (Reused from English Concepts) */}
         <ConceptInteractiveViewer 

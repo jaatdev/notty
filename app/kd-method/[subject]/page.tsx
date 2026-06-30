@@ -16,19 +16,23 @@ export default async function TrickFundaIndex({ params }: { params: Promise<{ su
   const displayTitle = subjectTitle.replace('Gs', 'GS');
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-24 pb-12 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-12">
-          <Link href="/kd-method" className="text-emerald-600 dark:text-emerald-400 font-medium hover:underline mb-4 inline-block">
-            ← Back to KD Method
-          </Link>
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-24 pb-12 px-4 md:pt-32 md:pb-8 md:px-8">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Breadcrumb Navigation */}
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-gray-500 dark:text-gray-400 mb-8">
+          <Link href="/kd-method" className="hover:text-emerald-500 transition-colors whitespace-nowrap">KD Method</Link>
+          <span>/</span>
+          <span className="text-gray-900 dark:text-gray-100 truncate max-w-[200px] sm:max-w-none">{displayTitle}</span>
+        </div>
+
+        <header className="mb-12">
           <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">
             {displayTitle.split(' ')[0]} <span className="text-emerald-500">{displayTitle.split(' ').slice(1).join(' ')}</span>
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl">
             Select a chapter to master its types and tricks.
           </p>
-        </div>
+        </header>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {chapters.map((chapter, i) => (
